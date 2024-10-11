@@ -1,6 +1,6 @@
-﻿namespace Entities.Models;
+﻿namespace Shared.DataTransferObjects;
 
-public class Address
+public class AddressDto
 {
     public Guid Id { get; set; }
     public string Country { get; set; } = string.Empty;
@@ -9,4 +9,4 @@ public class Address
     public string? Region { get; set; }
     public string Street { get; set; } = string.Empty;
     public int ZipCode { get; set; }
-}
+};

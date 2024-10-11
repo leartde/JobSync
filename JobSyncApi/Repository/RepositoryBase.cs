@@ -31,7 +31,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 
     public void Update(T entity)
     {
-        _context.Set<T>().Update(entity);
+        _context.Set<T>().Entry(entity).State = EntityState.Modified;
     }
 
     public void Delete(T entity)

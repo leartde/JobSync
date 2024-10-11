@@ -11,7 +11,7 @@ public class Job
     public string Pay { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
-    public bool IsTakingApplications { get; set; }
+    public bool IsTakingApplications { get; set; } = true;
     public bool HasMultipleSpots { get; set; }
     public DateOnly CreatedAt { get; set; }
     public List<Application>? Applications { get; set; }

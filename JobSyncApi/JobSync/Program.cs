@@ -10,15 +10,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureLoggerService();
+builder.Services.ConfigureRepositoryManager();
+builder.Services.ConfigureServiceManager();
+builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
 builder.Services.ConfigureIISIntegration();
-LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
-    "/nlog.config"
-));
+LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
 var app = builder.Build();
-// var logger = app.Services.GetRequiredService<ILoggerManager>();
-
+var logger = app.Services.GetRequiredService<ILoggerManager>();
+app.ConfigureExceptionHandler(logger);
+if (app.Environment.IsProduction()) app.UseHsts();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
