@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.AddressDtos;
 
 namespace Presentation.Controllers;
 
@@ -18,15 +19,15 @@ public class AddressesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAddresses()
     {
-        IEnumerable<AddressDto> addresses = await _service.AddressService.GetAllAddressesAsync();
+        IEnumerable<ViewAddressDto> addresses = await _service.AddressService.GetAllAddressesAsync();
         return Ok(addresses);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetAddress(Guid id)
     {
-        AddressDto address = await _service.AddressService.GetAddressAsync(id);
-        return Ok(address);
+        ViewAddressDto viewAddress = await _service.AddressService.GetAddressAsync(id);
+        return Ok(viewAddress);
     }
 
     [HttpPost]
@@ -44,7 +45,7 @@ public class AddressesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAddress(Guid id, AddAddressDto addressDto)
+    public async Task<IActionResult> UpdateAddress(Guid id, UpdateAddressDto addressDto)
     {
         await _service.AddressService.UpdateAddressAsync(id, addressDto);
         return Ok();

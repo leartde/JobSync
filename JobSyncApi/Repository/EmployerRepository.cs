@@ -14,9 +14,11 @@ public class EmployerRepository : RepositoryBase<Employer>, IEmployerRepository
             .ToListAsync();
     }
 
-    public async Task<Employer> GetEmployerAsync()
+    public async Task<Employer?> GetEmployerAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await FindByCondition(e => e.Id.Equals(id))
+            .Include(e => e.Address)
+            .SingleOrDefaultAsync();
     }
 
     public void AddEmployer(Employer employer)
@@ -26,11 +28,11 @@ public class EmployerRepository : RepositoryBase<Employer>, IEmployerRepository
 
     public void DeleteEmployer(Employer employer)
     {
-        throw new NotImplementedException();
+        Delete(employer);
     }
 
     public void UpdateEmployer(Employer employer)
     {
-        throw new NotImplementedException();
+        Update(employer);
     }
 }

@@ -5,9 +5,9 @@ namespace Shared.Mapping;
 
 public static class EmployerMapping
 {
-    public static EmployerDto MapEmployerDto(this Employer entity)
+    public static ViewEmployerDto MapEmployerDto(this Employer entity)
     {
-        return new EmployerDto
+        return new ViewEmployerDto
         {
             Id = entity.Id,
             Name = entity.Name,
@@ -19,16 +19,16 @@ public static class EmployerMapping
         };
     }
 
-    public static Employer ReverseMapEmployer(this AddEmployerDto entity)
+    public static Employer ReverseMapEmployer(this EmployerDto entity)
     {
         return new Employer
         {
-            Name = entity.Name,
+            Name = entity.Name, 
             Industry = entity.Industry,
             Founded = entity.Founded,
             Phone = entity.Phone,
-            SecondaryPhone = entity.Phone,
-            Address = entity.Address?.ReverseMapAddress()
+            SecondaryPhone = entity.SecondaryPhone,
+            Address = entity.Address.ReverseMapAddress()
         };
     }
 }

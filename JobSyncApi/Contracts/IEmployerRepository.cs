@@ -5,7 +5,7 @@ namespace Contracts;
 public interface IEmployerRepository
 {
     Task<IEnumerable<Employer>> GetAllEmployersAsync();
-    Task<Employer> GetEmployerAsync();
+    Task<Employer?> GetEmployerAsync(Guid id);
     void AddEmployer(Employer employer);
     void DeleteEmployer(Employer employer);
     void UpdateEmployer(Employer employer);

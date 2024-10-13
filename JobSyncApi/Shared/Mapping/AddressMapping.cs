@@ -1,15 +1,16 @@
 ﻿using Entities.Exceptions;
 using Entities.Models;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.AddressDtos;
 
 namespace Shared.Mapping;
 
 public static class AddressMapping
 {
-    public static AddressDto MapAddressDto(this Address? entity)
+    public static ViewAddressDto MapAddressDto(this Address? entity)
     {
         if (entity is null) throw new MappingException("address");
-        return new AddressDto
+        return new ViewAddressDto
         {
             Id = entity.Id,
             Country = entity.Country,
@@ -21,7 +22,7 @@ public static class AddressMapping
         };
     }
 
-    public static Address ReverseMapAddress(this AddAddressDto? entity)
+    public static Address ReverseMapAddress(this AddressDto? entity)
     {
         if (entity is null) throw new MappingException("address");
         return new Address

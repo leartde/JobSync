@@ -1,8 +1,9 @@
-﻿namespace Shared.DataTransferObjects.EmployerDtos;
+﻿using Shared.DataTransferObjects.AddressDtos;
+
+namespace Shared.DataTransferObjects.EmployerDtos;
 
 public class EmployerDto
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Industry { get; set; } = string.Empty;
     public DateOnly Founded { get; set; }

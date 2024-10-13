@@ -28,7 +28,7 @@ public class AddressRepository : RepositoryBase<Address>, IAddressRepository
         Delete(address);
     }
 
-    public void UpdateAddress(Address address)
+    public void UpdateAddress(Address? address)
     {
         Update(address);
     }

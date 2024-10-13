@@ -15,7 +15,7 @@ public class Job
     public bool HasMultipleSpots { get; set; }
     public DateOnly CreatedAt { get; set; }
     public List<Application>? Applications { get; set; }
-    public List<Skill>? Skills { get; set; }
+    public List<JobsSkills> Skills { get; set; } = new();
 
 
 }

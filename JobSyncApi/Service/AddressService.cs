@@ -3,6 +3,7 @@ using Entities.Exceptions.AddressExceptions;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
+using Shared.DataTransferObjects.AddressDtos;
 using Shared.Mapping;
 
 namespace Service;
@@ -19,22 +20,21 @@ internal sealed class AddressService : IAddressService
     }
 
 
-    public async Task <IEnumerable<AddressDto>> GetAllAddressesAsync()
+    public async Task <IEnumerable<ViewAddressDto>> GetAllAddressesAsync()
     {
         IEnumerable<Address> addresses = await _repository.Address.GetAllAddressesAsync();
-        List<AddressDto> addressesDto = [];
-        addressesDto.AddRange(addresses.Select(address => address.MapAddressDto()));
-        return addressesDto;
+        IEnumerable<ViewAddressDto> addressDtos = addresses.Select(address => address.MapAddressDto());
+        return addressDtos;
     }
 
-    public async Task<AddressDto> GetAddressAsync(Guid id)
+    public async Task<ViewAddressDto> GetAddressAsync(Guid id)
     {
         Address? address = await _repository.Address.GetAddressAsync(id);
         if (address is null) throw new AddressNotFoundException(id);
         return address.MapAddressDto();
     }
 
-    public async Task<AddressDto> AddAddressAsync(AddAddressDto addressDto)
+    public async Task<ViewAddressDto> AddAddressAsync(AddAddressDto addressDto)
     {
         Address address = addressDto.ReverseMapAddress();
          _repository.Address.AddAddress(address);
@@ -50,7 +50,7 @@ internal sealed class AddressService : IAddressService
         await _repository.SaveAsync();
     }
 
-    public async Task UpdateAddressAsync(Guid id, AddAddressDto addressDto)
+    public async Task UpdateAddressAsync(Guid id, UpdateAddressDto addressDto)
     {
         Address? address = await _repository.Address.GetAddressAsync(id);
         if (address is null) throw new AddressNotFoundException(id);
