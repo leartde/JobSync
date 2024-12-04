@@ -1,9 +1,0 @@
-﻿namespace Service.Contracts;
-
-public interface IServiceManager
-{
-    IAddressService AddressService { get; }
-    IJobService JobService { get; }
-    IEmployerService EmployerService { get;  }
-    
-}
