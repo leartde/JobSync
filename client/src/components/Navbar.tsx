@@ -6,7 +6,7 @@ const Navbar = () => {
     return (
         <nav className="sticky bg-black top-0 w-[90%] flex mx-auto  flex-row gap-4 text-2xl  border-red-100 border-b-2  p-4">
             <ul className="flex flex-row space-x-12 text-white max-md:hidden">
-                <li><a className="border-b-2 border-red-500" href="#">Job<span
+                <li><a  href="#">Job<span
                     className="text-red-500 under">Sync </span></a></li>
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Employers</a></li>

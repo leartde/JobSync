@@ -3,12 +3,18 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import {RouterProvider, createBrowserRouter } from 'react-router-dom'
+import HomePage from './pages/HomePage.tsx'
 
 const router = createBrowserRouter([
     {
         path : '/',
         element : <App />,
-        children : []
+        children : [
+          {
+            path : '/',
+            element : <HomePage/>
+          }
+        ]
     }
 ])
 
