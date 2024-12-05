@@ -1,0 +1,33 @@
+﻿using Entities.Models;
+using Shared.DataTransferObjects.ApplicationDtos;
+
+namespace Shared.Mapping;
+
+public static class ApplicationMapping
+{
+    public static ViewApplicationDto MapApplicationDto(this Application? entity)
+    {
+        return new ViewApplicationDto
+        {
+            Id = entity.Id,
+            JobId = entity.JobId,
+            JobSeekerId = entity.JobSeekerId,
+            Employer = entity.Job?.Employer?.Name ?? string.Empty,
+            JobTitle = entity.Job?.Title ?? string.Empty,
+            Candidate = $"{entity.JobSeeker?.FirstName ?? string.Empty}" +
+                        $"{entity.JobSeeker?.MiddleName ?? string.Empty}" +
+                        $"{entity.JobSeeker?.LastName ?? string.Empty} ",
+            StatusString = entity.Status.ToString()
+            
+        };
+    }
+
+    public static void ReverseMapApplication(this ApplicationDto dto, Application entity)
+    {
+        entity.JobId = dto.JobId ?? entity.JobId;
+        entity.JobSeekerId = dto.JobSeekerId ?? entity.JobSeekerId;
+        entity.Status = dto.Status ?? entity.Status;
+
+    }
+    
+    }

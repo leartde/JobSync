@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace JobSync.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20241205122705_nullAddress2")]
+    partial class nullAddress2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,8 +69,9 @@ namespace JobSync.Migrations
                     b.Property<Guid>("JobSeekerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -305,7 +309,7 @@ namespace JobSync.Migrations
                         .IsRequired();
 
                     b.HasOne("Entities.Models.JobSeeker", "JobSeeker")
-                        .WithMany("Bookmarks")
+                        .WithMany()
                         .HasForeignKey("JobSeekerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -403,8 +407,6 @@ namespace JobSync.Migrations
             modelBuilder.Entity("Entities.Models.JobSeeker", b =>
                 {
                     b.Navigation("Applications");
-
-                    b.Navigation("Bookmarks");
                 });
 #pragma warning restore 612, 618
         }

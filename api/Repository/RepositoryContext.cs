@@ -14,6 +14,8 @@ public class RepositoryContext : DbContext
     public DbSet<Skill>? Skills { get; set; }
     public DbSet<JobSkill>? JobSkill { get; set; }
     public DbSet<JobSeekerSkill>? JobSeekerSkill { get; set; }
+    public DbSet<Bookmark>? Bookmarks { get; set; }
+    public DbSet<JobBenefit>? Benefits { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,6 +34,12 @@ public class RepositoryContext : DbContext
         
         modelBuilder.Entity<JobSkill>()
             .HasKey(js => new { js.JobsId, js.SkillsId });
+
+        modelBuilder.Entity<Bookmark>()
+            .HasKey(b => new { b.JobId, b.JobSeekerId });
+
+        modelBuilder.Entity<JobBenefit>()
+            .HasKey(j => new { j.JobId, j.Benefit });
         
         modelBuilder.Entity<JobSeekerSkill>()
             .HasKey(js => new { js.JobSeekersId, js.SkillsId });

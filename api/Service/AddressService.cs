@@ -80,7 +80,8 @@ internal sealed class AddressService : IAddressService
         if (job?.Address is null) throw new NullReferenceException();
         addressDto.ReverseMapAddress(job.Address);
         _repository.Address.UpdateAddress(job.Address);
-        
+        await _repository.SaveAsync();
+
     }
 
     public async Task UpdateAddressForJobSeekerAsync(Guid jobSeekerId, UpdateAddressDto addressDto)
@@ -89,5 +90,6 @@ internal sealed class AddressService : IAddressService
         if (jobSeeker?.Address is null) throw new NullReferenceException();
         addressDto.ReverseMapAddress(jobSeeker.Address);
         _repository.Address.UpdateAddress(jobSeeker.Address);
+        await _repository.SaveAsync();
     }
 }

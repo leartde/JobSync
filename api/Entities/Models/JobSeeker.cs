@@ -12,9 +12,10 @@ public class JobSeeker
     public string Phone { get; set; } = string.Empty;
     public string? SecondaryPhone { get; set; }
     public Address? Address { get; set; }
-    public Guid AddressId { get; set; }
+    public Guid? AddressId { get; set; }
     public string? ResumeLink { get; set; }
     public List<Application> Applications { get; set; } = new();
     public List<Skill> Skills { get; set; } = new();
+    public List<Bookmark> Bookmarks { get; set; } = new();
 
 }

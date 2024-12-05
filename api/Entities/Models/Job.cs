@@ -7,7 +7,7 @@ public class Job
     public Guid EmployerId { get; set; }
     public string Title { get; set; } = string.Empty;
     public Address? Address { get; set; }
-    public Guid AddressId { get; set; }
+    public Guid? AddressId { get; set; }
     public string Pay { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
