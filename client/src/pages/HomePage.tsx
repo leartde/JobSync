@@ -1,5 +1,5 @@
-import JobCardsColumn from '../components/JobCardsColumn';
-import JobPreview from '../components/JobPreview';
+import JobCardsColumn from '../components/jobs/JobCardsColumn';
+import JobPreview from '../components/jobs/jobPreview/JobPreview';
 import SearchBar from '../components/SearchBar';
 
 const HomePage = () => {

@@ -1,8 +1,12 @@
-﻿namespace Entities.Models;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Entities.Models;
 
 public class JobSeeker
 {
     public Guid Id { get; set; }
+    public AppUser? User { get; set; }
+    public Guid UserId { get; set; }
     public string FirstName { get; set; } = string.Empty;
     public string? MiddleName { get; set; }
     public string LastName { get; set; } = string.Empty;

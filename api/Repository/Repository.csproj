@@ -15,4 +15,10 @@
       <ProjectReference Include="..\Entities\Entities.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore">
+        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.aspnetcore.identity.entityframeworkcore\8.0.0\lib\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

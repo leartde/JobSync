@@ -1,14 +1,17 @@
 ﻿using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Repository.Configuration;
 
 namespace Repository;
 
-public class RepositoryContext : DbContext
+public class RepositoryContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
 {
     public RepositoryContext(DbContextOptions options) : base(options){}
-    public DbSet<Job>? Jobs { get; set; }
     public DbSet<Employer>? Employers { get; set; }
+    public DbSet<Job>? Jobs { get; set; }
     public DbSet<Address>? Addresses { get; set; }
     public DbSet<Application>? Applications { get; set; }
     public DbSet<Skill>? Skills { get; set; }
@@ -17,8 +20,20 @@ public class RepositoryContext : DbContext
     public DbSet<Bookmark>? Bookmarks { get; set; }
     public DbSet<JobBenefit>? Benefits { get; set; }
     
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        
+        modelBuilder.Entity<JobSeeker>()
+            .HasOne(js => js.User)
+            .WithOne()
+            .HasForeignKey<JobSeeker>(js => js.UserId);
+
+        modelBuilder.Entity<Employer>()
+            .HasOne(e => e.User)
+            .WithOne()
+            .HasForeignKey<Employer>(e => e.UserId);
+        
         modelBuilder.Entity<Job>()
             .HasOne(e => e.Employer)
             .WithMany(j => j.Jobs)
@@ -59,6 +74,8 @@ public class RepositoryContext : DbContext
         
     
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
