@@ -1,5 +1,6 @@
 import React from "react";
 import {FaArrowRight, FaBars, FaBell, FaHouse, FaPerson, FaSuitcase, FaUser } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
     const [open, setOpen] = React.useState(false);
@@ -14,7 +15,10 @@ const Navbar = () => {
                 <li><a href="#">Help</a></li>
             </ul>
 
-            <div className="flex  gap-6  items-center">
+            <div className="flex max-md:hidden   gap-6  items-center">
+                <div   className="cursor-pointer text-white  text-lg">
+                    <Link to="/login">Login</Link>
+                </div>
 
                 <div className="text-white  text-2xl p-1 rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer ">
                     <FaBell/>
