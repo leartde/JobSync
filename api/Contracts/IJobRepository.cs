@@ -1,11 +1,12 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 
 
 namespace Contracts;
 
 public interface IJobRepository
 {
-     Task<IEnumerable<Job>> GetAllJobsAsync();
+     Task<PagedList<Job>> GetAllJobsAsync(JobParameters jobParameters);
      Task <IEnumerable<Job>> GetJobsForEmployerAsync(Guid employerId);
      Task<Job?> GetJobForEmployerAsync(Guid employerId, Guid id);
      void AddJob(Job job);

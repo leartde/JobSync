@@ -34,7 +34,7 @@ internal sealed class JobSeekerService : IJobSeekerService
     
     
 
-    public async Task<AddJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto)
+    public async Task<JobSeeker> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto)
     {
         Address address = new Address();
         jobSeekerDto.Address?.ReverseMapAddress(address);
@@ -73,7 +73,7 @@ internal sealed class JobSeekerService : IJobSeekerService
         }
 
         await _repository.SaveAsync();
-        return jobSeekerDto;
+        return jobSeeker;
     }
 
     public async Task DeleteJobSeekerAsync(Guid id)
@@ -84,13 +84,13 @@ internal sealed class JobSeekerService : IJobSeekerService
 
     }
 
-    public async Task<UpdateJobSeekerDto> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto)
+    public async Task<JobSeeker> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
         jobSeekerDto.ReverseMapJobSeeker(jobSeeker);
          _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
          await _repository.SaveAsync();
-         return jobSeekerDto;
+         return jobSeeker;
 
     }
 

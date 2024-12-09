@@ -7,7 +7,8 @@ public interface IEmployerService
 {
     Task<IEnumerable<ViewEmployerDto>> GetAllEmployersAsync();
     Task<ViewEmployerDto?> GetEmployerAsync(Guid id);
-    Task AddEmployerAsync(AddEmployerDto employerDto);
+    Task<Employer> AddEmployerAsync(AddEmployerDto employerDto);
+    
+    Task<Employer> UpdateEmployerAsync(Guid id, UpdateEmployerDto employerDto);
     Task DeleteEmployerAsync(Guid id);
-    Task UpdateEmployerAsync(Guid id, UpdateEmployerDto employerDto);
 }

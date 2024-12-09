@@ -51,7 +51,11 @@ public static class ServiceExtensions
     {
         services.AddDbContext<RepositoryContext>(opts => opts.UseSqlServer(
             configuration.GetConnectionString("DefaultConnection")
-        ));
+                
+        )
+        .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
+        .EnableSensitiveDataLogging()
+        );
     }
 
     public static void ConfigureIdentity(this IServiceCollection services)
@@ -70,8 +74,8 @@ public static class ServiceExtensions
 
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("JwtSettings");
-        var secretKey = Environment.GetEnvironmentVariable("SECRET");
+        IConfigurationSection jwtSettings = configuration.GetSection("JwtSettings");
+        string? secretKey = Environment.GetEnvironmentVariable("SECRET");
         services.AddAuthentication(opt =>
         {
             opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -83,7 +87,7 @@ public static class ServiceExtensions
                 ValidateIssuer = true, ValidateAudience = true, ValidateLifetime = true,
                 ValidateIssuerSigningKey = true, ValidIssuer = jwtSettings["validIssuer"],
                 ValidAudience = jwtSettings["validAudience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? throw new InvalidOperationException()))
             };
         });
     }

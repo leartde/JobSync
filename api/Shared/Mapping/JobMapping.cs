@@ -19,7 +19,7 @@ public static class JobMapping
             IsTakingApplications = entity.IsTakingApplications,
             HasMultipleSpots = entity.HasMultipleSpots,
             CreatedAt = entity.CreatedAt,
-            Employer = entity.Employer?.MapEmployerDto(),
+            Employer = entity.Employer?.Name ?? string.Empty,
             Skills = entity.Skills.Select(s => s.Name),
             
         };

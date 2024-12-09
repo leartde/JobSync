@@ -22,7 +22,7 @@ public static class EmployerMapping
 
     public static void ReverseMapEmployer(this EmployerDto dto, Employer entity )
     {
-
+        entity.UserId = dto.UserId ?? entity.UserId;
         entity.Name = dto.Name ?? entity.Name;
         entity.Country = dto.Country ?? entity.Country;
         entity.Industry = dto.Industry ?? entity.Industry;

@@ -29,7 +29,7 @@ public class ApplicationService : IApplicationService
         if (jobSeeker is null) throw new NullReferenceException();
         Application? application =
             await _repository.Application.GetApplicationForJobSeekerAsync(jobSeeker, applicationId);
-        return application.MapApplicationDto();
+        return (application ?? throw new InvalidOperationException()).MapApplicationDto();
     }
 
     public async Task<IEnumerable<ViewApplicationDto>> GetApplicationsForJobAsync(Guid employerId, Guid jobId)
@@ -45,20 +45,23 @@ public class ApplicationService : IApplicationService
         Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
         if (job is null) throw new NullReferenceException();
         Application? application = await _repository.Application.GetApplicationForJobAsync(job, applicationId);
-        return application.MapApplicationDto();
+        return (application ?? throw new InvalidOperationException()).MapApplicationDto();
 
     }
 
-    public async Task<AddApplicationDto> AddApplicationAsync(AddApplicationDto applicationDto)
+    public async Task<Application> AddApplicationAsync(Guid jobSeekerId,AddApplicationDto applicationDto)
     {
-        Application application = new Application();
+        Application application = new Application
+        {
+            JobSeekerId = jobSeekerId
+        };
         applicationDto.ReverseMapApplication(application);
         _repository.Application.AddApplication(application);
         await _repository.SaveAsync();
-        return applicationDto;
+        return application;
     }
 
-    public async Task<UpdateApplicationDto> UpdateApplicationAsync(UpdateApplicationDto applicationDto)
+    public async Task<Application> UpdateApplicationAsync(UpdateApplicationDto applicationDto)
     {
         throw new NotImplementedException();
     }

@@ -7,6 +7,7 @@ using Service.Contracts;
 using Shared.DataTransferObjects.JobDtos;
 using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
+using Shared.RequestFeatures;
 
 namespace Service;
 
@@ -21,11 +22,11 @@ internal sealed class JobService : IJobService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<ViewJobDto>> GetAllJobsAsync()
+    public async Task<(IEnumerable<ViewJobDto> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
     {
         
-        IEnumerable<Job> jobs = await _repository.Job.GetAllJobsAsync();
-        return jobs.Select(j => j.MapJobDto());
+        PagedList<Job> jobs = await _repository.Job.GetAllJobsAsync(jobParameters);
+        return (jobs: jobs.Select(j => j.MapJobDto()), metaData: jobs.MetaData);
     }
     
     public async Task<IEnumerable<ViewJobDto>> GetJobsForEmployerAsync(Guid employerId)
@@ -42,7 +43,7 @@ internal sealed class JobService : IJobService
         return  job.MapJobDto();
     }
 
-    public async Task<AddJobDto> AddJobForEmployerAsync(Guid employerId,AddJobDto jobDto)
+    public async Task<Job> AddJobForEmployerAsync(Guid employerId,AddJobDto jobDto)
     {
         Address address = new Address();
         jobDto.Address?.ReverseMapAddress(address);
@@ -84,17 +85,17 @@ internal sealed class JobService : IJobService
             }
         }
         await _repository.SaveAsync();
-        return jobDto; 
+        return job; 
         }
     
 
-    public async Task<UpdateJobDto> UpdateJobForEmployerAsync(Guid employerId, Guid id, UpdateJobDto jobDto)
+    public async Task<Job> UpdateJobForEmployerAsync(Guid employerId, Guid id, UpdateJobDto jobDto)
     {
         Job job = await RetrieveJobForEmployerAsync(employerId, id);
         jobDto.ReverseMapJob(job);
         _repository.Job.UpdateJob(job);
         await _repository.SaveAsync();
-        return jobDto;
+        return job;
     }
 
     public async Task DeleteJobForEmployerAsync(Guid employerId,Guid id)

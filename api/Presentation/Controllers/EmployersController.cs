@@ -24,9 +24,9 @@ public class EmployersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddEmployer(AddEmployerDto employer)
+    public async Task<IActionResult> AddEmployer(AddEmployerDto employerDto)
     {
-        await _service.EmployerService.AddEmployerAsync(employer);
+        Employer employer = await _service.EmployerService.AddEmployerAsync(employerDto);
         return Ok(employer);
     }
 
@@ -36,18 +36,18 @@ public class EmployersController : ControllerBase
         ViewEmployerDto? viewEmployer = await _service.EmployerService.GetEmployerAsync(id);
         return Ok(viewEmployer);
     }
-
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEmployer(Guid id, UpdateEmployerDto employerDto)
+    {
+        Employer employer = await _service.EmployerService.UpdateEmployerAsync(id, employerDto);
+        return Ok(employer);
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEmployer(Guid id)
     {
         await _service.EmployerService.DeleteEmployerAsync(id);
         return Ok();
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateEmployer(Guid id, UpdateEmployerDto employerDto)
-    {
-        await _service.EmployerService.UpdateEmployerAsync(id, employerDto);
-        return Ok(employerDto);
     }
 }

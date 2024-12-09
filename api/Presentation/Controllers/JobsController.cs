@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.JobDtos;
+using Shared.RequestFeatures;
 
 namespace Presentation.Controllers;
 
@@ -15,12 +18,14 @@ public class JobsController : ControllerBase
         _service = service;
     }
 
-    // [HttpGet]
-    // public async Task<IActionResult> GetAllJobs()
-    // {
-    //     IEnumerable<ViewJobDto> jobs = await _service.JobService.GetAllJobsAsync();
-    //     return Ok(jobs);
-    // }
+    [HttpGet("/api/jobs")]
+    public async Task<IActionResult> GetAllJobs([FromQuery] JobParameters jobParameters)
+    {
+        (IEnumerable<ViewJobDto> jobs, MetaData metaData) pagedResult =
+            await _service.JobService.GetAllJobsAsync(jobParameters);
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+        return Ok(pagedResult.jobs);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetJobsForEmployer(Guid employerId)
@@ -39,15 +44,15 @@ public class JobsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddJob(Guid employerId,AddJobDto jobDto)
     {
-        await _service.JobService.AddJobForEmployerAsync(employerId,jobDto);
-        return Ok(jobDto);
+        Job job = await _service.JobService.AddJobForEmployerAsync(employerId,jobDto);
+        return Ok(job);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateJob(Guid employerId, Guid id, UpdateJobDto jobDto)
     {
-        await _service.JobService.UpdateJobForEmployerAsync(employerId, id, jobDto);
-        return Ok(jobDto);
+       Job job = await _service.JobService.UpdateJobForEmployerAsync(employerId, id, jobDto);
+        return Ok(job);
     }
 
     [HttpDelete("{id}")]

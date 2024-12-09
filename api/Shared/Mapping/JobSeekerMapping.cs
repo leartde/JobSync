@@ -25,7 +25,7 @@ public static class JobSeekerMapping
 
     public static void ReverseMapJobSeeker(this JobSeekerDto dto,JobSeeker entity)
     {
-        
+        entity.UserId = dto.UserId ?? entity.UserId;
         entity.FirstName = dto.FirstName??entity.FirstName;
         entity.MiddleName = dto.MiddleName??entity.MiddleName;
         entity.LastName = dto.LastName??entity.LastName;

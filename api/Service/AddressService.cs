@@ -35,7 +35,7 @@ internal sealed class AddressService : IAddressService
         return address.MapAddressDto();
     }
 
-    public async Task<AddAddressDto> AddAddressForJobAsync(Guid employerId, Guid jobId, AddAddressDto addressDto)
+    public async Task<Address> AddAddressForJobAsync(Guid employerId, Guid jobId, AddAddressDto addressDto)
     {
         Address address = new Address();
         addressDto.ReverseMapAddress(address);
@@ -43,10 +43,10 @@ internal sealed class AddressService : IAddressService
          Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
          if (job != null) job.AddressId = address.Id;
          await _repository.SaveAsync();
-         return addressDto;
+         return address;
     }
 
-    public async Task<AddAddressDto> AddAddressForJobSeekerAsync(Guid jobSeekerId, AddAddressDto addressDto)
+    public async Task<Address> AddAddressForJobSeekerAsync(Guid jobSeekerId, AddAddressDto addressDto)
     {
         Address address = new Address();
         addressDto.ReverseMapAddress(address);
@@ -54,7 +54,7 @@ internal sealed class AddressService : IAddressService
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
         if (jobSeeker != null) jobSeeker.AddressId = address.Id;
         await _repository.SaveAsync();
-        return addressDto;
+        return address;
     }
 
     public async Task DeleteAddressForJobAsync(Guid employerId, Guid jobId)
@@ -74,22 +74,24 @@ internal sealed class AddressService : IAddressService
         await _repository.SaveAsync();
     }
 
-    public async Task UpdateAddressForJobAsync(Guid employerId, Guid jobId, UpdateAddressDto addressDto)
+    public async Task<Address> UpdateAddressForJobAsync(Guid employerId, Guid jobId, UpdateAddressDto addressDto)
     {
         Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
         if (job?.Address is null) throw new NullReferenceException();
         addressDto.ReverseMapAddress(job.Address);
         _repository.Address.UpdateAddress(job.Address);
         await _repository.SaveAsync();
+        return job.Address;
 
     }
 
-    public async Task UpdateAddressForJobSeekerAsync(Guid jobSeekerId, UpdateAddressDto addressDto)
+    public async Task<Address>  UpdateAddressForJobSeekerAsync(Guid jobSeekerId, UpdateAddressDto addressDto)
     {
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
         if (jobSeeker?.Address is null) throw new NullReferenceException();
         addressDto.ReverseMapAddress(jobSeeker.Address);
         _repository.Address.UpdateAddress(jobSeeker.Address);
         await _repository.SaveAsync();
+        return jobSeeker.Address;
     }
 }

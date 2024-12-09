@@ -13,6 +13,7 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IEmployerService> _employerService;
     private readonly Lazy<IJobSeekerService> _jobSeekerService;
     private readonly Lazy<IAuthenticationService> _authenticationService;
+    private readonly Lazy<IApplicationService> _applicationService;
 
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
         userManager, IConfiguration configuration
@@ -32,6 +33,8 @@ public class ServiceManager : IServiceManager
         _authenticationService = new Lazy<IAuthenticationService>(() => new
             AuthenticationService(userManager,configuration)
         );
+        _applicationService = new Lazy<IApplicationService>(() => new
+            ApplicationService(repository));
     }
 
     public IAddressService AddressService => _addressService.Value;
@@ -39,4 +42,5 @@ public class ServiceManager : IServiceManager
     public IEmployerService EmployerService => _employerService.Value;
     public IJobSeekerService JobSeekerService => _jobSeekerService.Value;
     public IAuthenticationService AuthenticationService => _authenticationService.Value;
+    public IApplicationService ApplicationService => _applicationService.Value;
 }

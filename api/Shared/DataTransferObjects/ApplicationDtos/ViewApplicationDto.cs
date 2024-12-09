@@ -5,6 +5,7 @@ namespace Shared.DataTransferObjects.ApplicationDtos;
 public class ViewApplicationDto : ApplicationDto
 {
     public Guid Id { get; set; }
+    public Guid? JobSeekerId { get; set; }
     public string JobTitle { get; set; } = string.Empty;
     public string Employer { get; set; } = string.Empty;
     public string Candidate { get; set; } = string.Empty;

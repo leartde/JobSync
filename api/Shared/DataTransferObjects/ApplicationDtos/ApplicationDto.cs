@@ -5,7 +5,6 @@ namespace Shared.DataTransferObjects.ApplicationDtos;
 public class ApplicationDto
 {
     public Guid? JobId { get; set; }
-    public Guid? JobSeekerId { get; set; }
     public ApplicationStatus? Status { get; set; }
     
 }

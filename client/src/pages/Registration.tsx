@@ -1,31 +1,24 @@
-import React from 'react';
-import { FaBriefcase, FaBusinessTime, FaPerson, FaSuitcase, FaUpwork } from 'react-icons/fa6';
+import React from "react";
+import { useMultistepForm } from "../hooks/useMultistepForm.ts";
+import RoleSelection from "../components/authentication/RoleSelection.tsx";
+
 
 const Registration = () => {
+
+    const { steps, currentStepIndex } = useMultistepForm([]);
+
     return (
-        <div className='mx-auto w-3/4 md:w-1/3 xl:w-1/4 rounded-md mt-16 flex flex-col items-center bg-white py-12 px-6'>
-                        <h1 className='text-2xl font-bold text-black'>Register</h1>
-                        <div className='flex flex-col gap-4 mt-4'>
-                            <div className='cursor-pointer flex items-center gap-2 border border-gray-400 p-2 rounded-md'>
-                            <div className='p-1 border-r border-gray-200'>
-                                <FaPerson className='text-2xl text-red-500'/>
-                             </div>                                <h1>I am a job seeker looking for a job</h1>
-                            </div>
-                            <div className='cursor-pointer flex items-center gap-2 border border-gray-400 p-2 rounded-md'>
-                             <div className='p-1 border-r border-gray-200'>
-                                <FaBriefcase className='text-2xl text-red-500'/>
-                             </div>
-                                <h1>I am an employer looking to hire</h1>
-                            </div>
+        <div
+            className='mx-auto w-3/4 md:w-1/3 xl:w-1/4 rounded-md mt-16 flex flex-col items-center bg-white py-12 px-6'>
 
-                            
-                            <button className='text-white h-12 text-md text-center font-medium  bg-red-500  px-4 rounded-lg'>
-                            Continue</button>
-                        </div>
+            <form action="">
+                <RoleSelection/>
+            </form>
 
-
-</div>
+        </div>
     );
+
+
 }
 
 export default Registration;

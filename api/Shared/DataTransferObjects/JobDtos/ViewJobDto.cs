@@ -6,8 +6,8 @@ namespace Shared.DataTransferObjects.JobDtos;
 public class ViewJobDto : JobDto
 {
     public Guid Id { get; set; }
-    public ViewEmployerDto? Employer { get; set; }
-    public IEnumerable<string>? Skills { get; set; }
+    public string Employer { get; set; } = string.Empty;
+    public new IEnumerable<string>? Skills { get; set; } 
 
-    
+
 }

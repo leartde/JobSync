@@ -16,20 +16,17 @@ public class AuthenticationController : ControllerBase
         _service = service;
     }
     
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> RegisterUser([FromBody] AddUserDto userDto)
     {
         IdentityResult result = await _service.AuthenticationService.RegisterUser(userDto);
-        if (!result.Succeeded)
+        if (result.Succeeded) return StatusCode(201);
+        foreach (var error in result.Errors)
         {
-            foreach (var error in result.Errors)
-            {
-                ModelState.TryAddModelError(error.Code, error.Description);
-            }
-            return BadRequest(ModelState);
+            ModelState.TryAddModelError(error.Code, error.Description);
         }
+        return BadRequest(ModelState);
 
-        return StatusCode(201);
     }
 
     [HttpPost("login")]

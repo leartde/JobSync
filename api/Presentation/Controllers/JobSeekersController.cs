@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.JobSeekerDtos;
 
@@ -33,8 +34,15 @@ public class JobSeekersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddJobSeeker(AddJobSeekerDto jobSeekerDto)
     {
-        await _service.JobSeekerService.AddJobSeekerAsync(jobSeekerDto);
-        return Ok(jobSeekerDto);
+       JobSeeker jobSeeker =  await _service.JobSeekerService.AddJobSeekerAsync(jobSeekerDto);
+        return Ok(jobSeeker);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateJobSeeker(Guid id, UpdateJobSeekerDto jobSeekerDto)
+    {
+        JobSeeker jobSeeker = await _service.JobSeekerService.UpdateJobSeekerAsync(id, jobSeekerDto);
+        return Ok(jobSeeker);
     }
     
     [HttpDelete("{id}")]
@@ -45,11 +53,6 @@ public class JobSeekersController : ControllerBase
 
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateJobSeeker(Guid id, UpdateJobSeekerDto jobSeekerDto)
-    {
-        await _service.JobSeekerService.UpdateJobSeekerAsync(id, jobSeekerDto);
-        return Ok(jobSeekerDto);
-    }
+   
     
 }

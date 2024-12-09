@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.Models;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.AddressDtos;
@@ -25,21 +26,21 @@ public class JobAddressesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddAddress(Guid employerId, Guid jobId,AddAddressDto addressDto)
     {
-        await _service.AddressService.AddAddressForJobAsync(employerId,jobId,addressDto);
-        return Ok();
+        Address address = await _service.AddressService.AddAddressForJobAsync(employerId,jobId,addressDto);
+        return Ok(address);
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> UpdateAddress(Guid employerId, Guid jobId, UpdateAddressDto addressDto)
+    {
+        Address address = await _service.AddressService.UpdateAddressForJobAsync(employerId,jobId, addressDto);
+        return Ok(address);
     }
     
     [HttpDelete]
     public async Task<IActionResult> DeleteAddress(Guid employerId, Guid jobId)
     {
         await _service.AddressService.DeleteAddressForJobAsync( employerId,jobId);
-        return Ok();
-    }
-    
-    [HttpPut]
-    public async Task<IActionResult> UpdateAddress(Guid employerId, Guid jobId, UpdateAddressDto addressDto)
-    {
-        await _service.AddressService.UpdateAddressForJobAsync(employerId,jobId, addressDto);
         return Ok();
     }
     

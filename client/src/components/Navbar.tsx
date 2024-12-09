@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
     const [open, setOpen] = React.useState(false);
     return (
-        <nav className="sticky bg-black top-0 w-[90%] flex mx-auto  justify-between gap-4   border-red-100 border-b  p-4">
+        <nav className="sticky z-10 bg-black top-0 w-[90%] flex mx-auto  justify-between gap-4   border-red-100 border-b  p-4">
             
             <ul className="flex  text-md space-x-12 text-white max-md:hidden">
                 <li><a  href="#">Job<span
