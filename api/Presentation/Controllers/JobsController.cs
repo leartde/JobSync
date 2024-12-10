@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Dynamic;
+using System.Text.Json;
 using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -21,7 +22,7 @@ public class JobsController : ControllerBase
     [HttpGet("/api/jobs")]
     public async Task<IActionResult> GetAllJobs([FromQuery] JobParameters jobParameters)
     {
-        (IEnumerable<ViewJobDto> jobs, MetaData metaData) pagedResult =
+        (IEnumerable<ExpandoObject> jobs, MetaData metaData) pagedResult =
             await _service.JobService.GetAllJobsAsync(jobParameters);
         Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
         return Ok(pagedResult.jobs);

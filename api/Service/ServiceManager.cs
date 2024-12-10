@@ -3,6 +3,7 @@ using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Service.Contracts;
+using Shared.DataTransferObjects.JobDtos;
 
 namespace Service;
 
@@ -16,13 +17,13 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IApplicationService> _applicationService;
 
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
-        userManager, IConfiguration configuration
+        userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper
         )
     {
         _addressService = new Lazy<IAddressService>(() => new
             AddressService(repository, logger));
         _jobService = new Lazy<IJobService>(() => new
-            JobService(repository, logger)
+            JobService(repository, logger, dataShaper)
         );
         _employerService = new Lazy<IEmployerService>(() => new
             EmployerService(repository, logger)

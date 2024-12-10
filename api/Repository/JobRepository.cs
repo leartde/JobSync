@@ -24,21 +24,14 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             .Search(jobParameters.SearchTerm)
             .Skip((jobParameters.PageNumber - 1) * jobParameters.PageSize)
             .Take(jobParameters.PageSize)
-            
+            .Sort(jobParameters.OrderBy)
             
             .ToListAsync();
 
         int count = await FindAll()
             .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,jobParameters.IsTakingApplications)
             .Search(jobParameters.SearchTerm)
-            .Skip((jobParameters.PageNumber - 1) * jobParameters.PageSize)
-            .Take(jobParameters.PageSize)
             .CountAsync();
-
-        var query = FindAll()
-            .Filter(jobParameters.JobType, jobParameters.HasMultipleSpots, jobParameters.IsTakingApplications)
-            .Search(jobParameters.SearchTerm);
-        Console.WriteLine(query.ToQueryString);
 
         return new PagedList<Job>(jobs, count, jobParameters.PageNumber, jobParameters.PageSize);
     }

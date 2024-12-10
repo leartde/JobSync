@@ -120,7 +120,7 @@ namespace JobSync.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Models.Application", b =>
+            modelBuilder.Entity("Entities.Models.JobSync", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -506,7 +506,7 @@ namespace JobSync.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Models.Application", b =>
+            modelBuilder.Entity("Entities.Models.JobSync", b =>
                 {
                     b.HasOne("Entities.Models.Job", "Job")
                         .WithMany("Applications")

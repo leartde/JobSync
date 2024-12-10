@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using Repository;
 using Service;
 using Service.Contracts;
+using Service.DataShaping;
+using Shared.DataTransferObjects.JobDtos;
 
 namespace JobSync.Extensions;
 
@@ -90,6 +92,11 @@ public static class ServiceExtensions
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? throw new InvalidOperationException()))
             };
         });
+    }
+
+    public static void ConfigureDataShaping(this IServiceCollection services)
+    {
+        services.AddScoped<IDataShaper<ViewJobDto>, DataShaper<ViewJobDto>>();
     }
 
 }

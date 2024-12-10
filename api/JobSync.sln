@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{926CC04B-F2E8-420B-BD6D-664055284AA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSync", "JobSync\JobSync.csproj", "{926CC04B-F2E8-420B-BD6D-664055284AA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "Contracts\Contracts.csproj", "{AE465FFB-3DCF-4BC7-9DFF-EFFF079567EA}"
 EndProject

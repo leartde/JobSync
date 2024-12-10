@@ -4,6 +4,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using JobSync.Helpers;
 using Service.Contracts;
+using Shared.DataTransferObjects.JobDtos;
 using Shared.DataTransferObjects.JobSeekerDtos;
 using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
@@ -14,6 +15,7 @@ internal sealed class JobSeekerService : IJobSeekerService
 {
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
+    
 
     public JobSeekerService(IRepositoryManager repository, ILoggerManager logger)
     {

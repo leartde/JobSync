@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Dynamic;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
@@ -15,18 +16,22 @@ internal sealed class JobService : IJobService
 {
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
+    private readonly IDataShaper<ViewJobDto> _dataShaper;
 
-    public JobService(IRepositoryManager repository, ILoggerManager logger)
+    public JobService(IRepositoryManager repository, ILoggerManager logger, IDataShaper<ViewJobDto> dataShaper )
     {
         _repository = repository;
         _logger = logger;
+        _dataShaper = dataShaper;
     }
 
-    public async Task<(IEnumerable<ViewJobDto> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
+    public async Task<(IEnumerable<ExpandoObject> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
     {
         
         PagedList<Job> jobs = await _repository.Job.GetAllJobsAsync(jobParameters);
-        return (jobs: jobs.Select(j => j.MapJobDto()), metaData: jobs.MetaData);
+        IEnumerable<ViewJobDto> jobDtos = jobs.Select(j => j.MapJobDto());
+        IEnumerable<ExpandoObject> shapedData = _dataShaper.ShapeData(jobDtos, jobParameters.Fields);
+        return (jobs: shapedData, metaData: jobs.MetaData);
     }
     
     public async Task<IEnumerable<ViewJobDto>> GetJobsForEmployerAsync(Guid employerId)
