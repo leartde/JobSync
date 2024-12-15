@@ -5,7 +5,6 @@ namespace CloudinaryService;
 
 public class CloudinaryManager : ICloudinaryManager
 {
-    private readonly Cloudinary _cloudinary;
     private readonly Lazy<IImageUploader> _imageUploader;
     private readonly Lazy<IRawUploader> _rawUploader;
 
@@ -16,12 +15,12 @@ public class CloudinaryManager : ICloudinaryManager
             Environment.GetEnvironmentVariable("APIKEY"),
             Environment.GetEnvironmentVariable("APISECRET")
         );
-        _cloudinary = new Cloudinary(acc);
+        Cloudinary cloudinary = new Cloudinary(acc);
         _imageUploader = new Lazy<IImageUploader>(() => new
-            ImageUploader(_cloudinary)
+            ImageUploader(cloudinary)
         );
         _rawUploader = new Lazy<IRawUploader>(() => new
-            RawUploader(_cloudinary)
+            RawUploader(cloudinary)
         );
     }
 
