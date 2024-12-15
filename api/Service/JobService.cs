@@ -18,14 +18,14 @@ internal sealed class JobService : IJobService
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
     private readonly IDataShaper<ViewJobDto> _dataShaper;
-    private readonly IImageUploader _imageUploader;
+    private readonly ICloudinaryManager _cloudinaryManager;
 
-    public JobService(IRepositoryManager repository, ILoggerManager logger, IDataShaper<ViewJobDto> dataShaper, IImageUploader imageUploader )
+    public JobService(IRepositoryManager repository, ILoggerManager logger, IDataShaper<ViewJobDto> dataShaper, ICloudinaryManager cloudinaryManager )
     {
         _repository = repository;
         _logger = logger;
         _dataShaper = dataShaper;
-        _imageUploader = imageUploader;
+        _cloudinaryManager = cloudinaryManager;
     }
 
     public async Task<(IEnumerable<ExpandoObject> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
@@ -68,7 +68,7 @@ internal sealed class JobService : IJobService
         jobDto.ReverseMapJob(job);
         if (jobDto.Image != null)
         {
-            ImageUploadResult result = await _imageUploader.AddPhotoAsync(jobDto.Image);
+            ImageUploadResult result = await _cloudinaryManager.ImageUploader.AddPhotoAsync(jobDto.Image);
             job.ImageUrl = result.Url.ToString();
         }
         _repository.Job.AddJob(job);

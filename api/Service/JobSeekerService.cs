@@ -14,14 +14,14 @@ internal sealed class JobSeekerService : IJobSeekerService
 {
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
-    private readonly IPdfUploader _pdfUploader;
+    private readonly ICloudinaryManager _cloudinaryManager;
     
 
-    public JobSeekerService(IRepositoryManager repository, ILoggerManager logger, IPdfUploader pdfUploader)
+    public JobSeekerService(IRepositoryManager repository, ILoggerManager logger, ICloudinaryManager cloudinaryManager)
     {
         _repository = repository;
         _logger = logger;
-        _pdfUploader = pdfUploader;
+        _cloudinaryManager = cloudinaryManager;
     }
     public async Task<IEnumerable<ViewJobSeekerDto>> GetAllJobSeekersAsync()
     {
@@ -50,7 +50,7 @@ internal sealed class JobSeekerService : IJobSeekerService
         jobSeekerDto.ReverseMapJobSeeker(jobSeeker);
         if (jobSeekerDto.Resume != null)
         {
-            UploadResult result = await _pdfUploader.AddPdfAsync(jobSeekerDto.Resume);
+            UploadResult result = await _cloudinaryManager.RawUploader.AddPdfAsync(jobSeekerDto.Resume);
             jobSeeker.ResumeLink = result.Url.ToString();
         }
         _repository.JobSeeker.AddJobSeeker(jobSeeker);

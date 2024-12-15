@@ -110,9 +110,9 @@ public static class ServiceExtensions
         services.AddFluentValidationAutoValidation();
     }
 
-    public static void ConfigureImageUploader(this IServiceCollection services)
+    public static void ConfigureCloudinary(this IServiceCollection services)
     {
-        services.AddScoped<IImageUploader, ImageUploader>();
+        services.AddScoped<ICloudinaryManager, CloudinaryManager>();
     }
 
    

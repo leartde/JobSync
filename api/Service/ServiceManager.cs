@@ -17,19 +17,19 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IJobApplicationService> _applicationService;
 
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
-        userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper, IImageUploader imageUploader,
-        IPdfUploader pdfUploader
+        userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper, 
+        ICloudinaryManager _cloudinaryManager
         )
     {
         _addressService = new Lazy<IAddressService>(() => new
             AddressService(repository, logger));
         _jobService = new Lazy<IJobService>(() => new
-            JobService(repository, logger, dataShaper, imageUploader));
+            JobService(repository, logger, dataShaper, _cloudinaryManager));
         _employerService = new Lazy<IEmployerService>(() => new
             EmployerService(repository, logger)
         );
         _jobSeekerService = new Lazy<IJobSeekerService>(() => new 
-            JobSeekerService(repository, logger, pdfUploader)
+            JobSeekerService(repository, logger, _cloudinaryManager)
             );
         _authenticationService = new Lazy<IAuthenticationService>(() => new
             AuthenticationService(userManager,configuration)

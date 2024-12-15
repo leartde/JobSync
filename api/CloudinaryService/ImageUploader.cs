@@ -7,22 +7,14 @@ namespace CloudinaryService;
 
 
 
-public class ImageUploader : IImageUploader
+internal sealed class ImageUploader : IImageUploader
 {
     private readonly Cloudinary _cloudinary;
 
-    public ImageUploader()
+    public ImageUploader(Cloudinary cloudinary)
     {
-        var acc = new Account(
-            "dertrvymu",
-            Environment.GetEnvironmentVariable("APIKEY"),
-            Environment.GetEnvironmentVariable("APISECRET")
-        );
-        _cloudinary = new Cloudinary(acc);
+        _cloudinary = cloudinary;
     }
-
-
-
     public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
     {
         var uploadResult = new ImageUploadResult();
