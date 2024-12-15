@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Dynamic;
+using CloudinaryDotNet.Actions;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
-using JobSync.Helpers;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Service.Contracts;
 using Shared.DataTransferObjects.JobDtos;
 using Shared.DataTransferObjects.SkillDtos;
@@ -17,12 +18,14 @@ internal sealed class JobService : IJobService
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
     private readonly IDataShaper<ViewJobDto> _dataShaper;
+    private readonly IImageUploader _imageUploader;
 
-    public JobService(IRepositoryManager repository, ILoggerManager logger, IDataShaper<ViewJobDto> dataShaper )
+    public JobService(IRepositoryManager repository, ILoggerManager logger, IDataShaper<ViewJobDto> dataShaper, IImageUploader imageUploader )
     {
         _repository = repository;
         _logger = logger;
         _dataShaper = dataShaper;
+        _imageUploader = imageUploader;
     }
 
     public async Task<(IEnumerable<ExpandoObject> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
@@ -50,22 +53,30 @@ internal sealed class JobService : IJobService
 
     public async Task<Job> AddJobForEmployerAsync(Guid employerId,AddJobDto jobDto)
     {
-        Address address = new Address();
-        jobDto.Address?.ReverseMapAddress(address);
-        _repository.Address.AddAddress(address);
-        await _repository.SaveAsync();
         Job job = new Job
         {
-            AddressId = address.Id,
             EmployerId = employerId
         };
+        if (jobDto.Address != null) 
+        {
+            Address address = new Address();
+            jobDto.Address.ReverseMapAddress(address);
+            _repository.Address.AddAddress(address);
+            await _repository.SaveAsync();
+            job.AddressId = address.Id;
+        }
         jobDto.ReverseMapJob(job);
+        if (jobDto.Image != null)
+        {
+            ImageUploadResult result = await _imageUploader.AddPhotoAsync(jobDto.Image);
+            job.ImageUrl = result.Url.ToString();
+        }
         _repository.Job.AddJob(job);
         if (jobDto.Skills != null)
         {
             List<Skill> skills = [];
             
-            foreach (SkillDto skillDto in jobDto.Skills)
+            foreach (AddSkillDto skillDto in jobDto.Skills)
             {
                 Skill skill = new Skill();
                 skillDto.ReverseMapSkill(skill);
@@ -94,13 +105,13 @@ internal sealed class JobService : IJobService
         }
     
 
-    public async Task<Job> UpdateJobForEmployerAsync(Guid employerId, Guid id, UpdateJobDto jobDto)
+    public async Task<ViewJobDto> UpdateJobForEmployerAsync(Guid employerId, Guid id, UpdateJobDto jobDto)
     {
         Job job = await RetrieveJobForEmployerAsync(employerId, id);
         jobDto.ReverseMapJob(job);
         _repository.Job.UpdateJob(job);
         await _repository.SaveAsync();
-        return job;
+        return job.MapJobDto();
     }
 
     public async Task DeleteJobForEmployerAsync(Guid employerId,Guid id)

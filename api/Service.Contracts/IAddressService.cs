@@ -13,6 +13,6 @@ public interface IAddressService
     Task<Address> AddAddressForJobSeekerAsync(Guid jobSeekerId, AddAddressDto addressDto);
     Task DeleteAddressForJobAsync(Guid employerId, Guid jobId);
     Task DeleteAddressForJobSeekerAsync(Guid jobSeekerId);
-    Task<Address> UpdateAddressForJobAsync(Guid employerId, Guid jobId, UpdateAddressDto addressDto);
-    Task<Address> UpdateAddressForJobSeekerAsync(Guid jobSeekerId, UpdateAddressDto addressDto);
+    Task<ViewAddressDto> UpdateAddressForJobAsync(Guid employerId, Guid jobId, UpdateAddressDto addressDto);
+    Task<ViewAddressDto> UpdateAddressForJobSeekerAsync(Guid jobSeekerId, UpdateAddressDto addressDto);
 }

@@ -5,7 +5,7 @@ namespace Shared.Mapping;
 
 public static class EmployerMapping
 {
-    public static ViewEmployerDto? MapEmployerDto(this Employer entity)
+    public static ViewEmployerDto MapEmployerDto(this Employer entity)
     {
         return new ViewEmployerDto
         {

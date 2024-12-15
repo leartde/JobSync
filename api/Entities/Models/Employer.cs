@@ -12,6 +12,7 @@ public class Employer
     public string Industry { get; set; } = string.Empty;
     public DateOnly Founded { get; set; }
     public string Phone { get; set; } = string.Empty;
+    public string? PhotoUrl { get; set; }
     public string? SecondaryPhone { get; set; } = string.Empty;
     public List<Job> Jobs { get; set; } = new();
 

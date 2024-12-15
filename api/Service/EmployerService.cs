@@ -31,13 +31,13 @@ internal sealed class EmployerService : IEmployerService
         return employer.MapEmployerDto();
     }
 
-    public async Task<Employer> AddEmployerAsync(AddEmployerDto employerDto)
+    public async Task<ViewEmployerDto> AddEmployerAsync(AddEmployerDto employerDto)
     {
         Employer employer = new Employer();
         employerDto.ReverseMapEmployer(employer);
         _repository.Employer.AddEmployer(employer);
         await _repository.SaveAsync();
-        return employer;
+        return employer.MapEmployerDto();
 
     }
 
@@ -48,13 +48,13 @@ internal sealed class EmployerService : IEmployerService
         await _repository.SaveAsync();
     }
 
-    public async Task<Employer> UpdateEmployerAsync(Guid id,UpdateEmployerDto employerDto)
+    public async Task<ViewEmployerDto> UpdateEmployerAsync(Guid id,UpdateEmployerDto employerDto)
     {
         Employer employer = await RetrieveEmployerAsync(id);
             employerDto.ReverseMapEmployer(employer);
         _repository.Employer.UpdateEmployer(employer);
         await _repository.SaveAsync();
-        return employer;
+        return employer.MapEmployerDto();
     }
 
     private async Task<Employer> RetrieveEmployerAsync(Guid id)

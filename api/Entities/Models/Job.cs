@@ -1,4 +1,6 @@
-﻿namespace Entities.Models;
+﻿using Entities.Enums;
+
+namespace Entities.Models;
 
 public class Job
 {
@@ -11,12 +13,15 @@ public class Job
     public string Pay { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
     public bool IsTakingApplications { get; set; } = true;
     public bool HasMultipleSpots { get; set; }
-    public DateOnly CreatedAt { get; set; }
-    public List<Application> Applications { get; set; } = new();
+    public DateOnly CreatedAt { get; set; } = DateOnly.MaxValue;
+    public List<JobApplication> Applications { get; set; } = new();
     public List<Skill> Skills { get; set; } = new();
-    
+    public List<Bookmark> Bookmarks { get; set; } = new();
+    public List<JobBenefit> Benefits { get; set; } = new();
+
 
 
 }

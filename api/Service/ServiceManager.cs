@@ -14,28 +14,28 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IEmployerService> _employerService;
     private readonly Lazy<IJobSeekerService> _jobSeekerService;
     private readonly Lazy<IAuthenticationService> _authenticationService;
-    private readonly Lazy<IApplicationService> _applicationService;
+    private readonly Lazy<IJobApplicationService> _applicationService;
 
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
-        userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper
+        userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper, IImageUploader imageUploader,
+        IPdfUploader pdfUploader
         )
     {
         _addressService = new Lazy<IAddressService>(() => new
             AddressService(repository, logger));
         _jobService = new Lazy<IJobService>(() => new
-            JobService(repository, logger, dataShaper)
-        );
+            JobService(repository, logger, dataShaper, imageUploader));
         _employerService = new Lazy<IEmployerService>(() => new
             EmployerService(repository, logger)
         );
         _jobSeekerService = new Lazy<IJobSeekerService>(() => new 
-            JobSeekerService(repository, logger)
+            JobSeekerService(repository, logger, pdfUploader)
             );
         _authenticationService = new Lazy<IAuthenticationService>(() => new
             AuthenticationService(userManager,configuration)
         );
-        _applicationService = new Lazy<IApplicationService>(() => new
-            ApplicationService(repository));
+        _applicationService = new Lazy<IJobApplicationService>(() => new
+            JobApplicationService(repository));
     }
 
     public IAddressService AddressService => _addressService.Value;
@@ -43,5 +43,5 @@ public class ServiceManager : IServiceManager
     public IEmployerService EmployerService => _employerService.Value;
     public IJobSeekerService JobSeekerService => _jobSeekerService.Value;
     public IAuthenticationService AuthenticationService => _authenticationService.Value;
-    public IApplicationService ApplicationService => _applicationService.Value;
+    public IJobApplicationService JobApplicationService => _applicationService.Value;
 }

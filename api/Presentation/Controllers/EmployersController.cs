@@ -26,7 +26,7 @@ public class EmployersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddEmployer(AddEmployerDto employerDto)
     {
-        Employer employer = await _service.EmployerService.AddEmployerAsync(employerDto);
+        ViewEmployerDto employer = await _service.EmployerService.AddEmployerAsync(employerDto);
         return Ok(employer);
     }
 
@@ -40,7 +40,7 @@ public class EmployersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEmployer(Guid id, UpdateEmployerDto employerDto)
     {
-        Employer employer = await _service.EmployerService.UpdateEmployerAsync(id, employerDto);
+        ViewEmployerDto employer = await _service.EmployerService.UpdateEmployerAsync(id, employerDto);
         return Ok(employer);
     }
     

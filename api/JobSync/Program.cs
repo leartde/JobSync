@@ -1,6 +1,12 @@
+using System.Text.Json;
+using CloudinaryService;
 using Contracts;
+using Entities.ErrorModel;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using JobSync.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +20,27 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureDataShaping();
+builder.Services.ConfigureFluentValidation();
+builder.Services.ConfigureImageUploader();
+builder.Services.AddScoped<IPdfUploader, PdfUploader>();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => JsonSerializer.Deserialize<Error>(e.ErrorMessage));
+
+            return new UnprocessableEntityObjectResult(errors);
+        };
+    })
     .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
+builder.Services.AddTransient<IValidatorInterceptor, UseCustomErrorModelInterceptor>();
+    
 
 builder.Services.ConfigureIISIntegration();
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
@@ -47,6 +69,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.All
 });
 app.UseCors("CorsPolicy");
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

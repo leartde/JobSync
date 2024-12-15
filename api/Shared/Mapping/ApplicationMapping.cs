@@ -5,12 +5,11 @@ namespace Shared.Mapping;
 
 public static class ApplicationMapping
 {
-    public static ViewApplicationDto MapApplicationDto(this Application entity)
+    public static ViewApplicationDto MapApplicationDto(this JobApplication entity)
     {
         return new ViewApplicationDto
         {
-            Id = entity.Id,
-            JobId = entity.JobId,
+           JobId = entity.JobId,
             JobSeekerId = entity.JobSeekerId,
             Employer = entity.Job?.Employer?.Name ?? string.Empty,
             JobTitle = entity.Job?.Title ?? string.Empty,
@@ -22,7 +21,7 @@ public static class ApplicationMapping
         };
     }
 
-    public static void ReverseMapApplication(this ApplicationDto dto, Application entity)
+    public static void ReverseMapApplication(this ApplicationDto dto, JobApplication entity)
     {
         entity.JobId = dto.JobId ?? entity.JobId;
         entity.Status = dto.Status ?? entity.Status;

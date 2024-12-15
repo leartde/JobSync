@@ -1,10 +1,13 @@
 ﻿using System.Dynamic;
 using System.Text.Json;
 using Entities.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.JobDtos;
+using Shared.Mapping;
 using Shared.RequestFeatures;
+using Validation.Validators;
 
 namespace Presentation.Controllers;
 
@@ -13,6 +16,7 @@ namespace Presentation.Controllers;
 public class JobsController : ControllerBase
 {
     private readonly IServiceManager _service;
+   
 
     public JobsController(IServiceManager service)
     {
@@ -24,7 +28,7 @@ public class JobsController : ControllerBase
     {
         (IEnumerable<ExpandoObject> jobs, MetaData metaData) pagedResult =
             await _service.JobService.GetAllJobsAsync(jobParameters);
-        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(pagedResult.metaData);
         return Ok(pagedResult.jobs);
     }
 
@@ -43,16 +47,16 @@ public class JobsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddJob(Guid employerId,AddJobDto jobDto)
+    public async Task<IActionResult> AddJob(Guid employerId,[FromForm]AddJobDto jobDto)
     {
         Job job = await _service.JobService.AddJobForEmployerAsync(employerId,jobDto);
-        return Ok(job);
+        return Ok(job.MapJobDto());
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateJob(Guid employerId, Guid id, UpdateJobDto jobDto)
     {
-       Job job = await _service.JobService.UpdateJobForEmployerAsync(employerId, id, jobDto);
+        ViewJobDto job = await _service.JobService.UpdateJobForEmployerAsync(employerId, id, jobDto);
         return Ok(job);
     }
 

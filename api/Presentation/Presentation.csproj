@@ -12,6 +12,15 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Service.Contracts\Service.Contracts.csproj" />
+      <ProjectReference Include="..\Validation\Validation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Extensions\ApiBaseResponseExtensions.cs" />
     </ItemGroup>
 
 </Project>

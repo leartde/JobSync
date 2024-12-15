@@ -12,7 +12,8 @@ public static class JobMapping
         {
             Id = entity.Id,
             Title = entity.Title,
-            Address = entity.Address.MapAddressDto(),
+            Address = $"{entity.Address?.Street} {entity.Address?.Region ?? entity.Address?.State}"
+                + $"{entity.Address?.Country} {entity.Address?.ZipCode}",
             Pay = entity.Pay,
             Description = entity.Description,
             Type = entity.Type,
@@ -25,7 +26,7 @@ public static class JobMapping
         };
     }
 
-    public static void ReverseMapJob(this JobDto dto,Job entity)
+    public static async void ReverseMapJob(this JobDto dto,Job entity)
     {
         entity.Title = dto.Title??entity.Title;
         entity.Pay = dto.Pay??entity.Pay;
@@ -34,8 +35,11 @@ public static class JobMapping
         entity.IsTakingApplications = dto.IsTakingApplications??entity.IsTakingApplications;
         entity.HasMultipleSpots = dto.HasMultipleSpots??entity.HasMultipleSpots;
         entity.CreatedAt = dto.CreatedAt??entity.CreatedAt;
-        dto.Skills?.ToList().ForEach(skillDto => 
-            entity.Skills.ToList().ForEach(skill => 
-                skillDto.ReverseMapSkill(skill)));
+        if (dto is AddJobDto addJobDto)
+        {
+            addJobDto.Skills?.ToList().ForEach(skillDto => 
+                entity.Skills.ToList().ForEach(skill => 
+                    skillDto.ReverseMapSkill(skill)));
+        }
     }
 }

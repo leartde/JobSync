@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{59AA3E56-0B5A-4CFB-A5FB-B5D829A9C7FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation", "Validation\Validation.csproj", "{1D4C4CE6-2CCC-4CB4-B0C1-26FE2DCA17B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudinaryService", "CloudinaryService\CloudinaryService.csproj", "{E1A66D04-F344-418F-AC88-23F81E7493E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +64,13 @@ Global
 		{59AA3E56-0B5A-4CFB-A5FB-B5D829A9C7FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59AA3E56-0B5A-4CFB-A5FB-B5D829A9C7FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59AA3E56-0B5A-4CFB-A5FB-B5D829A9C7FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D4C4CE6-2CCC-4CB4-B0C1-26FE2DCA17B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D4C4CE6-2CCC-4CB4-B0C1-26FE2DCA17B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D4C4CE6-2CCC-4CB4-B0C1-26FE2DCA17B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D4C4CE6-2CCC-4CB4-B0C1-26FE2DCA17B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1A66D04-F344-418F-AC88-23F81E7493E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1A66D04-F344-418F-AC88-23F81E7493E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1A66D04-F344-418F-AC88-23F81E7493E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1A66D04-F344-418F-AC88-23F81E7493E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

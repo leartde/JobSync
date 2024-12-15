@@ -32,7 +32,7 @@ public class JobSeekerAddressesController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateAddress(Guid jobSeekerId,UpdateAddressDto addressDto)
     {
-        Address address = await _service.AddressService.UpdateAddressForJobSeekerAsync(jobSeekerId, addressDto);
+        ViewAddressDto address = await _service.AddressService.UpdateAddressForJobSeekerAsync(jobSeekerId, addressDto);
         return Ok(address);
     }
     

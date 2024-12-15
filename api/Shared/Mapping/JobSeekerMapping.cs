@@ -33,7 +33,6 @@ public static class JobSeekerMapping
         entity.SecondaryPhone = dto.SecondaryPhone??entity.SecondaryPhone;
         entity.Birthday = dto.Birthday??entity.Birthday;
         entity.Gender = dto.Gender??entity.Gender;
-        entity.ResumeLink = dto.ResumeLink??entity.ResumeLink;
         dto.Skills?.ToList().ForEach(
             skillDto => entity.Skills.ToList().ForEach(
                 skill => skillDto.ReverseMapSkill(skill)

@@ -120,30 +120,6 @@ namespace JobSync.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Models.JobSync", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("JobSeekerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobId");
-
-                    b.HasIndex("JobSeekerId");
-
-                    b.ToTable("Applications");
-                });
-
             modelBuilder.Entity("Entities.Models.Bookmark", b =>
                 {
                     b.Property<Guid>("JobId")
@@ -182,6 +158,9 @@ namespace JobSync.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecondaryPhone")
@@ -227,6 +206,9 @@ namespace JobSync.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -237,11 +219,31 @@ namespace JobSync.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
 
                     b.HasIndex("EmployerId");
 
                     b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("Entities.Models.JobApplication", b =>
+                {
+                    b.Property<Guid>("JobId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("JobSeekerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("JobId", "JobSeekerId");
+
+                    b.HasIndex("JobSeekerId");
+
+                    b.ToTable("JobApplications");
                 });
 
             modelBuilder.Entity("Entities.Models.JobBenefit", b =>
@@ -299,7 +301,9 @@ namespace JobSync.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -385,19 +389,19 @@ namespace JobSync.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("12603e7f-bb93-44f8-a2f8-946acea3b0ee"),
+                            Id = new Guid("2186c431-bc06-4195-8b9a-16af30848b78"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("3019ea1f-3099-4030-ba09-3fe9234fe281"),
+                            Id = new Guid("ae02f401-7998-439c-a9da-9c25480c79e6"),
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = new Guid("f2699f04-154b-4e8f-93f5-b7cd71058131"),
+                            Id = new Guid("8904f535-d321-4b6c-a129-fe00cb7a0aa2"),
                             Name = "JobSeeker",
                             NormalizedName = "JOBSEEKER"
                         });
@@ -506,37 +510,18 @@ namespace JobSync.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Entities.Models.JobSync", b =>
+            modelBuilder.Entity("Entities.Models.Bookmark", b =>
                 {
                     b.HasOne("Entities.Models.Job", "Job")
-                        .WithMany("Applications")
+                        .WithMany("Bookmarks")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Entities.Models.JobSeeker", "JobSeeker")
-                        .WithMany("Applications")
-                        .HasForeignKey("JobSeekerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Job");
-
-                    b.Navigation("JobSeeker");
-                });
-
-            modelBuilder.Entity("Entities.Models.Bookmark", b =>
-                {
-                    b.HasOne("Entities.Models.Job", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Models.JobSeeker", "JobSeeker")
                         .WithMany("Bookmarks")
                         .HasForeignKey("JobSeekerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Job");
@@ -558,8 +543,9 @@ namespace JobSync.Migrations
             modelBuilder.Entity("Entities.Models.Job", b =>
                 {
                     b.HasOne("Entities.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
+                        .WithOne()
+                        .HasForeignKey("Entities.Models.Job", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Entities.Models.Employer", "Employer")
                         .WithMany("Jobs")
@@ -572,10 +558,29 @@ namespace JobSync.Migrations
                     b.Navigation("Employer");
                 });
 
+            modelBuilder.Entity("Entities.Models.JobApplication", b =>
+                {
+                    b.HasOne("Entities.Models.Job", "Job")
+                        .WithMany("Applications")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Models.JobSeeker", "JobSeeker")
+                        .WithMany("Applications")
+                        .HasForeignKey("JobSeekerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Job");
+
+                    b.Navigation("JobSeeker");
+                });
+
             modelBuilder.Entity("Entities.Models.JobBenefit", b =>
                 {
                     b.HasOne("Entities.Models.Job", "Job")
-                        .WithMany()
+                        .WithMany("Benefits")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -586,8 +591,9 @@ namespace JobSync.Migrations
             modelBuilder.Entity("Entities.Models.JobSeeker", b =>
                 {
                     b.HasOne("Entities.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
+                        .WithOne()
+                        .HasForeignKey("Entities.Models.JobSeeker", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Entities.Models.AppUser", "User")
                         .WithOne()
@@ -697,6 +703,10 @@ namespace JobSync.Migrations
             modelBuilder.Entity("Entities.Models.Job", b =>
                 {
                     b.Navigation("Applications");
+
+                    b.Navigation("Benefits");
+
+                    b.Navigation("Bookmarks");
                 });
 
             modelBuilder.Entity("Entities.Models.JobSeeker", b =>

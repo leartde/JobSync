@@ -10,4 +10,11 @@
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Responses\JobNotFoundResponse.cs" />
+      <Compile Remove="Responses\ApiOkResponse.cs" />
+      <Compile Remove="Responses\ApiNotFoundResponse.cs" />
+      <Compile Remove="Responses\ApiBaseResponse.cs" />
+    </ItemGroup>
+
 </Project>

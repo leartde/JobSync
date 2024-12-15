@@ -1,9 +1,13 @@
 ﻿using System.Text;
+using CloudinaryService;
 using Contracts;
 using Entities.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Repository;
@@ -11,6 +15,7 @@ using Service;
 using Service.Contracts;
 using Service.DataShaping;
 using Shared.DataTransferObjects.JobDtos;
+using Validation.Validators;
 
 namespace JobSync.Extensions;
 
@@ -98,5 +103,18 @@ public static class ServiceExtensions
     {
         services.AddScoped<IDataShaper<ViewJobDto>, DataShaper<ViewJobDto>>();
     }
+
+    public static void ConfigureFluentValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssembly(typeof(AddJobValidator).Assembly);
+        services.AddFluentValidationAutoValidation();
+    }
+
+    public static void ConfigureImageUploader(this IServiceCollection services)
+    {
+        services.AddScoped<IImageUploader, ImageUploader>();
+    }
+
+   
 
 }

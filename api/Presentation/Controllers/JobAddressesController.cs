@@ -33,7 +33,7 @@ public class JobAddressesController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateAddress(Guid employerId, Guid jobId, UpdateAddressDto addressDto)
     {
-        Address address = await _service.AddressService.UpdateAddressForJobAsync(employerId,jobId, addressDto);
+        ViewAddressDto address = await _service.AddressService.UpdateAddressForJobAsync(employerId,jobId, addressDto);
         return Ok(address);
     }
     

@@ -32,16 +32,16 @@ public class JobSeekersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddJobSeeker(AddJobSeekerDto jobSeekerDto)
+    public async Task<IActionResult> AddJobSeeker([FromForm]AddJobSeekerDto jobSeekerDto)
     {
-       JobSeeker jobSeeker =  await _service.JobSeekerService.AddJobSeekerAsync(jobSeekerDto);
+       ViewJobSeekerDto jobSeeker =  await _service.JobSeekerService.AddJobSeekerAsync(jobSeekerDto);
         return Ok(jobSeeker);
     }
     
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateJobSeeker(Guid id, UpdateJobSeekerDto jobSeekerDto)
     {
-        JobSeeker jobSeeker = await _service.JobSeekerService.UpdateJobSeekerAsync(id, jobSeekerDto);
+        ViewJobSeekerDto jobSeeker = await _service.JobSeekerService.UpdateJobSeekerAsync(id, jobSeekerDto);
         return Ok(jobSeeker);
     }
     

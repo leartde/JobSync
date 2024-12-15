@@ -7,6 +7,6 @@ public interface IServiceManager
     IEmployerService EmployerService { get;  }
     IJobSeekerService JobSeekerService { get; }
     IAuthenticationService AuthenticationService { get; }
-    IApplicationService ApplicationService { get; }
+    IJobApplicationService JobApplicationService { get; }
     
 }

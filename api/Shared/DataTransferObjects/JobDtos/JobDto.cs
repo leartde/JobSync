@@ -13,7 +13,6 @@ public  class JobDto
     public bool? IsTakingApplications { get; set; }
     public bool? HasMultipleSpots { get; set; }
     public DateOnly? CreatedAt { get; set; }
-    public AddressDto? Address { get; set; }
-    public List<SkillDto>? Skills { get; set; }
+    
     
 }

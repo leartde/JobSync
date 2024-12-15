@@ -19,10 +19,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CloudinaryService\CloudinaryService.csproj" />
       <ProjectReference Include="..\LoggerService\LoggerService.csproj" />
       <ProjectReference Include="..\Presentation\Presentation.csproj" />
       <ProjectReference Include="..\Repository\Repository.csproj" />
       <ProjectReference Include="..\Service\Service.csproj" />
+      <ProjectReference Include="..\Validation\Validation.csproj" />
     </ItemGroup>
 
 </Project>

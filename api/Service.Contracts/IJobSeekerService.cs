@@ -7,8 +7,8 @@ public interface IJobSeekerService
 {
     Task<IEnumerable<ViewJobSeekerDto>> GetAllJobSeekersAsync();
     Task<ViewJobSeekerDto> GetJobSeekerAsync(Guid id);
-    Task<JobSeeker> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto);
-    Task<JobSeeker> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto);
+    Task<ViewJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto);
+    Task<ViewJobSeekerDto> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto);
     Task DeleteJobSeekerAsync(Guid id);
     
 }
