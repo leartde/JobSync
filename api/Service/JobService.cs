@@ -141,8 +141,6 @@ internal sealed class JobService : IJobService
         {
             _repository.JobSkill.AddJobSkill(new JobSkill { SkillsId = existingSkill.Id, JobsId = job.Id });
         }
-
-        await _repository.SaveAsync();
     }
 
     private void AddBenefitsForJob(Job job, IEnumerable<string> benefitNames)

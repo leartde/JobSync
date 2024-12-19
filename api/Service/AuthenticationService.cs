@@ -22,7 +22,7 @@ internal sealed class AuthenticationService : IAuthenticationService
         _userManager = userManager;
         _configuration = configuration;
     }
-    public async Task<IdentityResult> RegisterUser(AddUserDto userDto)
+    public async Task<IdentityResult> RegisterUser(RegisterUserDto userDto)
     {
         AppUser user = new AppUser();
         userDto.ToEntity(user);

@@ -129,6 +129,5 @@ internal sealed class JobSeekerService : IJobSeekerService
                 { SkillsId = existingSkill.Id, JobSeekersId = jobSeeker.Id });
         }
 
-        await _repository.SaveAsync();
     }
 }

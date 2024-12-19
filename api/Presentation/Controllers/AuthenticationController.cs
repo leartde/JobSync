@@ -17,7 +17,7 @@ public class AuthenticationController : ControllerBase
     }
     
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] AddUserDto userDto)
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto userDto)
     {
         IdentityResult result = await _service.AuthenticationService.RegisterUser(userDto);
         if (result.Succeeded) return StatusCode(201);
