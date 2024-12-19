@@ -26,7 +26,7 @@ public class JobAddressesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddAddress(Guid employerId, Guid jobId,AddAddressDto addressDto)
     {
-        Address address = await _service.AddressService.AddAddressForJobAsync(employerId,jobId,addressDto);
+        ViewAddressDto address = await _service.AddressService.AddAddressForJobAsync(employerId,jobId,addressDto);
         return Ok(address);
     }
     

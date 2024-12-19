@@ -4,6 +4,7 @@ using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
+using Shared.DataTransferObjects.AddressDtos;
 using Shared.DataTransferObjects.JobSeekerDtos;
 using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
@@ -26,63 +27,41 @@ internal sealed class JobSeekerService : IJobSeekerService
     public async Task<IEnumerable<ViewJobSeekerDto>> GetAllJobSeekersAsync()
     {
         IEnumerable<JobSeeker> jobSeekers = await _repository.JobSeeker.GetAllJobSeekersAsync();
-        return jobSeekers.Select(js => js.MapJobSeekerDto());
+        return jobSeekers.Select(js => js.ToDto());
     }
 
     public async Task<ViewJobSeekerDto> GetJobSeekerAsync(Guid id)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
-        return jobSeeker.MapJobSeekerDto();
+        return jobSeeker.ToDto();
     }
     
     
 
     public async Task<ViewJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto)
     {
-        Address address = new Address();
-        jobSeekerDto.Address?.ReverseMapAddress(address);
-        _repository.Address.AddAddress(address);
-        await _repository.SaveAsync();
-        JobSeeker jobSeeker = new JobSeeker
+        
+        JobSeeker jobSeeker = new JobSeeker();
+        if (jobSeekerDto.Address != null)
         {
-            AddressId = address.Id
-        };
-        jobSeekerDto.ReverseMapJobSeeker(jobSeeker);
+            await AddAddressForJobSeekerAsync(jobSeeker,jobSeekerDto.Address);
+        }
+        jobSeekerDto.ToEntity(jobSeeker);
         if (jobSeekerDto.Resume != null)
         {
-            UploadResult result = await _cloudinaryManager.RawUploader.AddPdfAsync(jobSeekerDto.Resume);
+            UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
             jobSeeker.ResumeLink = result.Url.ToString();
         }
         _repository.JobSeeker.AddJobSeeker(jobSeeker);
         if (jobSeekerDto.Skills != null)
         {
-            List<Skill> skills = [];
-            foreach (SkillDto skillDto in jobSeekerDto.Skills)
-            {
-                Skill skill = new Skill();
-                skillDto.ReverseMapSkill(skill);
-                skills.Add(skill);
-            }
-            foreach (Skill skill in skills)
-            {
-                IEnumerable<Skill> existingSkills = await _repository.Skill.GetAllSkillsAsync();
-                Skill? existingSkill = existingSkills.FirstOrDefault(s => s.Name.ToLower().Equals(skill.Name.ToLower()));
-                JobSeekerSkill jobSeekerSkill = new JobSeekerSkill
-                {
-                    JobSeekersId = jobSeeker.Id
-                };
-                if (existingSkill != null) jobSeekerSkill.SkillsId = existingSkill.Id;
-                _repository.Skill.AddSkill(skill);
-                await _repository.SaveAsync();
-                jobSeekerSkill.SkillsId = skill.Id;
-                    _repository.JobSeekerSkill.AddJobSeekerSkill(jobSeekerSkill);
-            }
+            await AddSkillsForJobSeekerAsync(jobSeeker, jobSeekerDto.Skills);
         }
 
         await _repository.SaveAsync();
-        return jobSeeker.MapJobSeekerDto();
+        return jobSeeker.ToDto();
     }
-
+    
     public async Task DeleteJobSeekerAsync(Guid id)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
@@ -94,10 +73,10 @@ internal sealed class JobSeekerService : IJobSeekerService
     public async Task<ViewJobSeekerDto> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
-        jobSeekerDto.ReverseMapJobSeeker(jobSeeker);
+        jobSeekerDto.ToEntity(jobSeeker);
          _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
          await _repository.SaveAsync();
-         return jobSeeker.MapJobSeekerDto();
+         return jobSeeker.ToDto();
 
     }
 
@@ -106,5 +85,50 @@ internal sealed class JobSeekerService : IJobSeekerService
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(id);
         if (jobSeeker is null) throw new NotFoundException("jobSeeker",id);
         return jobSeeker;
+    }
+    
+    private async Task AddAddressForJobSeekerAsync(JobSeeker jobSeeker, AddAddressDto addressDto)
+    {
+        Address address = new Address();
+        addressDto.ToEntity(address);
+        _repository.Address.AddAddress(address);
+        await _repository.SaveAsync();
+        jobSeeker.AddressId = address.Id;
+    }
+
+    private async Task AddSkillsForJobSeekerAsync(JobSeeker jobSeeker, List<AddSkillDto> skillDtos)
+    {
+        List<Skill> existingSkills = [];
+        List<Skill> newSkills = [];
+        foreach (AddSkillDto skillDto in skillDtos)
+        {
+            Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillDto.Name);
+            if (skill != null) existingSkills.Add(skill);
+            else
+            {
+                Skill newSkill = new Skill();
+                skillDto.ToEntity(newSkill);
+                newSkills.Add(newSkill);
+            }
+        }
+
+        if (newSkills.Count > 0)
+        {
+            _repository.Skill.AddSkills(newSkills);
+            await _repository.SaveAsync();
+            foreach (Skill newSkill in newSkills)
+            {
+                _repository.JobSeekerSkill.AddJobSeekerSkill(new JobSeekerSkill
+                    { SkillsId = newSkill.Id, JobSeekersId = jobSeeker.Id });
+            }
+        }
+
+        foreach (Skill existingSkill in existingSkills)
+        {
+            _repository.JobSeekerSkill.AddJobSeekerSkill(new JobSeekerSkill
+                { SkillsId = existingSkill.Id, JobSeekersId = jobSeeker.Id });
+        }
+
+        await _repository.SaveAsync();
     }
 }

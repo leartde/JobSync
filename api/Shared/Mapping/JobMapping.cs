@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using Entities.Enums;
+using Entities.Models;
 using Shared.DataTransferObjects.JobDtos;
 using Shared.DataTransferObjects.SkillDtos;
 
@@ -6,7 +7,7 @@ namespace Shared.Mapping;
 
 public static class JobMapping
 {
-    public static ViewJobDto MapJobDto(this Job entity)
+    public static ViewJobDto ToDto(this Job entity)
     {
         return new ViewJobDto
         {
@@ -17,29 +18,33 @@ public static class JobMapping
             Pay = entity.Pay,
             Description = entity.Description,
             Type = entity.Type,
+            ImageUrl = entity.ImageUrl,
             IsTakingApplications = entity.IsTakingApplications,
             HasMultipleSpots = entity.HasMultipleSpots,
             CreatedAt = entity.CreatedAt,
             Employer = entity.Employer?.Name ?? string.Empty,
             Skills = entity.Skills.Select(s => s.Name),
+            Benefits = entity.Benefits.Select(b => b.Benefit.ToString())
             
         };
+        
     }
 
-    public static async void ReverseMapJob(this JobDto dto,Job entity)
+    public static void ToEntity(this JobDto dto, Job entity)
     {
-        entity.Title = dto.Title??entity.Title;
-        entity.Pay = dto.Pay??entity.Pay;
-        entity.Description = dto.Description??entity.Description;
-        entity.Type = dto.Type??entity.Type;
-        entity.IsTakingApplications = dto.IsTakingApplications??entity.IsTakingApplications;
-        entity.HasMultipleSpots = dto.HasMultipleSpots??entity.HasMultipleSpots;
-        entity.CreatedAt = dto.CreatedAt??entity.CreatedAt;
-        if (dto is AddJobDto addJobDto)
+        entity.Title = dto.Title ?? entity.Title;
+        entity.Pay = dto.Pay ?? entity.Pay;
+        entity.Description = dto.Description ?? entity.Description;
+        entity.Type = dto.Type ?? entity.Type;
+        entity.IsTakingApplications = dto.IsTakingApplications ?? entity.IsTakingApplications;
+        entity.HasMultipleSpots = dto.HasMultipleSpots ?? entity.HasMultipleSpots;
+        entity.CreatedAt = dto.CreatedAt ?? entity.CreatedAt;
+            
+    if (dto is AddJobDto addJobDto)
         {
             addJobDto.Skills?.ToList().ForEach(skillDto => 
                 entity.Skills.ToList().ForEach(skill => 
-                    skillDto.ReverseMapSkill(skill)));
+                    skillDto.ToEntity(skill)));
         }
     }
 }

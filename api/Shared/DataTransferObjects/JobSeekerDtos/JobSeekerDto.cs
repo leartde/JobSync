@@ -15,6 +15,4 @@ public class JobSeekerDto
     public string? Phone { get; set; }
     public string? SecondaryPhone { get; set; }
     
-    public AddressDto? Address { get; set; }
-    public List<SkillDto>?Skills { get; set; }
 }

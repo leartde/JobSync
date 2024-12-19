@@ -5,7 +5,7 @@ namespace Shared.Mapping;
 
 public static class JobSeekerMapping
 {
-    public static ViewJobSeekerDto MapJobSeekerDto(this JobSeeker entity)
+    public static ViewJobSeekerDto ToDto(this JobSeeker entity)
     {
         return new ViewJobSeekerDto
         {
@@ -19,11 +19,11 @@ public static class JobSeekerMapping
             Birthday = entity.Birthday,
             ResumeLink = entity.ResumeLink,
             Skills = entity.Skills.Select(s => s.Name),
-            Address = entity.Address.MapAddressDto()
+            Address = entity.Address.ToDto()
         };
     }
 
-    public static void ReverseMapJobSeeker(this JobSeekerDto dto,JobSeeker entity)
+    public static void ToEntity(this JobSeekerDto dto,JobSeeker entity)
     {
         entity.UserId = dto.UserId ?? entity.UserId;
         entity.FirstName = dto.FirstName??entity.FirstName;
@@ -33,10 +33,13 @@ public static class JobSeekerMapping
         entity.SecondaryPhone = dto.SecondaryPhone??entity.SecondaryPhone;
         entity.Birthday = dto.Birthday??entity.Birthday;
         entity.Gender = dto.Gender??entity.Gender;
-        dto.Skills?.ToList().ForEach(
-            skillDto => entity.Skills.ToList().ForEach(
-                skill => skillDto.ReverseMapSkill(skill)
+        if (dto is AddJobSeekerDto addJobSeekerDto)
+        {
+            addJobSeekerDto.Skills?.ToList().ForEach(
+                skillDto => entity.Skills.ToList().ForEach(
+                    skill => skillDto.ToEntity(skill)
                 )
             );
+        }
     }
 }

@@ -19,6 +19,7 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             .Include(j => j.Employer)
             .Include(j => j.Address)
             .Include(j => j.Skills)
+            .Include(j => j.Benefits)
             .OrderBy(j => j.Employer)
             .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,jobParameters.IsTakingApplications)
             .Search(jobParameters.SearchTerm)

@@ -13,15 +13,15 @@ internal sealed class RawUploader : IRawUploader
         _cloudinary = cloudinary;
     }
 
-    public async Task<UploadResult> AddPdfAsync(IFormFile file)
+    public async Task<UploadResult> AddFileAsync(IFormFile file)
     {
-        var uploadResult = new RawUploadResult();
+        RawUploadResult uploadResult = new RawUploadResult();
         if (file.Length <= 0) return uploadResult;
-        await using var stream = file.OpenReadStream();
-        using var memoryStream = new MemoryStream();
+        await using Stream stream = file.OpenReadStream();
+        using MemoryStream memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream);
         memoryStream.Position = 0;
-        var uploadParams = new RawUploadParams()
+        RawUploadParams uploadParams = new RawUploadParams
         {
             File = new FileDescription(file.FileName, memoryStream),
         };

@@ -10,6 +10,13 @@ public class JobApplicationRepository : RepositoryBase<JobApplication>, IJobAppl
     {
     }
 
+    public async Task<JobApplication> GetJobApplication(Guid jobId, Guid jobSeekerId)
+    {
+        return await FindByCondition(a => a.JobSeekerId.Equals(jobSeekerId) &&
+                                          a.JobId.Equals(jobId)
+        ).SingleAsync();
+    }
+
     public async Task<IEnumerable<JobApplication>> GetApplicationsForJobSeekerAsync(JobSeeker jobSeeker)
     {
         return await FindByCondition(a => a.JobSeekerId.Equals(jobSeeker.Id))

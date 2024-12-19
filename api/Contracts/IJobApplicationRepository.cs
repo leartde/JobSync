@@ -4,6 +4,7 @@ namespace Contracts;
 
 public interface IJobApplicationRepository
 {
+    Task<JobApplication> GetJobApplication(Guid jobId, Guid jobSeekerId);
     Task<IEnumerable<JobApplication>> GetApplicationsForJobSeekerAsync(JobSeeker jobSeeker);
     Task<IEnumerable<JobApplication>> GetApplicationsForJobAsync(Job job);
   

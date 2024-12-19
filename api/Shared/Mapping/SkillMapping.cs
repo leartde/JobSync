@@ -5,21 +5,17 @@ namespace Shared.Mapping;
 
 public static class SkillMapping
 {
-    public static ViewSkillDto MapSkillDto(this Skill entity)
+    public static ViewSkillDto ToDto(this Skill entity)
     {
         return new ViewSkillDto
         {
             Id = entity.Id,
             Name = entity.Name,
-            Industry = entity.Industry
         };
     }
 
-    public static void ReverseMapSkill(this SkillDto dto,Skill entity )
+    public static void ToEntity(this SkillDto dto,Skill entity )
     {
-
         entity.Name = dto.Name;
-        entity.Industry = dto.Industry;
-
     }
 }

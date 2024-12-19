@@ -10,5 +10,6 @@ public interface IRepositoryManager
     IJobSeekerRepository JobSeeker { get; }
     IJobSeekerSkillRepository JobSeekerSkill { get; }
     IJobApplicationRepository JobApplication { get; }
+    IJobBenefitRepository JobBenefit { get; }
     Task SaveAsync();
 }

@@ -17,11 +17,11 @@ internal sealed class ImageUploader : IImageUploader
     }
     public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
     {
-        var uploadResult = new ImageUploadResult();
+        ImageUploadResult uploadResult = new ImageUploadResult();
 
         if (file.Length <= 0) return uploadResult;
-        await using var stream = file.OpenReadStream();
-        var uploadParams = new ImageUploadParams
+        await using Stream stream = file.OpenReadStream();
+        ImageUploadParams uploadParams = new ImageUploadParams
         {
             File = new FileDescription(file.FileName, stream)
 
@@ -32,11 +32,5 @@ internal sealed class ImageUploader : IImageUploader
         return uploadResult;
     }
     
-    public async Task<DeletionResult> DeletePhotoAsync(string publicId)
-    {
-        var deleteParams = new DeletionParams(publicId);
-        var result = await _cloudinary.DestroyAsync(deleteParams);
-
-        return result;
-    }
+    
 }

@@ -13,6 +13,5 @@ public  class JobDto
     public bool? IsTakingApplications { get; set; }
     public bool? HasMultipleSpots { get; set; }
     public DateOnly? CreatedAt { get; set; }
-    
-    
+    public IEnumerable<string>? Benefits { get; set; }
 }

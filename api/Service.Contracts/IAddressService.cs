@@ -9,8 +9,8 @@ public interface IAddressService
     
     Task<ViewAddressDto> GetAddressForJobAsync(Guid employerId, Guid jobId);
     Task<ViewAddressDto> GetAddressForJobSeekerAsync(Guid jobSeekerId);
-    Task<Address> AddAddressForJobAsync(Guid employerId, Guid jobId, AddAddressDto addressDto);
-    Task<Address> AddAddressForJobSeekerAsync(Guid jobSeekerId, AddAddressDto addressDto);
+    Task<ViewAddressDto> AddAddressForJobAsync(Guid employerId, Guid jobId, AddAddressDto addressDto);
+    Task<ViewAddressDto> AddAddressForJobSeekerAsync(Guid jobSeekerId, AddAddressDto addressDto);
     Task DeleteAddressForJobAsync(Guid employerId, Guid jobId);
     Task DeleteAddressForJobSeekerAsync(Guid jobSeekerId);
     Task<ViewAddressDto> UpdateAddressForJobAsync(Guid employerId, Guid jobId, UpdateAddressDto addressDto);

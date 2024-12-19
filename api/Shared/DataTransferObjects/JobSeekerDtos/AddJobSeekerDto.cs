@@ -8,5 +8,7 @@ namespace Shared.DataTransferObjects.JobSeekerDtos;
 public class AddJobSeekerDto : JobSeekerDto
 {
     public IFormFile? Resume { get; set; }
+    public List<AddSkillDto>? Skills { get; set; }
+    public AddAddressDto? Address { get; set; }
     
 }

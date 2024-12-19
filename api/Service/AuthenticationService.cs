@@ -25,7 +25,7 @@ internal sealed class AuthenticationService : IAuthenticationService
     public async Task<IdentityResult> RegisterUser(AddUserDto userDto)
     {
         AppUser user = new AppUser();
-        userDto.ReverseMapUser(user);
+        userDto.ToEntity(user);
         IdentityResult result = await _userManager.CreateAsync(user, userDto.Password);
         if (result.Succeeded) await _userManager.AddToRoleAsync(user, userDto.Role);
         return result;
@@ -55,13 +55,10 @@ internal sealed class AuthenticationService : IAuthenticationService
 
     private async Task<List<Claim>> GetClaims()
     {
-        List<Claim> claims = [new Claim("email", _user.Email),];
+        List<Claim> claims = [new Claim("email", _user?.Email ?? string.Empty)];
+        if (_user == null) return claims;
         IList<string> roles = await _userManager.GetRolesAsync(_user);
-        foreach (string role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         return claims;
     }
 

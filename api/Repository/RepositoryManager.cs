@@ -13,6 +13,7 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly Lazy<IJobSeekerRepository> _jobSeekerRepository;
     private readonly Lazy<IJobSeekerSkillRepository> _jobSeekerSkillRepository;
     private readonly Lazy<IJobApplicationRepository> _applicationRepository;
+    private readonly Lazy<IJobBenefitRepository> _jobBenefitRepository;
 
     public RepositoryManager(RepositoryContext context)
     {
@@ -35,6 +36,9 @@ public sealed class RepositoryManager : IRepositoryManager
         _applicationRepository = new Lazy<IJobApplicationRepository>(() => new
             JobApplicationRepository(_context)
         );
+        _jobBenefitRepository = new Lazy<IJobBenefitRepository>(() => new
+            JobBenefitRepository(_context)
+        );
     }
 
     public IAddressRepository Address => _addressRepository.Value;
@@ -45,5 +49,6 @@ public sealed class RepositoryManager : IRepositoryManager
     public IJobSeekerRepository JobSeeker => _jobSeekerRepository.Value;
     public IJobSeekerSkillRepository JobSeekerSkill => _jobSeekerSkillRepository.Value;
     public IJobApplicationRepository JobApplication => _applicationRepository.Value;
+    public IJobBenefitRepository JobBenefit => _jobBenefitRepository.Value;
     public Task SaveAsync() => _context.SaveChangesAsync();
 }

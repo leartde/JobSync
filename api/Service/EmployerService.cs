@@ -21,23 +21,23 @@ internal sealed class EmployerService : IEmployerService
     public async Task<IEnumerable<ViewEmployerDto>> GetAllEmployersAsync()
     {
         IEnumerable<Employer> employers = await _repository.Employer.GetAllEmployersAsync();
-        IEnumerable<ViewEmployerDto> employerDtos = employers.Select(e => e.MapEmployerDto());
+        IEnumerable<ViewEmployerDto> employerDtos = employers.Select(e => e.ToDto());
         return employerDtos;
     }
 
     public async Task<ViewEmployerDto?> GetEmployerAsync(Guid id)
     {
         Employer employer = await RetrieveEmployerAsync(id);
-        return employer.MapEmployerDto();
+        return employer.ToDto();
     }
 
     public async Task<ViewEmployerDto> AddEmployerAsync(AddEmployerDto employerDto)
     {
         Employer employer = new Employer();
-        employerDto.ReverseMapEmployer(employer);
+        employerDto.ToEntity(employer);
         _repository.Employer.AddEmployer(employer);
         await _repository.SaveAsync();
-        return employer.MapEmployerDto();
+        return employer.ToDto();
 
     }
 
@@ -51,10 +51,10 @@ internal sealed class EmployerService : IEmployerService
     public async Task<ViewEmployerDto> UpdateEmployerAsync(Guid id,UpdateEmployerDto employerDto)
     {
         Employer employer = await RetrieveEmployerAsync(id);
-            employerDto.ReverseMapEmployer(employer);
+            employerDto.ToEntity(employer);
         _repository.Employer.UpdateEmployer(employer);
         await _repository.SaveAsync();
-        return employer.MapEmployerDto();
+        return employer.ToDto();
     }
 
     private async Task<Employer> RetrieveEmployerAsync(Guid id)

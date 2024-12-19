@@ -10,7 +10,7 @@ public interface IJobService
     Task<(IEnumerable<ExpandoObject> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters);
     Task<IEnumerable<ViewJobDto>> GetJobsForEmployerAsync(Guid employerId);
     Task<ViewJobDto> GetJobForEmployerAsync(Guid employerId, Guid id);
-    Task<Job> AddJobForEmployerAsync(Guid employerId, AddJobDto jobDto);
+    Task<ViewJobDto> AddJobForEmployerAsync(Guid employerId, AddJobDto jobDto);
     Task<ViewJobDto> UpdateJobForEmployerAsync(Guid employerId, Guid id, UpdateJobDto jobDto);
     Task DeleteJobForEmployerAsync(Guid employerId, Guid id);
 }

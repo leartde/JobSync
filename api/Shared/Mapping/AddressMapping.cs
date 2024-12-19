@@ -8,7 +8,7 @@ namespace Shared.Mapping;
 
 public static class AddressMapping
 {
-    public static ViewAddressDto MapAddressDto(this Address? entity)
+    public static ViewAddressDto ToDto(this Address? entity)
     {
         if (entity is null) throw new MappingException("address");
         return new ViewAddressDto
@@ -23,7 +23,7 @@ public static class AddressMapping
         };
     }
 
-    public static void ReverseMapAddress(this AddressDto dto, Address entity)
+    public static void ToEntity(this AddressDto dto, Address entity)
     {
        
         if (dto == null )

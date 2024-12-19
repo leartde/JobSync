@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
-using System.Dynamic;
+﻿using System.Dynamic;
 using CloudinaryDotNet.Actions;
 using Contracts;
+using Entities.Enums;
 using Entities.Exceptions;
 using Entities.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Service.Contracts;
+using Shared.DataTransferObjects.AddressDtos;
 using Shared.DataTransferObjects.JobDtos;
 using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
@@ -28,90 +28,63 @@ internal sealed class JobService : IJobService
         _cloudinaryManager = cloudinaryManager;
     }
 
-    public async Task<(IEnumerable<ExpandoObject> jobs,MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
+    public async Task<(IEnumerable<ExpandoObject> jobs, MetaData metaData)> GetAllJobsAsync(JobParameters jobParameters)
     {
-        
         PagedList<Job> jobs = await _repository.Job.GetAllJobsAsync(jobParameters);
-        IEnumerable<ViewJobDto> jobDtos = jobs.Select(j => j.MapJobDto());
-        IEnumerable<ExpandoObject> shapedData = _dataShaper.ShapeData(jobDtos, jobParameters.Fields);
+        IEnumerable<ExpandoObject> shapedData = 
+        _dataShaper.ShapeData(jobs.Select(j => j.ToDto()), jobParameters.Fields);
         return (jobs: shapedData, metaData: jobs.MetaData);
     }
     
     public async Task<IEnumerable<ViewJobDto>> GetJobsForEmployerAsync(Guid employerId)
     {
-        
         IEnumerable<Job> jobs = await _repository.Job.GetJobsForEmployerAsync(employerId);
-        return jobs.Select(j => j.MapJobDto());
+        return jobs.Select(j => j.ToDto());
     }
 
     public async Task<ViewJobDto> GetJobForEmployerAsync(Guid employerId,Guid id)
     {
-        
         Job job = await RetrieveJobForEmployerAsync(employerId,id);
-        return  job.MapJobDto();
+        return job.ToDto();
     }
 
-    public async Task<Job> AddJobForEmployerAsync(Guid employerId,AddJobDto jobDto)
+    public async Task<ViewJobDto> AddJobForEmployerAsync(Guid employerId,AddJobDto jobDto)
     {
         Job job = new Job
         {
             EmployerId = employerId
         };
-        if (jobDto.Address != null) 
+        if (jobDto.Address != null)
         {
-            Address address = new Address();
-            jobDto.Address.ReverseMapAddress(address);
-            _repository.Address.AddAddress(address);
-            await _repository.SaveAsync();
-            job.AddressId = address.Id;
+            await AddAddressForJobAsync(job, jobDto.Address);
         }
-        jobDto.ReverseMapJob(job);
+        jobDto.ToEntity(job);
         if (jobDto.Image != null)
         {
             ImageUploadResult result = await _cloudinaryManager.ImageUploader.AddPhotoAsync(jobDto.Image);
             job.ImageUrl = result.Url.ToString();
         }
         _repository.Job.AddJob(job);
-        if (jobDto.Skills != null)
+        if (jobDto.Skills?.Count > 0 )
         {
-            List<Skill> skills = [];
-            
-            foreach (AddSkillDto skillDto in jobDto.Skills)
-            {
-                Skill skill = new Skill();
-                skillDto.ReverseMapSkill(skill);
-                skills.Add(skill);
-            }
-            
-            foreach (Skill skill in skills)
-            {
-                IEnumerable<Skill> existingSkills = await _repository.Skill.GetAllSkillsAsync();
-                Skill? existingSkill = existingSkills.FirstOrDefault(s => s.Name.ToLower().Equals(skill.Name.ToLower()));
-                JobSkill jobSkill = new JobSkill
-                {
-                    JobsId = job.Id
-                };
+            await AddSkillsForJobAsync(job, jobDto.Skills);
+        }
 
-                if (existingSkill != null) jobSkill.SkillsId = existingSkill.Id;
-                _repository.Skill.AddSkill(skill);
-                await _repository.SaveAsync();
-                jobSkill.SkillsId = skill.Id;
- 
-                _repository.JobSkill.AddJobSkill(jobSkill);
-            }
+        if (jobDto.Benefits?.Count() > 0)
+        {
+            AddBenefitsForJob(job, jobDto.Benefits);
         }
         await _repository.SaveAsync();
-        return job; 
+        return job.ToDto(); 
         }
     
-
     public async Task<ViewJobDto> UpdateJobForEmployerAsync(Guid employerId, Guid id, UpdateJobDto jobDto)
     {
         Job job = await RetrieveJobForEmployerAsync(employerId, id);
-        jobDto.ReverseMapJob(job);
+        jobDto.ToEntity(job);
         _repository.Job.UpdateJob(job);
         await _repository.SaveAsync();
-        return job.MapJobDto();
+        return job.ToDto();
     }
 
     public async Task DeleteJobForEmployerAsync(Guid employerId,Guid id)
@@ -128,4 +101,63 @@ internal sealed class JobService : IJobService
         if (job is null) throw new NotFoundException("job",id);
         return job;
     }
+
+    private async Task AddAddressForJobAsync(Job job, AddAddressDto addressDto)
+    {
+        Address address = new Address();
+        addressDto.ToEntity(address);
+        _repository.Address.AddAddress(address);
+        await _repository.SaveAsync();
+        job.AddressId = address.Id;
+    }
+
+
+    private async Task AddSkillsForJobAsync(Job job, List<AddSkillDto> skillDtos)
+    {
+        List<Skill> existingSkills = [];
+        List<Skill> newSkills = [];
+        foreach (AddSkillDto skillDto in skillDtos)
+        {
+            Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillDto.Name);
+            if (skill != null) existingSkills.Add(skill);
+            else
+            {
+                Skill newSkill = new Skill();
+                skillDto.ToEntity(newSkill);
+                newSkills.Add(newSkill);
+            }
+        }
+        if (newSkills.Count > 0)
+        {
+            _repository.Skill.AddSkills(newSkills);
+            await _repository.SaveAsync();
+            foreach (Skill newSkill in newSkills)
+            {
+                _repository.JobSkill.AddJobSkill(new JobSkill { SkillsId = newSkill.Id, JobsId = job.Id });
+            }
+        }
+        
+        foreach (Skill existingSkill in existingSkills)
+        {
+            _repository.JobSkill.AddJobSkill(new JobSkill { SkillsId = existingSkill.Id, JobsId = job.Id });
+        }
+
+        await _repository.SaveAsync();
+    }
+
+    private void AddBenefitsForJob(Job job, IEnumerable<string> benefitNames)
+    {
+        List<JobBenefit> benefits = [];
+            foreach (string benefitName in benefitNames)
+            {
+                JobBenefit jobBenefit = new JobBenefit
+                {
+                    Benefit = (Benefit)Enum.Parse(typeof(Benefit), benefitName),
+                    JobId = job.Id
+                };
+                benefits.Add(jobBenefit);
+            }
+            _repository.JobBenefit.AddBenefits(benefits);
+    }
+
 }

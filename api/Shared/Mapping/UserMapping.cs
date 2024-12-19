@@ -5,7 +5,7 @@ namespace Shared.Mapping;
 
 public static class UserMapping
 {
-     public static ViewUserDto MapUserDto(this AppUser entity)
+     public static ViewUserDto ToDto(this AppUser entity)
      {
          return new ViewUserDto
          {
@@ -14,7 +14,7 @@ public static class UserMapping
          };
      }
 
-     public static void ReverseMapUser(this UserDto dto, AppUser entity)
+     public static void ToEntity(this UserDto dto, AppUser entity)
      {
          entity.Email = dto.Email;
          entity.UserName = dto.Email;

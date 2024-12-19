@@ -16,15 +16,26 @@ internal sealed class SkillRepository : RepositoryBase<Skill>, ISkillRepository
             .ToListAsync();
     }
 
-    public async Task<Skill?> GetSkillAsync(Guid id)
+    public async Task<Skill> GetSkillAsync(Guid id)
     {
         return await FindByCondition(s => s.Id.Equals(id))
+            .SingleAsync();
+    }
+
+    public async Task<Skill?> GetSkillByNameAsync(string name)
+    {
+        return await FindByCondition(s => s.Name.Equals(name))
             .SingleOrDefaultAsync();
     }
 
     public void AddSkill(Skill skill)
     {
         Create(skill);
+    }
+
+    public void AddSkills(List<Skill> skills)
+    {
+        CreateBulk(skills);
     }
 
     public void UpdateSkill(Skill skill)

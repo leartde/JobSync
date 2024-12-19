@@ -16,8 +16,6 @@ namespace Presentation.Controllers;
 public class JobsController : ControllerBase
 {
     private readonly IServiceManager _service;
-   
-
     public JobsController(IServiceManager service)
     {
         _service = service;
@@ -49,8 +47,8 @@ public class JobsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddJob(Guid employerId,[FromForm]AddJobDto jobDto)
     {
-        Job job = await _service.JobService.AddJobForEmployerAsync(employerId,jobDto);
-        return Ok(job.MapJobDto());
+        ViewJobDto job = await _service.JobService.AddJobForEmployerAsync(employerId,jobDto);
+        return Ok(job);
     }
 
     [HttpPut("{id}")]

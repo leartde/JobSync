@@ -14,13 +14,20 @@ public class JobApplicationService : IJobApplicationService
     {
         _repository = repository;
     }
+
+    public async Task<ViewApplicationDto> GetApplicationAsync(Guid jobId, Guid jobSeekerId)
+    {
+        JobApplication jobApplication = await _repository.JobApplication.GetJobApplication(jobId, jobSeekerId);
+        return jobApplication.ToDto();
+    }
+
     public async Task<IEnumerable<ViewApplicationDto>> GetApplicationsForJobSeekerAsync(Guid jobSeekerId)
     {
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
         if (jobSeeker is null) throw new NullReferenceException();
         IEnumerable<JobApplication> applications =
             await _repository.JobApplication.GetApplicationsForJobSeekerAsync(jobSeeker);
-        return applications.Select(a => a.MapApplicationDto());
+        return applications.Select(a => a.ToDto());
     }
     
 
@@ -29,7 +36,7 @@ public class JobApplicationService : IJobApplicationService
         Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
         if (job is null) throw new NullReferenceException();
         IEnumerable<JobApplication> applications = await _repository.JobApplication.GetApplicationsForJobAsync(job);
-        return applications.Select(a => a.MapApplicationDto());
+        return applications.Select(a => a.ToDto());
     }
     
 
@@ -39,10 +46,10 @@ public class JobApplicationService : IJobApplicationService
         {
             JobSeekerId = jobSeekerId
         };
-        applicationDto.ReverseMapApplication(jobApplication);
+        applicationDto.ToEntity(jobApplication);
         _repository.JobApplication.AddApplication(jobApplication);
         await _repository.SaveAsync();
-        return jobApplication.MapApplicationDto();
+        return jobApplication.ToDto();
     }
 
     public async Task<ViewApplicationDto> UpdateApplicationAsync(UpdateApplicationDto applicationDto)

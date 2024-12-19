@@ -7,6 +7,6 @@ namespace Shared.DataTransferObjects.JobDtos;
 public class AddJobDto : JobDto
 {
     public IFormFile? Image { get; set; }
-    public AddressDto? Address { get; set; }
+    public AddAddressDto? Address { get; set; }
     public List<AddSkillDto>? Skills { get; set; }
 }

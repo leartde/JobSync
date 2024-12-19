@@ -5,5 +5,5 @@ namespace Contracts;
 
 public interface IRawUploader
 {
-    Task<UploadResult> AddPdfAsync(IFormFile file);
+    Task<UploadResult> AddFileAsync(IFormFile file);
 }

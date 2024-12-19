@@ -1,4 +1,5 @@
 ﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Contracts;
 
 namespace CloudinaryService;
@@ -7,6 +8,7 @@ public class CloudinaryManager : ICloudinaryManager
 {
     private readonly Lazy<IImageUploader> _imageUploader;
     private readonly Lazy<IRawUploader> _rawUploader;
+    private readonly Cloudinary _cloudinary;
 
     public CloudinaryManager()
     {
@@ -15,17 +17,21 @@ public class CloudinaryManager : ICloudinaryManager
             Environment.GetEnvironmentVariable("APIKEY"),
             Environment.GetEnvironmentVariable("APISECRET")
         );
-        Cloudinary cloudinary = new Cloudinary(acc);
+        _cloudinary = new Cloudinary(acc);
         _imageUploader = new Lazy<IImageUploader>(() => new
-            ImageUploader(cloudinary)
+            ImageUploader(_cloudinary)
         );
         _rawUploader = new Lazy<IRawUploader>(() => new
-            RawUploader(cloudinary)
+            RawUploader(_cloudinary)
         );
     }
 
     public IImageUploader ImageUploader => _imageUploader.Value;
     public IRawUploader RawUploader => _rawUploader.Value;
-
-
+    public async Task<DeletionResult> DeleteFile(string publicId)
+    {
+        DeletionParams deleteParams = new DeletionParams(publicId);
+        DeletionResult result = await _cloudinary.DestroyAsync(deleteParams);
+        return result;
+    }
 }

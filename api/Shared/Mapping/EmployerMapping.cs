@@ -5,7 +5,7 @@ namespace Shared.Mapping;
 
 public static class EmployerMapping
 {
-    public static ViewEmployerDto MapEmployerDto(this Employer entity)
+    public static ViewEmployerDto ToDto(this Employer entity)
     {
         return new ViewEmployerDto
         {
@@ -20,7 +20,7 @@ public static class EmployerMapping
         };
     }
 
-    public static void ReverseMapEmployer(this EmployerDto dto, Employer entity )
+    public static void ToEntity(this EmployerDto dto, Employer entity )
     {
         entity.UserId = dto.UserId ?? entity.UserId;
         entity.Name = dto.Name ?? entity.Name;

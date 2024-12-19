@@ -5,7 +5,7 @@ namespace Shared.Mapping;
 
 public static class ApplicationMapping
 {
-    public static ViewApplicationDto MapApplicationDto(this JobApplication entity)
+    public static ViewApplicationDto ToDto(this JobApplication entity)
     {
         return new ViewApplicationDto
         {
@@ -21,7 +21,7 @@ public static class ApplicationMapping
         };
     }
 
-    public static void ReverseMapApplication(this ApplicationDto dto, JobApplication entity)
+    public static void ToEntity(this ApplicationDto dto, JobApplication entity)
     {
         entity.JobId = dto.JobId ?? entity.JobId;
         entity.Status = dto.Status ?? entity.Status;
