@@ -4,8 +4,9 @@ namespace Contracts;
 
 public interface IJobBenefitRepository
 {
-    Task<IEnumerable<JobBenefit>> GetBenefitsForJobAsync(Guid jobId);
-    void AddBenefit(JobBenefit jobBenefit);
-    void AddBenefits(List<JobBenefit> jobBenefits);
+    Task<IEnumerable<JobBenefit>> GetBenefitsForJobAsync(Job job);
+    Task AddBenefitAsync(JobBenefit jobBenefit);
+    Task AddBenefitsAsync(List<JobBenefit> jobBenefits);
     void DeleteBenefit(JobBenefit jobBenefit);
+    void DeleteBenefits(List<JobBenefit> jobBenefits);
 }

@@ -35,7 +35,7 @@ internal sealed class EmployerService : IEmployerService
     {
         Employer employer = new Employer();
         employerDto.ToEntity(employer);
-        _repository.Employer.AddEmployer(employer);
+        await _repository.Employer.AddEmployerAsync(employer);
         await _repository.SaveAsync();
         return employer.ToDto();
 
@@ -59,9 +59,8 @@ internal sealed class EmployerService : IEmployerService
 
     private async Task<Employer> RetrieveEmployerAsync(Guid id)
     {
-        Employer? employer = await _repository.Employer.GetEmployerAsync(id);
+        Employer employer = await _repository.Employer.GetEmployerAsync(id);
         if (employer is null) throw new NotFoundException("employer", id);
         return employer;
-
     }
 }

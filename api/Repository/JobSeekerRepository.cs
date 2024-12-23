@@ -20,18 +20,18 @@ internal sealed class JobSeekerRepository : RepositoryBase<JobSeeker> , IJobSeek
             .ToListAsync();
     }
 
-    public async Task<JobSeeker?> GetJobSeekerAsync(Guid id)
+    public async Task<JobSeeker> GetJobSeekerAsync(Guid id)
     {
         return await FindByCondition(js => js.Id.Equals(id))
             .Include(js => js.Address)
             .Include(js => js.Applications)
             .Include(js => js.Skills)
-            .SingleOrDefaultAsync();
+            .SingleAsync();
     }
 
-    public void AddJobSeeker(JobSeeker jobSeeker)
+    public async Task AddJobSeekerAsync(JobSeeker jobSeeker)
     {
-        Create(jobSeeker);
+       await Create(jobSeeker);
     }
 
     public void DeleteJobSeeker(JobSeeker jobSeeker)

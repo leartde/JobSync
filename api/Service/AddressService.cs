@@ -31,7 +31,7 @@ internal sealed class AddressService : IAddressService
     public async Task<ViewAddressDto> GetAddressForJobSeekerAsync(Guid jobSeekerId)
     {
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
-        Address? address = await _repository.Address.GetAddressForJobSeekerAsync(jobSeeker);
+        Address address = await _repository.Address.GetAddressForJobSeekerAsync(jobSeeker);
         return address.ToDto();
     }
     
@@ -39,9 +39,9 @@ internal sealed class AddressService : IAddressService
     {
         Address address = new Address();
         addressDto.ToEntity(address);
-         _repository.Address.AddAddress(address);
-         Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
-         if (job != null) job.AddressId = address.Id;
+         await _repository.Address.AddAddressAsync(address);
+         Job job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
+          job.AddressId = address.Id;
          await _repository.SaveAsync();
          return address.ToDto();
     }
@@ -50,17 +50,17 @@ internal sealed class AddressService : IAddressService
     {
         Address address = new Address();
         addressDto.ToEntity(address);
-        _repository.Address.AddAddress(address);
-        JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
-        if (jobSeeker != null) jobSeeker.AddressId = address.Id;
+        await _repository.Address.AddAddressAsync(address);
+        JobSeeker jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
+         jobSeeker.AddressId = address.Id;
         await _repository.SaveAsync();
         return address.ToDto();
     }
     
     public async Task DeleteAddressForJobAsync(Guid employerId, Guid jobId)
     {
-        Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
-        if (job?.Address is null) throw new NullReferenceException();
+        Job job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
+        if (job.Address is null) throw new NullAttributeException("Job's address is null");
          _repository.Address.DeleteAddress(job.Address);
          await _repository.SaveAsync();
         
@@ -68,16 +68,16 @@ internal sealed class AddressService : IAddressService
     
     public async Task DeleteAddressForJobSeekerAsync(Guid jobSeekerId)
     {
-        JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
-        if (jobSeeker?.Address is null) throw new NullReferenceException();
+        JobSeeker jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
+        if (jobSeeker.Address is null) throw new NullAttributeException("Job seeker's address is null");
         _repository.Address.DeleteAddress(jobSeeker.Address);
         await _repository.SaveAsync();
     }
     
     public async Task<ViewAddressDto> UpdateAddressForJobAsync(Guid employerId, Guid jobId, UpdateAddressDto addressDto)
     {
-        Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
-        if (job?.Address is null) throw new NullReferenceException();
+        Job job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
+        if (job.Address is null) throw new NullAttributeException("Job's address is null");
         addressDto.ToEntity(job.Address);
         _repository.Address.UpdateAddress(job.Address);
         await _repository.SaveAsync();
@@ -88,7 +88,7 @@ internal sealed class AddressService : IAddressService
     public async Task<ViewAddressDto>  UpdateAddressForJobSeekerAsync(Guid jobSeekerId, UpdateAddressDto addressDto)
     {
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
-        if (jobSeeker?.Address is null) throw new NullReferenceException();
+        if (jobSeeker.Address is null) throw new NullAttributeException("Job seeker's address is null");
         addressDto.ToEntity(jobSeeker.Address);
         _repository.Address.UpdateAddress(jobSeeker.Address);
         await _repository.SaveAsync();

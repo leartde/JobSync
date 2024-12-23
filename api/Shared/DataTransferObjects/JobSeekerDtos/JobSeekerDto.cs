@@ -3,7 +3,7 @@ using Shared.DataTransferObjects.SkillDtos;
 
 namespace Shared.DataTransferObjects.JobSeekerDtos;
 
-public class JobSeekerDto
+public abstract class JobSeekerDto
 {
     public Guid? UserId { get; set; }
     public string? FirstName { get; set; }
@@ -11,7 +11,6 @@ public class JobSeekerDto
     public string? LastName { get; set; }
     public DateOnly? Birthday { get; set; }
     public string? Gender { get; set; }
-    // public string Email { get; set; } = string.Empty;
     public string? Phone { get; set; }
     public string? SecondaryPhone { get; set; }
     

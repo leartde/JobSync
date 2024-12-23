@@ -16,10 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Remove="Extensions\ApiBaseResponseExtensions.cs" />
     </ItemGroup>
 

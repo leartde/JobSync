@@ -9,21 +9,21 @@ internal sealed class AddressRepository : RepositoryBase<Address>, IAddressRepos
     public AddressRepository(RepositoryContext context) : base(context){}
 
 
-    public async Task<Address?> GetAddressForJobAsync(Job? job)
+    public async Task<Address> GetAddressForJobAsync(Job job)
     {
-        return await FindByCondition(a => job != null && a.Id.Equals(job.AddressId))
-            .SingleOrDefaultAsync();
+        return await FindByCondition(a =>a.Id.Equals(job.AddressId))
+            .SingleAsync();
     }
 
-    public async Task<Address?> GetAddressForJobSeekerAsync(JobSeeker? jobSeeker)
+    public async Task<Address> GetAddressForJobSeekerAsync(JobSeeker jobSeeker)
     {
-        return await FindByCondition(a => jobSeeker != null && a.Id.Equals(jobSeeker.AddressId))
-            .SingleOrDefaultAsync();
+        return await FindByCondition(a => a.Id.Equals(jobSeeker.AddressId))
+            .SingleAsync();
     }
 
-    public void AddAddress(Address address)
+    public async Task AddAddressAsync(Address address)
     {
-        Create(address);
+        await Create(address);
     }
 
     public void DeleteAddress(Address address)

@@ -10,24 +10,29 @@ internal sealed class JobBenefitRepository : RepositoryBase<JobBenefit>, IJobBen
     {
     }
 
-    public async Task<IEnumerable<JobBenefit>> GetBenefitsForJobAsync(Guid jobId)
+    public async Task<IEnumerable<JobBenefit>> GetBenefitsForJobAsync(Job job)
     {
-        return await FindByCondition(b => b.JobId.Equals(jobId))
+        return await FindByCondition(b => b.JobId.Equals(job.Id))
             .ToListAsync();
     }
 
-    public void AddBenefit(JobBenefit jobBenefit)
+    public async Task AddBenefitAsync(JobBenefit jobBenefit)
     {
-        Create(jobBenefit);
+        await Create(jobBenefit);
     }
 
-    public void AddBenefits(List<JobBenefit> jobBenefits)
+    public async Task AddBenefitsAsync(List<JobBenefit> jobBenefits)
     {
-        CreateBulk(jobBenefits);
+        await CreateBulk(jobBenefits);
     }
 
     public void DeleteBenefit(JobBenefit jobBenefit)
     {
         Delete(jobBenefit);
+    }
+
+    public void DeleteBenefits(List<JobBenefit> jobBenefits)
+    {
+        DeleteBulk(jobBenefits);
     }
 }

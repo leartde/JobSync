@@ -128,6 +128,9 @@ namespace JobSync.Migrations
                     b.Property<Guid>("JobSeekerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("JobId", "JobSeekerId");
 
                     b.HasIndex("JobSeekerId");
@@ -199,14 +202,14 @@ namespace JobSync.Migrations
                     b.Property<bool>("HasMultipleSpots")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsTakingApplications")
                         .HasColumnType("bit");
 
                     b.Property<string>("Pay")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhotoUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -389,19 +392,19 @@ namespace JobSync.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2186c431-bc06-4195-8b9a-16af30848b78"),
+                            Id = new Guid("25db0412-6ae3-4e52-a7d1-1f4294cefbc8"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("ae02f401-7998-439c-a9da-9c25480c79e6"),
+                            Id = new Guid("c58171d9-0431-4390-bb40-c050f929224b"),
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = new Guid("8904f535-d321-4b6c-a129-fe00cb7a0aa2"),
+                            Id = new Guid("6df94a59-f9d6-442a-bfed-fb85315127e3"),
                             Name = "JobSeeker",
                             NormalizedName = "JOBSEEKER"
                         });

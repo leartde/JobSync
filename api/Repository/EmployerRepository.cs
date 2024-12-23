@@ -13,15 +13,15 @@ internal sealed class EmployerRepository : RepositoryBase<Employer>, IEmployerRe
             .ToListAsync();
     }
 
-    public async Task<Employer?> GetEmployerAsync(Guid id)
+    public async Task<Employer> GetEmployerAsync(Guid id)
     {
         return await FindByCondition(e => e.Id.Equals(id))
-           .SingleOrDefaultAsync();
+           .SingleAsync();
     }
 
-    public void AddEmployer(Employer employer)
+    public async Task AddEmployerAsync(Employer employer)
     {
-        Create(employer);
+        await Create(employer);
     }
 
     public void DeleteEmployer(Employer employer)

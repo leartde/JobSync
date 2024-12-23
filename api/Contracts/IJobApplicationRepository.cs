@@ -7,8 +7,7 @@ public interface IJobApplicationRepository
     Task<JobApplication> GetJobApplication(Guid jobId, Guid jobSeekerId);
     Task<IEnumerable<JobApplication>> GetApplicationsForJobSeekerAsync(JobSeeker jobSeeker);
     Task<IEnumerable<JobApplication>> GetApplicationsForJobAsync(Job job);
-  
-    void AddApplication(JobApplication jobApplication);
+    Task AddApplicationAsync(JobApplication jobApplication);
     void UpdateApplication(JobApplication jobApplication);
     void DeleteApplication(JobApplication jobApplication);
 }

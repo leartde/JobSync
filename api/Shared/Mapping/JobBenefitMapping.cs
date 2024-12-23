@@ -6,9 +6,9 @@ namespace Shared.Mapping;
 
 public static class JobBenefitMapping
 {
-    public static JobBenefitDto ToDto(this JobBenefit entity)
+    public static ViewJobBenefitDto ToDto(this JobBenefit entity)
     {
-        return new JobBenefitDto
+        return new ViewJobBenefitDto
         {
             JobId = entity.JobId,
             Benefit = entity.Benefit.ToString()
@@ -17,7 +17,6 @@ public static class JobBenefitMapping
 
     public static void ToEntity(this JobBenefitDto dto, JobBenefit entity)
     {
-        entity.JobId = dto.JobId;
         entity.Benefit = (Benefit)Enum.Parse(typeof(Benefit), dto.Benefit);
     }
 }

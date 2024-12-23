@@ -1,7 +1,5 @@
-﻿using Entities.Enums;
-using Entities.Models;
+﻿using Entities.Models;
 using Shared.DataTransferObjects.JobDtos;
-using Shared.DataTransferObjects.SkillDtos;
 
 namespace Shared.Mapping;
 

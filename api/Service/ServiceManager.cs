@@ -15,6 +15,8 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IJobSeekerService> _jobSeekerService;
     private readonly Lazy<IAuthenticationService> _authenticationService;
     private readonly Lazy<IJobApplicationService> _applicationService;
+    private readonly Lazy<IBookmarkService> _bookmarkService;
+    private readonly Lazy<IJobBenefitService> _jobBenefitService;
 
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
         userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper, 
@@ -36,6 +38,12 @@ public class ServiceManager : IServiceManager
         );
         _applicationService = new Lazy<IJobApplicationService>(() => new
             JobApplicationService(repository));
+        _bookmarkService = new Lazy<IBookmarkService>(() => new
+            BookmarkService(repository)
+        );
+        _jobBenefitService = new Lazy<IJobBenefitService>(() => new
+            JobBenefitService(repository)
+        );
     }
 
     public IAddressService AddressService => _addressService.Value;
@@ -44,4 +52,6 @@ public class ServiceManager : IServiceManager
     public IJobSeekerService JobSeekerService => _jobSeekerService.Value;
     public IAuthenticationService AuthenticationService => _authenticationService.Value;
     public IJobApplicationService JobApplicationService => _applicationService.Value;
+    public IBookmarkService BookmarkService => _bookmarkService.Value;
+    public IJobBenefitService JobBenefitService => _jobBenefitService.Value;
 }

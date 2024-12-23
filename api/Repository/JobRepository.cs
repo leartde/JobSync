@@ -47,18 +47,18 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             .ToListAsync();
     }
 
-    public async Task<Job?> GetJobForEmployerAsync(Guid employerId, Guid id)
+    public async Task<Job> GetJobForEmployerAsync(Guid employerId, Guid id)
     {
         return await FindByCondition(j=>j.EmployerId.Equals(employerId)&& j.Id.Equals(id) )
             .Include(j => j.Employer)
             .Include(j => j.Address)
             .Include(j => j.Skills)
-            .SingleOrDefaultAsync();
+            .SingleAsync();
     }
 
-    public void AddJob(Job job)
+    public async Task AddJobAsync(Job job)
     {
-        Create(job);
+        await Create(job);
     }
 
     public void DeleteJob(Job job)

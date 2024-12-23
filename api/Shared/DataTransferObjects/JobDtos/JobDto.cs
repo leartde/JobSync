@@ -3,7 +3,7 @@ using Shared.DataTransferObjects.SkillDtos;
 
 namespace Shared.DataTransferObjects.JobDtos;
 
-public  class JobDto
+public abstract class JobDto
 {
     
     public string? Title { get; set; }

@@ -64,7 +64,7 @@ internal sealed class JobService : IJobService
             ImageUploadResult result = await _cloudinaryManager.ImageUploader.AddPhotoAsync(jobDto.Image);
             job.ImageUrl = result.Url.ToString();
         }
-        _repository.Job.AddJob(job);
+        await _repository.Job.AddJobAsync(job);
         if (jobDto.Skills?.Count > 0 )
         {
             await AddSkillsForJobAsync(job, jobDto.Skills);
@@ -72,7 +72,7 @@ internal sealed class JobService : IJobService
 
         if (jobDto.Benefits?.Count() > 0)
         {
-            AddBenefitsForJob(job, jobDto.Benefits);
+            await AddBenefitsForJobAsync(job, jobDto.Benefits);
         }
         await _repository.SaveAsync();
         return job.ToDto(); 
@@ -106,7 +106,7 @@ internal sealed class JobService : IJobService
     {
         Address address = new Address();
         addressDto.ToEntity(address);
-        _repository.Address.AddAddress(address);
+        await _repository.Address.AddAddressAsync(address);
         await _repository.SaveAsync();
         job.AddressId = address.Id;
     }
@@ -143,7 +143,7 @@ internal sealed class JobService : IJobService
         }
     }
 
-    private void AddBenefitsForJob(Job job, IEnumerable<string> benefitNames)
+    private async Task AddBenefitsForJobAsync(Job job, IEnumerable<string> benefitNames)
     {
         List<JobBenefit> benefits = [];
             foreach (string benefitName in benefitNames)
@@ -155,7 +155,7 @@ internal sealed class JobService : IJobService
                 };
                 benefits.Add(jobBenefit);
             }
-            _repository.JobBenefit.AddBenefits(benefits);
+           await  _repository.JobBenefit.AddBenefitsAsync(benefits);
     }
 
 }

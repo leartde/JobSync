@@ -1,7 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Service.Contracts;
-using Shared.DataTransferObjects.ApplicationDtos;
+using Shared.DataTransferObjects.JobApplicationDtos;
 using Shared.Mapping;
 
 namespace Service;
@@ -15,15 +15,15 @@ public class JobApplicationService : IJobApplicationService
         _repository = repository;
     }
 
-    public async Task<ViewApplicationDto> GetApplicationAsync(Guid jobId, Guid jobSeekerId)
+    public async Task<ViewJobApplicationDto> GetApplicationAsync(Guid jobId, Guid jobSeekerId)
     {
         JobApplication jobApplication = await _repository.JobApplication.GetJobApplication(jobId, jobSeekerId);
         return jobApplication.ToDto();
     }
 
-    public async Task<IEnumerable<ViewApplicationDto>> GetApplicationsForJobSeekerAsync(Guid jobSeekerId)
+    public async Task<IEnumerable<ViewJobApplicationDto>> GetApplicationsForJobSeekerAsync(Guid jobSeekerId)
     {
-        JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
+        JobSeeker jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
         if (jobSeeker is null) throw new NullReferenceException();
         IEnumerable<JobApplication> applications =
             await _repository.JobApplication.GetApplicationsForJobSeekerAsync(jobSeeker);
@@ -31,28 +31,28 @@ public class JobApplicationService : IJobApplicationService
     }
     
 
-    public async Task<IEnumerable<ViewApplicationDto>> GetApplicationsForJobAsync(Guid employerId, Guid jobId)
+    public async Task<IEnumerable<ViewJobApplicationDto>> GetApplicationsForJobAsync(Guid employerId, Guid jobId)
     {
-        Job? job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
+        Job job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
         if (job is null) throw new NullReferenceException();
         IEnumerable<JobApplication> applications = await _repository.JobApplication.GetApplicationsForJobAsync(job);
         return applications.Select(a => a.ToDto());
     }
     
 
-    public async Task<ViewApplicationDto> AddApplicationAsync(Guid jobSeekerId,AddApplicationDto applicationDto)
+    public async Task<ViewJobApplicationDto> AddApplicationAsync(Guid jobSeekerId,AddJobApplicationDto jobApplicationDto)
     {
         JobApplication jobApplication = new JobApplication
         {
             JobSeekerId = jobSeekerId
         };
-        applicationDto.ToEntity(jobApplication);
-        _repository.JobApplication.AddApplication(jobApplication);
+        jobApplicationDto.ToEntity(jobApplication);
+        await _repository.JobApplication.AddApplicationAsync(jobApplication);
         await _repository.SaveAsync();
         return jobApplication.ToDto();
     }
 
-    public async Task<ViewApplicationDto> UpdateApplicationAsync(UpdateApplicationDto applicationDto)
+    public async Task<ViewJobApplicationDto> UpdateApplicationAsync(UpdateJobApplicationDTO jobApplicationDto)
     {
         throw new NotImplementedException();
     }

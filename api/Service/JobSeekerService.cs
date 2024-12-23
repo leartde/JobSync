@@ -52,7 +52,7 @@ internal sealed class JobSeekerService : IJobSeekerService
             UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
             jobSeeker.ResumeLink = result.Url.ToString();
         }
-        _repository.JobSeeker.AddJobSeeker(jobSeeker);
+        await _repository.JobSeeker.AddJobSeekerAsync(jobSeeker);
         if (jobSeekerDto.Skills != null)
         {
             await AddSkillsForJobSeekerAsync(jobSeeker, jobSeekerDto.Skills);
@@ -91,7 +91,7 @@ internal sealed class JobSeekerService : IJobSeekerService
     {
         Address address = new Address();
         addressDto.ToEntity(address);
-        _repository.Address.AddAddress(address);
+        await _repository.Address.AddAddressAsync(address);
         await _repository.SaveAsync();
         jobSeeker.AddressId = address.Id;
     }

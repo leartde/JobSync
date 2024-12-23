@@ -36,9 +36,9 @@ public class JobApplicationRepository : RepositoryBase<JobApplication>, IJobAppl
     }
     
 
-    public void AddApplication(JobApplication jobApplication)
+    public async Task AddApplicationAsync(JobApplication jobApplication)
     {
-        Create(jobApplication);
+        await Create(jobApplication);
     }
 
     public void UpdateApplication(JobApplication jobApplication)

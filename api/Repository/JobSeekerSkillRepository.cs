@@ -18,12 +18,12 @@ internal sealed class JobSeekerSkillRepository : RepositoryBase<JobSeekerSkill>,
             .ToListAsync();
     }
 
-    public async Task<JobSeekerSkill?> GetJobSeekerSkillAsync(Guid jobSeekerId, Guid skillId)
+    public async Task<JobSeekerSkill> GetJobSeekerSkillAsync(Guid jobSeekerId, Guid skillId)
     {
         return await FindByCondition(js => js.JobSeekersId.Equals(jobSeekerId) && js.SkillsId.Equals(skillId))
             .Include(js => js.JobSeeker)
             .Include(js => js.Skill)
-            .SingleOrDefaultAsync();
+            .SingleAsync();
     }
 
     public void AddJobSeekerSkill(JobSeekerSkill jobSeekerSkill)

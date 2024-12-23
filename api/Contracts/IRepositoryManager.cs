@@ -11,5 +11,6 @@ public interface IRepositoryManager
     IJobSeekerSkillRepository JobSeekerSkill { get; }
     IJobApplicationRepository JobApplication { get; }
     IJobBenefitRepository JobBenefit { get; }
+    IBookmarkRepository Bookmark { get; }
     Task SaveAsync();
 }

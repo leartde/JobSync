@@ -2,7 +2,7 @@
 
 namespace Shared.DataTransferObjects.EmployerDtos;
 
-public class EmployerDto
+public abstract class EmployerDto
 {
     public Guid? UserId { get; set; }
     public string? Name { get; set; }

@@ -16,7 +16,7 @@ namespace Repository;
             return _context.Set<T>()
                 .AsNoTracking();
         }
-
+        
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
             return _context.Set<T>()
@@ -24,9 +24,9 @@ namespace Repository;
                 .AsNoTracking();
         }
 
-        public void Create(T entity)
+        public async Task Create(T entity)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity);
         }
 
         public void Update(T entity)
@@ -39,8 +39,13 @@ namespace Repository;
             _context.Set<T>().Remove(entity);
         }
 
-        public void CreateBulk(List<T> entities)
+        public async Task CreateBulk(List<T> entities)
         {
-            _context.Set<T>().AddRange(entities);
+            await _context.Set<T>().AddRangeAsync(entities);
+        }
+        
+        public void DeleteBulk(List<T> entities)
+        {
+            _context.Set<T>().RemoveRange(entities);
         }
     }
