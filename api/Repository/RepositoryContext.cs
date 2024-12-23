@@ -1,10 +1,12 @@
-﻿using Entities.Enums;
+﻿using System.Collections.Immutable;
+using Entities.Enums;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Repository.Configuration;
+using Repository.DataSeeders;
 
 namespace Repository;
 
@@ -120,6 +122,8 @@ public class RepositoryContext : IdentityDbContext<AppUser, IdentityRole<Guid>, 
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new SeedUserData());
+        modelBuilder.ApplyConfiguration(new SeedEmployerData());
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

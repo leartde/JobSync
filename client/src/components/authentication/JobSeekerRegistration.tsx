@@ -15,23 +15,23 @@ const JobSeekerRegistration = () => {
         Register as a <span className="text-red-500">job seeker</span>
       </h1>
       <div className=" w-full  ">
-        <form className="flex flex-col gap-2 items-start p-2" action="">
+        <form className="w-full flex flex-col gap-2 items-start p-2" action="">
           <legend className="text-md font-semibold">
             Personal Information
           </legend>
-          <div className="flex max-md:flex-col justify-between gap-2 mt-2">
-            <div className="flex flex-col">
+          <div className="flex w-full max-md:flex-col justify-between gap-2 mt-2">
+            <div className="max-md:w-full w-1/2 flex flex-col">
               <label className="text-sm" htmlFor="firstname ">
                 First Name*
               </label>
               <input
-                className="border border-gray-400 rounded-sm outline-none"
+                className=" border border-gray-400 rounded-sm outline-none"
                 id="firstname"
                 type="text"
               />
             </div>
 
-            <div className="flex flex-col">
+            <div className=" max-md:w-full w-1/2 flex flex-col">
               <label className="text-sm" htmlFor="middlename ">
                 Middle Name
               </label>
@@ -43,7 +43,7 @@ const JobSeekerRegistration = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="w-full flex flex-col">
             <label className="text-sm" htmlFor="lastname ">
               Last Name*
             </label>
@@ -55,7 +55,7 @@ const JobSeekerRegistration = () => {
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="max-md:w-full flex flex-col">
             <label className="text-sm" htmlFor="lastname ">
               Country*
             </label>
@@ -75,7 +75,7 @@ const JobSeekerRegistration = () => {
             </select>
           </div>
 
-          <div className="flex flex-col w-3/4">
+          <div className="max-md:w-full flex flex-col w-3/4">
             <label className="text-sm" htmlFor="lastname ">
               Street Address*
             </label>
@@ -86,7 +86,7 @@ const JobSeekerRegistration = () => {
               type="text"
             />
           </div>
-          <div className="flex max-md:flex-col justify-start gap-6">
+          <div className="w-full flex max-md:flex-col justify-start gap-6">
             <div className="flex flex-col md:w-1/5">
               <label className="text-sm" htmlFor="middlename ">
                 City*
@@ -99,7 +99,7 @@ const JobSeekerRegistration = () => {
               />
             </div>
             {country == "US" && (
-              <div className="flex flex-col md:w-1/5 ">
+              <div className="w-full flex flex-col md:w-1/5 ">
                 <label className="text-sm" htmlFor="middlename ">
                   State
                 </label>

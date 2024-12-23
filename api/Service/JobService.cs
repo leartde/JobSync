@@ -157,5 +157,4 @@ internal sealed class JobService : IJobService
             }
            await  _repository.JobBenefit.AddBenefitsAsync(benefits);
     }
-
 }
