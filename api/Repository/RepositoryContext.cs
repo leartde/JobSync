@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-using Entities.Enums;
-using Entities.Models;
+﻿using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +13,12 @@ public class RepositoryContext : IdentityDbContext<AppUser, IdentityRole<Guid>, 
     public RepositoryContext(DbContextOptions options) : base(options){}
     public DbSet<Employer>? Employers { get; set; }
     public DbSet<Job>? Jobs { get; set; }
+    public DbSet<JobSeeker>? JobSeekers { get; set; }
     public DbSet<Address>? Addresses { get; set; }
     public DbSet<JobApplication>? JobApplications { get; set; }
     public DbSet<Skill>? Skills { get; set; }
-    public DbSet<JobSkill>? JobSkill { get; set; }
-    public DbSet<JobSeekerSkill>? JobSeekerSkill { get; set; }
+    public DbSet<JobSkill>? JobSkills { get; set; }
+    public DbSet<JobSeekerSkill>? JobSeekerSkills { get; set; }
     public DbSet<Bookmark>? Bookmarks { get; set; }
     public DbSet<JobBenefit>? Benefits { get; set; }
     
@@ -64,7 +63,7 @@ public class RepositoryContext : IdentityDbContext<AppUser, IdentityRole<Guid>, 
             .WithMany(j => j.Jobs)
             .HasForeignKey(e => e.EmployerId)
             .OnDelete(DeleteBehavior.NoAction);
-      ;
+      
         
         modelBuilder.Entity<JobSkill>()
             .HasKey(js => new { js.JobsId, js.SkillsId });
@@ -122,8 +121,15 @@ public class RepositoryContext : IdentityDbContext<AppUser, IdentityRole<Guid>, 
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new SeedAddressData());
         modelBuilder.ApplyConfiguration(new SeedUserData());
         modelBuilder.ApplyConfiguration(new SeedEmployerData());
+        modelBuilder.ApplyConfiguration(new SeedJobSeekerData());
+        modelBuilder.ApplyConfiguration(new SeedJobData());
+        modelBuilder.ApplyConfiguration(new SeedSkillData());
+        modelBuilder.ApplyConfiguration(new SeedJobSkillData());
+        modelBuilder.ApplyConfiguration(new SeedJobSeekerSkillData());
+        modelBuilder.ApplyConfiguration(new SeedJobBenefitData());
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

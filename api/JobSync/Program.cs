@@ -7,7 +7,9 @@ using FluentValidation.AspNetCore;
 using JobSync.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NLog;
+using Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -9,16 +9,15 @@ namespace Repository.DataSeeders;
 public class SeedUserData : IEntityTypeConfiguration<AppUser>
 {
     private readonly PasswordHasher<AppUser> passwordHasher = new();
-    
-    public static AppUser?[] Users = new AppUser[100];
+    private static readonly AppUser[] users = new AppUser[200];
+    public static IReadOnlyList<AppUser> Users => users;
     
     public void Configure(EntityTypeBuilder<AppUser> builder)
     {
         
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 200; i++)
         {
-            if (Users[i] == null)
-            {
+            
                 string email = Faker.User.Email();
                 AppUser user = new AppUser
                 {
@@ -28,11 +27,10 @@ public class SeedUserData : IEntityTypeConfiguration<AppUser>
                     UserName = email,
                     NormalizedUserName = email.ToUpper()
                 };
-                user.PasswordHash = passwordHasher.HashPassword(user, "Employerpass123");
-                Users[i] = user;
-            }
+                user.PasswordHash = passwordHasher.HashPassword(user, i < 100 ? "Employerpass123" : "Jobseekerpass123");
+                users[i] = user;
 
         }
-        builder.HasData(Users);
+        builder.HasData(users);
     }
 }

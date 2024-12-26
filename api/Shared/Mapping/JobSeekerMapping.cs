@@ -10,6 +10,7 @@ public static class JobSeekerMapping
         return new ViewJobSeekerDto
         {
             Id = entity.Id,
+            UserId = entity.UserId,
             FirstName = entity.FirstName,
             MiddleName = entity.MiddleName,
             LastName = entity.LastName,

@@ -6,33 +6,28 @@ namespace Repository.DataSeeders;
 
 internal sealed class SeedEmployerData : IEntityTypeConfiguration<Employer>
 {
-    SeedUserData userData = new();
-
-    public Employer[] Employers = new Employer[100];
-    private readonly SeedUserData _userSeeder = new();
-
-   
-     
+    private static readonly Employer[] employers = new Employer[100];
+    public static IReadOnlyList<Employer> Employers => employers;
+    
     
     public void Configure(EntityTypeBuilder<Employer> builder)
     {
         for (int i = 0; i < 100; i++)
         {
-            if (SeedUserData.Users[i] == null) continue;
             Employer employer = new Employer
             {
                 Id = Guid.NewGuid(),
-                UserId = SeedUserData.Users[i]!.Id,
+                UserId = SeedUserData.Users[i].Id,
                 Name = Faker.Name.FullName(),
                 Country = Faker.Address.Country() ?? "Unknown",
                 Industry = Faker.Company.Industry(),
-                Founded = DateOnly.FromDateTime(Faker.Date.Birthday(1950, 2000)),
+                Founded = DateOnly.FromDateTime(Faker.Date.Birthday(0, 50)),
                 Phone = Faker.Phone.GetPhoneNumber(),
                 PhotoUrl = "https://picsum.photos/200/300"
             };
-            Employers[i] = employer;
+            employers[i] = employer;
         }
 
-        builder.HasData(Employers);
+        builder.HasData(employers);
     }
 }
