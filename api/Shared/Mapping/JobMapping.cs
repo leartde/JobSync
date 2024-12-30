@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using Entities.Enums;
+using Entities.Models;
 using Shared.DataTransferObjects.JobDtos;
 
 namespace Shared.Mapping;
@@ -11,8 +12,8 @@ public static class JobMapping
         {
             Id = entity.Id,
             Title = entity.Title,
-            Address = $"{entity.Address?.Street} {entity.Address?.Region ?? entity.Address?.State}"
-                + $"{entity.Address?.Country} {entity.Address?.ZipCode}",
+            Address = entity.Address != null?$"{entity.Address.Street} {entity.Address.City} {entity.Address.Region ?? entity.Address.State}"
+                + $"{entity.Address.Country} {entity.Address.ZipCode}":"Remote",
             Pay = entity.Pay,
             Description = entity.Description,
             Type = entity.Type,
@@ -43,6 +44,29 @@ public static class JobMapping
             addJobDto.Skills?.ToList().ForEach(skillDto => 
                 entity.Skills.ToList().ForEach(skill => 
                     skillDto.ToEntity(skill)));
+
+            if (addJobDto.Address != null)
+            {
+                Address address = new Address();
+                addJobDto.Address.ToEntity(address);
+                entity.Address = address;
+            }
+
+            if (addJobDto.Benefits?.Count() > 0)
+            {
+                List<JobBenefit> jobBenefits = [];
+                foreach (string benefit in addJobDto.Benefits)
+                {
+                    jobBenefits.Add(new JobBenefit
+                    {
+                        JobId = entity.Id,
+                        Benefit = (Benefit)Enum.Parse(typeof(Benefit), benefit)
+                    });
+                }
+
+                entity.Benefits = jobBenefits;
+            }
+            
         }
     }
 }

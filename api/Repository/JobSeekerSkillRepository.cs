@@ -26,9 +26,9 @@ internal sealed class JobSeekerSkillRepository : RepositoryBase<JobSeekerSkill>,
             .SingleAsync();
     }
 
-    public void AddJobSeekerSkill(JobSeekerSkill jobSeekerSkill)
+    public async Task AddJobSeekerSkillsAsync(List<JobSeekerSkill> jobSeekerSkills)
     {
-        Create(jobSeekerSkill);
+        await CreateBulk(jobSeekerSkills);
     }
 
     public void DeleteJobSeekerSkill(JobSeekerSkill jobSeekerSkill)

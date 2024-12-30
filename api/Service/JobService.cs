@@ -54,10 +54,7 @@ internal sealed class JobService : IJobService
         {
             EmployerId = employerId
         };
-        if (jobDto.Address != null)
-        {
-            await AddAddressForJobAsync(job, jobDto.Address);
-        }
+        
         jobDto.ToEntity(job);
         if (jobDto.Image != null)
         {
@@ -69,11 +66,7 @@ internal sealed class JobService : IJobService
         {
             await AddSkillsForJobAsync(job, jobDto.Skills);
         }
-
-        if (jobDto.Benefits?.Count() > 0)
-        {
-            await AddBenefitsForJobAsync(job, jobDto.Benefits);
-        }
+        
         await _repository.SaveAsync();
         return job.ToDto(); 
         }
@@ -101,60 +94,53 @@ internal sealed class JobService : IJobService
         if (job is null) throw new NotFoundException("job",id);
         return job;
     }
-
-    private async Task AddAddressForJobAsync(Job job, AddAddressDto addressDto)
-    {
-        Address address = new Address();
-        addressDto.ToEntity(address);
-        await _repository.Address.AddAddressAsync(address);
-        await _repository.SaveAsync();
-        job.AddressId = address.Id;
-    }
-
-
-    private async Task AddSkillsForJobAsync(Job job, List<AddSkillDto> skillDtos)
-    {
-        List<Skill> existingSkills = [];
-        List<Skill> newSkills = [];
-        foreach (AddSkillDto skillDto in skillDtos)
+    
+        private async Task AddSkillsForJobAsync(Job job, List<AddSkillDto> skillDtos)
         {
-            Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillDto.Name);
-            if (skill != null) existingSkills.Add(skill);
-            else
+            List<Skill> newSkills = [];
+            List<JobSkill> jobSkills =[];
+            foreach (AddSkillDto skillDto in skillDtos)
             {
-                Skill newSkill = new Skill();
-                skillDto.ToEntity(newSkill);
-                newSkills.Add(newSkill);
-            }
-        }
-        if (newSkills.Count > 0)
-        {
-            _repository.Skill.AddSkills(newSkills);
-            await _repository.SaveAsync();
-            foreach (Skill newSkill in newSkills)
-            {
-                _repository.JobSkill.AddJobSkill(new JobSkill { SkillsId = newSkill.Id, JobsId = job.Id });
-            }
-        }
-        
-        foreach (Skill existingSkill in existingSkills)
-        {
-            _repository.JobSkill.AddJobSkill(new JobSkill { SkillsId = existingSkill.Id, JobsId = job.Id });
-        }
-    }
-
-    private async Task AddBenefitsForJobAsync(Job job, IEnumerable<string> benefitNames)
-    {
-        List<JobBenefit> benefits = [];
-            foreach (string benefitName in benefitNames)
-            {
-                JobBenefit jobBenefit = new JobBenefit
+                Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillDto.Name);
+                if(skill is null)
                 {
-                    Benefit = (Benefit)Enum.Parse(typeof(Benefit), benefitName),
-                    JobId = job.Id
-                };
-                benefits.Add(jobBenefit);
+                    Skill newSkill = new Skill{Id = Guid.NewGuid()};
+                    skillDto.ToEntity(newSkill);
+                    newSkills.Add(newSkill);
+                    jobSkills.Add(new JobSkill{JobsId = job.Id,SkillsId = newSkill.Id});
+                }
+                else
+                {
+                    skillDto.ToEntity(skill);
+                    jobSkills.Add(new JobSkill{JobsId = job.Id,SkillsId = skill.Id});
+                }
+
+                if (newSkills.Count > 0)
+                {
+                    await _repository.Skill.AddSkillsAsync(newSkills);
+                    await _repository.SaveAsync();
+                }
+                await _repository.JobSkill.AddJobSkillsAsync(jobSkills);
+                
             }
-           await  _repository.JobBenefit.AddBenefitsAsync(benefits);
-    }
+            
+            
+        }
+
+    // private async Task AddBenefitsForJobAsync(Job job, IEnumerable<string> benefitNames)
+    // {
+    //     
+    //         foreach (string benefitName in benefitNames)
+    //         {
+    //             JobBenefit jobBenefit = new JobBenefit
+    //             {
+    //                 Benefit = (Benefit)Enum.Parse(typeof(Benefit), benefitName),
+    //                 JobId = job.Id
+    //             };
+    //             job.Benefits.Add(jobBenefit);
+    //         }
+    //         
+    // }
+    
+    
 }

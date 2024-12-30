@@ -29,13 +29,13 @@ internal sealed class JobSkillRepository : RepositoryBase<JobSkill>, IJobSkillRe
             .SingleAsync();
     }
 
-    public void AddJobSkill(JobSkill jobSkill)
+    public async Task AddJobSkillsAsync(List<JobSkill> jobSkills)
     {
-        Create(jobSkill);
+        await CreateBulk(jobSkills);
     }
 
-    public void DeleteJobSkill(JobSkill jobSkill)
+    public void DeleteJobSkills(List<JobSkill> jobSkills)
     {
-        Delete(jobSkill);
+        DeleteBulk(jobSkills);
     }
 }

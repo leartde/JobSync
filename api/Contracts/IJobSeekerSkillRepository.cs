@@ -6,6 +6,6 @@ public interface IJobSeekerSkillRepository
 {
     Task<IEnumerable<JobSeekerSkill>> GetAllJobSeekerSkillsAsync();
     Task<JobSeekerSkill> GetJobSeekerSkillAsync(Guid jobSeekerId, Guid skillId);
-    void AddJobSeekerSkill(JobSeekerSkill jobSeekerSkill);
+    Task AddJobSeekerSkillsAsync(List<JobSeekerSkill> jobSeekerSkills);
     void DeleteJobSeekerSkill(JobSeekerSkill jobSeekerSkill);
 }

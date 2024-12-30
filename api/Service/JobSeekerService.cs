@@ -37,15 +37,10 @@ internal sealed class JobSeekerService : IJobSeekerService
     }
     
     
-
     public async Task<ViewJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto)
     {
         
         JobSeeker jobSeeker = new JobSeeker();
-        if (jobSeekerDto.Address != null)
-        {
-            await AddAddressForJobSeekerAsync(jobSeeker,jobSeekerDto.Address);
-        }
         jobSeekerDto.ToEntity(jobSeeker);
         if (jobSeekerDto.Resume != null)
         {
@@ -86,48 +81,34 @@ internal sealed class JobSeekerService : IJobSeekerService
         if (jobSeeker is null) throw new NotFoundException("jobSeeker",id);
         return jobSeeker;
     }
-    
-    private async Task AddAddressForJobSeekerAsync(JobSeeker jobSeeker, AddAddressDto addressDto)
-    {
-        Address address = new Address();
-        addressDto.ToEntity(address);
-        await _repository.Address.AddAddressAsync(address);
-        await _repository.SaveAsync();
-        jobSeeker.AddressId = address.Id;
-    }
-
     private async Task AddSkillsForJobSeekerAsync(JobSeeker jobSeeker, List<AddSkillDto> skillDtos)
     {
-        List<Skill> existingSkills = [];
         List<Skill> newSkills = [];
+        List<JobSeekerSkill> jobSeekerSkills = [];
         foreach (AddSkillDto skillDto in skillDtos)
         {
             Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillDto.Name);
-            if (skill != null) existingSkills.Add(skill);
-            else
+            if (skill is null)
             {
-                Skill newSkill = new Skill();
+                Skill newSkill = new Skill { Id = Guid.NewGuid() };
                 skillDto.ToEntity(newSkill);
                 newSkills.Add(newSkill);
+                jobSeekerSkills.Add(new JobSeekerSkill { JobSeekersId = jobSeeker.Id, SkillsId = newSkill.Id });
             }
-        }
-
-        if (newSkills.Count > 0)
-        {
-            _repository.Skill.AddSkills(newSkills);
-            await _repository.SaveAsync();
-            foreach (Skill newSkill in newSkills)
+            else
             {
-                _repository.JobSeekerSkill.AddJobSeekerSkill(new JobSeekerSkill
-                    { SkillsId = newSkill.Id, JobSeekersId = jobSeeker.Id });
+                skillDto.ToEntity(skill);
+                jobSeekerSkills.Add(new JobSeekerSkill { JobSeekersId = jobSeeker.Id, SkillsId = skill.Id });
             }
-        }
 
-        foreach (Skill existingSkill in existingSkills)
-        {
-            _repository.JobSeekerSkill.AddJobSeekerSkill(new JobSeekerSkill
-                { SkillsId = existingSkill.Id, JobSeekersId = jobSeeker.Id });
-        }
+            if (newSkills.Count > 0)
+            {
+                await _repository.Skill.AddSkillsAsync(newSkills);
+                await _repository.SaveAsync();
+            }
+            await _repository.JobSeekerSkill.AddJobSeekerSkillsAsync(jobSeekerSkills);
 
+
+        }
     }
 }

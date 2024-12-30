@@ -52,7 +52,7 @@ public class JobsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateJob(Guid employerId, Guid id, UpdateJobDto jobDto)
+    public async Task<IActionResult> UpdateJob(Guid employerId, Guid id, [FromForm]UpdateJobDto jobDto)
     {
         ViewJobDto job = await _service.JobService.UpdateJobForEmployerAsync(employerId, id, jobDto);
         return Ok(job);

@@ -20,7 +20,10 @@ public static class JobSeekerMapping
             Birthday = entity.Birthday,
             ResumeLink = entity.ResumeLink,
             Skills = entity.Skills.Select(s => s.Name),
-            Address = entity.Address.ToDto()
+            Address = entity.Address != null
+                ? $"{entity.Address.Street} {entity.Address.City} {entity.Address.Region ?? entity.Address.State}"
+                  + $"{entity.Address.Country} {entity.Address.ZipCode}"
+                : ""
         };
     }
 
@@ -41,6 +44,12 @@ public static class JobSeekerMapping
                     skill => skillDto.ToEntity(skill)
                 )
             );
+            if (addJobSeekerDto.Address != null)
+            {
+                Address address = new Address();
+                addJobSeekerDto.Address.ToEntity(address);
+                entity.Address = address;
+            }
         }
     }
 }

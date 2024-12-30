@@ -25,17 +25,23 @@ internal sealed class SkillRepository : RepositoryBase<Skill>, ISkillRepository
     public async Task<Skill?> GetSkillByNameAsync(string name)
     {
         return await FindByCondition(s => s.Name.Equals(name))
-            .SingleOrDefaultAsync();
+            .FirstOrDefaultAsync();
     }
 
-    public void AddSkill(Skill skill)
+    public async Task<List<Skill>> GetSkillsByIdAsync(List<Guid> ids)
     {
-        Create(skill);
+        return await FindByCondition(s => ids.Contains(s.Id))
+            .ToListAsync();
     }
 
-    public void AddSkills(List<Skill> skills)
+    public async Task AddSkillAsync(Skill skill)
     {
-        CreateBulk(skills);
+        await Create(skill);
+    }
+
+    public async Task AddSkillsAsync(List<Skill> skills)
+    {
+        await CreateBulk(skills);
     }
 
     public void UpdateSkill(Skill skill)
@@ -46,5 +52,10 @@ internal sealed class SkillRepository : RepositoryBase<Skill>, ISkillRepository
     public void DeleteSkill(Skill skill)
     {
         Delete(skill);
+    }
+
+    public void DeleteSkills(List<Skill> skills)
+    {
+        DeleteBulk(skills);
     }
 }
