@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Contracts;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 
 namespace Repository;
 
@@ -16,6 +17,8 @@ namespace Repository;
             return _context.Set<T>()
                 .AsNoTracking();
         }
+
+       
         
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {

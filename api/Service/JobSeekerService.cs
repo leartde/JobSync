@@ -8,6 +8,7 @@ using Shared.DataTransferObjects.AddressDtos;
 using Shared.DataTransferObjects.JobSeekerDtos;
 using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
+using Shared.RequestFeatures;
 
 namespace Service;
 
@@ -24,10 +25,11 @@ internal sealed class JobSeekerService : IJobSeekerService
         _logger = logger;
         _cloudinaryManager = cloudinaryManager;
     }
-    public async Task<IEnumerable<ViewJobSeekerDto>> GetAllJobSeekersAsync()
+    public async Task<PagedList<ViewJobSeekerDto>> GetAllJobSeekersAsync(JobSeekerParameters jobSeekerParameters)
     {
-        IEnumerable<JobSeeker> jobSeekers = await _repository.JobSeeker.GetAllJobSeekersAsync();
-        return jobSeekers.Select(js => js.ToDto());
+        PagedList<JobSeeker> jobSeekers = await _repository.JobSeeker.GetAllJobSeekersAsync(jobSeekerParameters);
+        return new PagedList<ViewJobSeekerDto>(jobSeekers.Select(js => js.ToDto()).ToList(), jobSeekers.MetaData.TotalCount , jobSeekerParameters.PageNumber,
+            jobSeekerParameters.PageSize);
     }
 
     public async Task<ViewJobSeekerDto> GetJobSeekerAsync(Guid id)
@@ -100,15 +102,12 @@ internal sealed class JobSeekerService : IJobSeekerService
                 skillDto.ToEntity(skill);
                 jobSeekerSkills.Add(new JobSeekerSkill { JobSeekersId = jobSeeker.Id, SkillsId = skill.Id });
             }
-
-            if (newSkills.Count > 0)
-            {
-                await _repository.Skill.AddSkillsAsync(newSkills);
-                await _repository.SaveAsync();
-            }
-            await _repository.JobSeekerSkill.AddJobSeekerSkillsAsync(jobSeekerSkills);
-
-
         }
+        if (newSkills.Count > 0)
+        {
+            await _repository.Skill.AddSkillsAsync(newSkills);
+            await _repository.SaveAsync();
+        }
+        await _repository.JobSeekerSkill.AddJobSeekerSkillsAsync(jobSeekerSkills);
     }
 }

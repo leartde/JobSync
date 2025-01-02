@@ -17,7 +17,7 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<IJobApplicationService> _applicationService;
     private readonly Lazy<IBookmarkService> _bookmarkService;
     private readonly Lazy<IJobBenefitService> _jobBenefitService;
-
+    private readonly Lazy<ISkillService> _skillService;
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
         userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper, 
         ICloudinaryManager _cloudinaryManager
@@ -44,6 +44,9 @@ public class ServiceManager : IServiceManager
         _jobBenefitService = new Lazy<IJobBenefitService>(() => new
             JobBenefitService(repository)
         );
+        _skillService = new Lazy<ISkillService>(() => new
+            SkillService(repository)
+        );
     }
 
     public IAddressService AddressService => _addressService.Value;
@@ -54,4 +57,5 @@ public class ServiceManager : IServiceManager
     public IJobApplicationService JobApplicationService => _applicationService.Value;
     public IBookmarkService BookmarkService => _bookmarkService.Value;
     public IJobBenefitService JobBenefitService => _jobBenefitService.Value;
+    public ISkillService SkillService => _skillService.Value;
 }

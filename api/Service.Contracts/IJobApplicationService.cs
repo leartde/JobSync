@@ -9,6 +9,8 @@ public interface IJobApplicationService
     Task<IEnumerable<ViewJobApplicationDto>> GetApplicationsForJobSeekerAsync(Guid jobSeekerId);
     Task<IEnumerable<ViewJobApplicationDto>> GetApplicationsForJobAsync(Guid employerId, Guid jobId);
     Task<ViewJobApplicationDto> AddApplicationAsync(Guid jobId,AddJobApplicationDto jobApplicationDto);
-    Task<ViewJobApplicationDto> UpdateApplicationAsync(UpdateJobApplicationDTO jobApplicationDto);
-    Task DeleteApplicationAsync(Guid jobSeekerId, Guid applicationId);
+
+    Task<ViewJobApplicationDto> UpdateApplicationAsync(UpdateJobApplicationDTO jobApplicationDto,
+        Guid employerId, Guid jobId, Guid jobSeekerId);
+    Task DeleteApplicationAsync(Guid jobId, Guid jobSeekerId);
 }

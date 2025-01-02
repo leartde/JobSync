@@ -52,13 +52,24 @@ public class JobApplicationService : IJobApplicationService
         return jobApplication.ToDto();
     }
 
-    public async Task<ViewJobApplicationDto> UpdateApplicationAsync(UpdateJobApplicationDTO jobApplicationDto)
+    public async Task<ViewJobApplicationDto> UpdateApplicationAsync(UpdateJobApplicationDTO jobApplicationDto,
+        Guid employerId, Guid jobId, Guid jobSeekerId)
     {
-        throw new NotImplementedException();
+        Job job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
+        JobApplication jobApplication = await _repository.JobApplication
+            .GetJobApplication(job.Id, jobSeekerId);
+        jobApplicationDto.ToEntity(jobApplication);
+        _repository.JobApplication.UpdateApplication(jobApplication);
+        await _repository.SaveAsync();
+        return jobApplication.ToDto();
     }
 
-    public async Task DeleteApplicationAsync(Guid jobSeekerId, Guid applicationId)
+
+    public async Task DeleteApplicationAsync(Guid jobId, Guid jobSeekerId)
     {
-        throw new NotImplementedException();
+        JobApplication jobApplication = await _repository.JobApplication
+            .GetJobApplication(jobId, jobSeekerId);
+        _repository.JobApplication.DeleteApplication(jobApplication);
+        await _repository.SaveAsync();
     }
 }

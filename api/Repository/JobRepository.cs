@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Extensions;
@@ -20,7 +21,6 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             .Include(j => j.Address)
             .Include(j => j.Skills)
             .Include(j => j.Benefits)
-            .OrderBy(j => j.Employer)
             .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,jobParameters.IsTakingApplications)
             .Search(jobParameters.SearchTerm)
             .Skip((jobParameters.PageNumber - 1) * jobParameters.PageSize)
@@ -49,11 +49,11 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
 
     public async Task<Job> GetJobForEmployerAsync(Guid employerId, Guid id)
     {
-        return await FindByCondition(j=>j.EmployerId.Equals(employerId)&& j.Id.Equals(id) )
-            .Include(j => j.Employer)
-            .Include(j => j.Address)
-            .Include(j => j.Skills)
-            .SingleAsync();
+            return await FindByCondition(j => j.EmployerId.Equals(employerId) && j.Id.Equals(id))
+                .Include(j => j.Employer)
+                .Include(j => j.Address)
+                .Include(j => j.Skills)
+                .SingleAsync();
     }
 
     public async Task AddJobAsync(Job job)

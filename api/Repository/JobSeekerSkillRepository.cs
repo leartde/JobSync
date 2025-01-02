@@ -31,8 +31,8 @@ internal sealed class JobSeekerSkillRepository : RepositoryBase<JobSeekerSkill>,
         await CreateBulk(jobSeekerSkills);
     }
 
-    public void DeleteJobSeekerSkill(JobSeekerSkill jobSeekerSkill)
+    public void DeleteJobSeekerSkills(List<JobSeekerSkill> jobSeekerSkills)
     {
-        Delete(jobSeekerSkill);
+        DeleteBulk(jobSeekerSkills);
     }
 }

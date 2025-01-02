@@ -1,6 +1,6 @@
 ﻿namespace Shared.RequestFeatures;
 
-public class PagedList<T> : List<T>
+public  class PagedList<T> : List<T>
 {
     public MetaData MetaData { get; set; }
 

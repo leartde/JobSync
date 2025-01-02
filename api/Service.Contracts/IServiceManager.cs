@@ -10,5 +10,6 @@ public interface IServiceManager
     IJobApplicationService JobApplicationService { get; }
     IBookmarkService BookmarkService { get; }
     IJobBenefitService JobBenefitService { get; }
+    ISkillService SkillService { get; }
     
 }

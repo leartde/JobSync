@@ -47,4 +47,18 @@ public class JobApplicationController : ControllerBase
         return Ok(application);
     }
 
+    [HttpPut("/api/employers/{employerId}/jobs/{jobId}/applications/{jobSeekerId}")]
+    public async Task<IActionResult> UpdateApplication(UpdateJobApplicationDTO jobApplicationDto,Guid employerId, Guid jobId, Guid jobSeekerId)
+    {
+        ViewJobApplicationDto jobApplication = await _service.JobApplicationService
+            .UpdateApplicationAsync(jobApplicationDto, employerId, jobId, jobSeekerId);
+        return Ok(jobApplication);
+    }
+
+    [HttpDelete("/api/jobseekers/{jobSeekerId}/applications/{jobId}")]
+    public async Task<IActionResult> DeleteApplication(Guid jobId, Guid jobSeekerId)
+    {
+        await _service.JobApplicationService.DeleteApplicationAsync(jobId, jobSeekerId);
+        return Ok();
+    }
 }

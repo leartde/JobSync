@@ -4,6 +4,8 @@ namespace Service.Contracts;
 
 public interface ISkillService
 {
+    Task<IEnumerable<ViewSkillDto>> GetSkillsForJobAsync(Guid employerId, Guid jobId);
+    Task<IEnumerable<ViewSkillDto>> GetSkillsForJobSeekerAsync(Guid jobSeekerId);
     Task<IEnumerable<ViewSkillDto>> AddSkillsForJobAsync(Guid employerId, Guid jobId,
         IEnumerable<AddSkillDto> skillDtos);
     Task<IEnumerable<ViewSkillDto>> AddSkillsForJobSeekerAsync(Guid jobSeekerId,

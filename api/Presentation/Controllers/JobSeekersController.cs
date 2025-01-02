@@ -1,7 +1,9 @@
-﻿using Entities.Models;
+﻿using System.Text.Json;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.JobSeekerDtos;
+using Shared.RequestFeatures;
 
 namespace Presentation.Controllers;
 
@@ -17,9 +19,10 @@ public class JobSeekersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllJobSeekers()
+    public async Task<IActionResult> GetAllJobSeekers([FromQuery] JobSeekerParameters jobSeekerParameters)
     {
-        IEnumerable<ViewJobSeekerDto> jobSeekers = await _service.JobSeekerService.GetAllJobSeekersAsync();
+        PagedList<ViewJobSeekerDto> jobSeekers = await _service.JobSeekerService.GetAllJobSeekersAsync(jobSeekerParameters);
+        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(jobSeekers.MetaData);
         return Ok(jobSeekers);
     }
 

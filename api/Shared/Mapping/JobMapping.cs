@@ -12,8 +12,8 @@ public static class JobMapping
         {
             Id = entity.Id,
             Title = entity.Title,
-            Address = entity.Address != null?$"{entity.Address.Street} {entity.Address.City} {entity.Address.Region ?? entity.Address.State}"
-                + $"{entity.Address.Country} {entity.Address.ZipCode}":"Remote",
+            Address = entity.Address != null?$"{entity.Address.Street}, {entity.Address.City}, {entity.Address.Region ?? entity.Address.State}"
+                + $"{entity.Address.Country}, {entity.Address.ZipCode}":"Remote",
             Pay = entity.Pay,
             Description = entity.Description,
             Type = entity.Type,

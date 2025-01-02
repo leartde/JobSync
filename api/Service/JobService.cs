@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using Contracts;
 using Entities.Enums;
+using Entities.ErrorModel;
 using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
@@ -82,17 +83,18 @@ internal sealed class JobService : IJobService
 
     public async Task DeleteJobForEmployerAsync(Guid employerId,Guid id)
     {
-        Job? job = await RetrieveJobForEmployerAsync(employerId, id);
-        if (job is null) throw new NotFoundException("job",id);
+        Job job = await RetrieveJobForEmployerAsync(employerId, id);
         _repository.Job.DeleteJob(job);
         await _repository.SaveAsync();
     }
 
     private async Task<Job> RetrieveJobForEmployerAsync(Guid employerId, Guid id)
     {
-        Job? job = await _repository.Job.GetJobForEmployerAsync(employerId,id);
-        if (job is null) throw new NotFoundException("job",id);
-        return job;
+        
+            Job job = await _repository.Job.GetJobForEmployerAsync(employerId, id);
+            if (job is null) throw new NotFoundException(nameof(Job), id);
+            return job;
+
     }
     
         private async Task AddSkillsForJobAsync(Job job, List<AddSkillDto> skillDtos)
@@ -114,16 +116,14 @@ internal sealed class JobService : IJobService
                     skillDto.ToEntity(skill);
                     jobSkills.Add(new JobSkill{JobsId = job.Id,SkillsId = skill.Id});
                 }
-
-                if (newSkills.Count > 0)
-                {
-                    await _repository.Skill.AddSkillsAsync(newSkills);
-                    await _repository.SaveAsync();
-                }
-                await _repository.JobSkill.AddJobSkillsAsync(jobSkills);
                 
             }
-            
+            if (newSkills.Count > 0)
+            {
+                await _repository.Skill.AddSkillsAsync(newSkills);
+                await _repository.SaveAsync();
+            }
+            await _repository.JobSkill.AddJobSkillsAsync(jobSkills);
             
         }
 

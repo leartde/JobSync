@@ -1,6 +1,8 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
+using Shared.RequestFeatures;
 
 namespace Repository;
 
@@ -10,14 +12,24 @@ internal sealed class JobSeekerRepository : RepositoryBase<JobSeeker> , IJobSeek
     {
     }
 
-    public async Task<IEnumerable<JobSeeker>> GetAllJobSeekersAsync()
+    public async Task<PagedList<JobSeeker>> GetAllJobSeekersAsync(JobSeekerParameters jobSeekerParameters)
     {
-        return await FindAll()
+        List<JobSeeker> jobSeekers = await FindAll()
             .Include(js => js.Address)
             .Include(js => js.Applications)
             .Include(js => js.Skills)
-            .OrderBy(js => js.LastName)
+            .Filter(jobSeekerParameters.Skills)
+            .Search(jobSeekerParameters.SearchTerm)
+            .Sort(jobSeekerParameters.OrderBy)
+            .Skip((jobSeekerParameters.PageNumber - 1) * jobSeekerParameters.PageSize)
+            .Take(jobSeekerParameters.PageSize)
             .ToListAsync();
+
+        int count = await FindAll()
+            .CountAsync();
+
+        return new PagedList<JobSeeker>(jobSeekers, count, jobSeekerParameters.PageNumber,
+            jobSeekerParameters.PageSize);
     }
 
     public async Task<JobSeeker> GetJobSeekerAsync(Guid id)
