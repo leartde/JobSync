@@ -1,7 +1,9 @@
-﻿using Entities.Models;
+﻿using System.Text.Json;
+using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.EmployerDtos;
+using Shared.RequestFeatures;
 
 namespace Presentation.Controllers;
 
@@ -17,9 +19,10 @@ public class EmployersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetEmployers()
+    public async Task<IActionResult> GetEmployers([FromQuery]EmployerParameters employerParameters)
     {
-        IEnumerable<ViewEmployerDto> employers = await _service.EmployerService.GetAllEmployersAsync();
+        PagedList<ViewEmployerDto> employers = await _service.EmployerService.GetAllEmployersAsync(employerParameters);
+        Response.Headers["X-Pagination"] = JsonSerializer.Serialize(employers.MetaData);
         return Ok(employers);
     }
 

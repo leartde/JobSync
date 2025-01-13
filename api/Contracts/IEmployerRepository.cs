@@ -1,10 +1,11 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 
 namespace Contracts;
 
 public interface IEmployerRepository
 {
-    Task<IEnumerable<Employer>> GetAllEmployersAsync();
+    Task<PagedList<Employer>> GetAllEmployersAsync(EmployerParameters employerParameters);
     Task<Employer> GetEmployerAsync(Guid id);
     Task AddEmployerAsync(Employer employer);
     void DeleteEmployer(Employer employer);

@@ -1,15 +1,11 @@
 using System.Text.Json;
-using CloudinaryService;
 using Contracts;
 using Entities.ErrorModel;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using JobSync.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NLog;
-using Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +44,7 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILoggerManager>();
+app.ConfigureExceptionHandler(logger);
 
 app.ConfigureExceptionHandler(logger);
 if (app.Environment.IsProduction()) app.UseHsts();

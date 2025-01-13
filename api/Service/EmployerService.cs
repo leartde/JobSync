@@ -4,6 +4,7 @@ using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects.EmployerDtos;
 using Shared.Mapping;
+using Shared.RequestFeatures;
 
 namespace Service;
 
@@ -18,11 +19,11 @@ internal sealed class EmployerService : IEmployerService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<ViewEmployerDto>> GetAllEmployersAsync()
+    public async Task<PagedList<ViewEmployerDto>> GetAllEmployersAsync(EmployerParameters employerParameters)
     {
-        IEnumerable<Employer> employers = await _repository.Employer.GetAllEmployersAsync();
-        IEnumerable<ViewEmployerDto> employerDtos = employers.Select(e => e.ToDto());
-        return employerDtos;
+        PagedList<Employer> employers = await _repository.Employer.GetAllEmployersAsync(employerParameters);
+        List<ViewEmployerDto> employerDtos = employers.Select(e => e.ToDto()).ToList();
+        return new PagedList<ViewEmployerDto>(employerDtos, employers.MetaData.TotalCount, employerParameters.PageNumber,employerParameters.PageSize);
     }
 
     public async Task<ViewEmployerDto?> GetEmployerAsync(Guid id)

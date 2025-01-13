@@ -21,17 +21,15 @@ public static class RepositoryJobSeekerExtensions
         if (!string.IsNullOrEmpty(searchTerm))
         {
             string lowerSearch = searchTerm.ToLower();
-            jobSeekers = jobSeekers.Where(js => js.FirstName.ToLower().Equals(lowerSearch)
-                                                || (js.MiddleName != null &&
-                                                    js.MiddleName.ToLower().Equals(lowerSearch))
-                                                || js.LastName.ToLower().Equals(lowerSearch)
+            jobSeekers = jobSeekers.Where(js => 
+                $"{js.FirstName} {js.MiddleName} {js.LastName}".ToLower()
+                .Contains(lowerSearch)
             );
         }
-
         return jobSeekers;
     }
 
-    public static IQueryable<JobSeeker> Sort(this IQueryable<JobSeeker> jobSeekers, string orderByQueryString)
+    public static IQueryable<JobSeeker> Sort(this IQueryable<JobSeeker> jobSeekers, string? orderByQueryString)
     {
         if (string.IsNullOrWhiteSpace(orderByQueryString))
             return jobSeekers.OrderBy(j => j.LastName);

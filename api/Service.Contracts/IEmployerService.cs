@@ -1,11 +1,12 @@
 ﻿using Entities.Models;
 using Shared.DataTransferObjects.EmployerDtos;
+using Shared.RequestFeatures;
 
 namespace Service.Contracts;
 
 public interface IEmployerService
 {
-    Task<IEnumerable<ViewEmployerDto>> GetAllEmployersAsync();
+    Task<PagedList<ViewEmployerDto>> GetAllEmployersAsync(EmployerParameters employerParameters);
     Task<ViewEmployerDto?> GetEmployerAsync(Guid id);
     Task<ViewEmployerDto> AddEmployerAsync(AddEmployerDto employerDto);
     

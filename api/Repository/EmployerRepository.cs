@@ -1,16 +1,33 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
+using Shared.RequestFeatures;
 
 namespace Repository;
 
 internal sealed class EmployerRepository : RepositoryBase<Employer>, IEmployerRepository
 {
     public EmployerRepository(RepositoryContext context) : base(context){}
-    public async Task<IEnumerable<Employer>> GetAllEmployersAsync()
+    public async Task<PagedList<Employer>> GetAllEmployersAsync(EmployerParameters employerParameters)
     {
-        return await FindAll().OrderBy(e => e.Industry)
+        List<Employer> employers = await FindAll()
+            .Include(e => e.User)
+            .Include(e => e.Jobs)
+            .Filter(employerParameters.Industry)
+            .Search(employerParameters.SearchTerm)
+            .Skip((employerParameters.PageNumber - 1) * employerParameters.PageSize)
+            .Take(employerParameters.PageSize)
+            .Sort(employerParameters.OrderBy)
             .ToListAsync();
+
+        int count = await FindAll()
+            .Filter(employerParameters.Industry)
+            .Search(employerParameters.SearchTerm)
+            .CountAsync();
+
+        return new PagedList<Employer>(employers, count, employerParameters.PageNumber, employerParameters.PageSize);
+
     }
 
     public async Task<Employer> GetEmployerAsync(Guid id)

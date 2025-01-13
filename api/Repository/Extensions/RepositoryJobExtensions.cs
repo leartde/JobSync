@@ -38,7 +38,7 @@ public static class RepositoryJobExtensions
         );
     }
     
-    public static IQueryable<Job> Sort(this IQueryable<Job> jobs, string orderByQueryString)
+    public static IQueryable<Job> Sort(this IQueryable<Job> jobs, string? orderByQueryString)
     {
         if (string.IsNullOrWhiteSpace(orderByQueryString))
             return jobs.OrderBy(j => j.CreatedAt);

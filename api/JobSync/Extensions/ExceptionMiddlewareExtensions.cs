@@ -4,35 +4,37 @@ using Entities.ErrorModel;
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace JobSync.Extensions;
-
-public static class ExceptionsMiddlewareExtensions
+namespace JobSync.Extensions
 {
-    public static void ConfigureExceptionHandler(this WebApplication app, ILoggerManager logger)
+    public static class ExceptionMiddlewareExtensions
     {
-        app.UseExceptionHandler(appError =>
+        public static void ConfigureExceptionHandler(this WebApplication app, ILoggerManager logger)
         {
-            appError.Run(async context =>
+            app.UseExceptionHandler(appError =>
             {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.ContentType = "application/json";
-                var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                if (contextFeature != null)
+                appError.Run(async context =>
                 {
-                    context.Response.StatusCode = contextFeature.Error switch
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.ContentType = "application/json";
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextFeature != null)
                     {
-                        NotFoundException => StatusCodes.Status404NotFound,
-                        BadRequestException => StatusCodes.Status400BadRequest,
-                    };
-                    logger.LogError($"Something went wrong: {contextFeature.Error}");
+                        context.Response.StatusCode = contextFeature.Error switch
+                        {
+                            NotFoundException => StatusCodes.Status404NotFound,
+                            BadRequestException => StatusCodes.Status400BadRequest,
+                            _ => StatusCodes.Status500InternalServerError
+                        };
+                        logger.LogError($"Something went wrong: {contextFeature.Error}");
 
-                    await context.Response.WriteAsync(new ErrorDetails()
-                    {
-                        StatusCode = context.Response.StatusCode,
-                        Message = contextFeature.Error.Message,
-                    }.ToString());
-                }
+                        await context.Response.WriteAsync(new ErrorDetails
+                        {
+                            StatusCode = context.Response.StatusCode,
+                            Message = contextFeature.Error.Message,
+                        }.ToString());
+                    }
+                });
             });
-        });
+        }
     }
 }

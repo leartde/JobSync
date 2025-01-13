@@ -1,18 +1,19 @@
 import { FaAlignJustify } from "react-icons/fa6";
+import { Job } from "./JobCardsColumn.tsx";
 
-const JobCard = () => {
+const JobCard = (job:Job) => {
     return (
         <div className="flex flex-col bg-white px-12 py-6 border border-gray-800 rounded-md">
             <div className="flex justify-between items-center">
-                <h1 className="text-lg font-semibold">Crew Member</h1>
+                <h1 className="text-lg font-semibold">{job.title}</h1>
                 <FaAlignJustify className="cursor-pointer" />
             </div>
             <div className="text-sm mt-1">
-                <p>Chipotle</p>
-                <p>New York, NY 10027(Harlem Area)</p>
+                <p>{job.employer}</p>
+                <p>{job.address}</p>
             </div>
             <div className="text-xs text-gray-600">
-                 Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolore quibusdam enim esse fuga fugiat vel perspiciatis.
+                {job.description}
             </div>
             <div className="border-t border-gray-800 mt-4 relative top-2 pt-4     ">
                 <a href="">

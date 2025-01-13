@@ -41,7 +41,6 @@ internal sealed class JobSeekerService : IJobSeekerService
     
     public async Task<ViewJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto)
     {
-        
         JobSeeker jobSeeker = new JobSeeker();
         jobSeekerDto.ToEntity(jobSeeker);
         if (jobSeekerDto.Resume != null)
@@ -54,7 +53,6 @@ internal sealed class JobSeekerService : IJobSeekerService
         {
             await AddSkillsForJobSeekerAsync(jobSeeker, jobSeekerDto.Skills);
         }
-
         await _repository.SaveAsync();
         return jobSeeker.ToDto();
     }
@@ -64,17 +62,21 @@ internal sealed class JobSeekerService : IJobSeekerService
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
         _repository.JobSeeker.DeleteJobSeeker(jobSeeker);
         await _repository.SaveAsync();
-
     }
 
     public async Task<ViewJobSeekerDto> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
         jobSeekerDto.ToEntity(jobSeeker);
+        if (jobSeekerDto.Resume != null)
+        {
+            if (jobSeeker.ResumeLink != null) await _cloudinaryManager.DeleteFile(jobSeeker.ResumeLink);
+            UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
+            jobSeeker.ResumeLink = result.Url.ToString();
+        }
          _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
          await _repository.SaveAsync();
          return jobSeeker.ToDto();
-
     }
 
     private async Task<JobSeeker> RetrieveJobSeekerAsync(Guid id)
