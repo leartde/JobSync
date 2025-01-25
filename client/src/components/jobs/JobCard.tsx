@@ -1,9 +1,20 @@
 import { FaAlignJustify } from "react-icons/fa6";
-import { Job } from "./JobCardsColumn.tsx";
+import { replace, useNavigate } from "react-router-dom";
+import { Job } from "../../pages/HomePage.tsx";
 
-const JobCard = (job:Job) => {
+type JobCardParams = {
+    job: Job;
+    url: string;
+
+}
+
+const JobCard = ({job,url}: JobCardParams) => {
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate(url, {replace: true});
+    }
     return (
-        <div className="flex flex-col bg-white px-12 py-6 border border-gray-800 rounded-md">
+        <button onClick={handleClick} className="flex flex-col bg-white px-12 py-6 border border-gray-800 rounded-md">
             <div className="flex justify-between items-center">
                 <h1 className="text-lg font-semibold">{job.title}</h1>
                 <FaAlignJustify className="cursor-pointer" />
@@ -21,7 +32,7 @@ const JobCard = (job:Job) => {
                 </a>
 
             </div>
-        </div>
+        </button>
     );
 }
 

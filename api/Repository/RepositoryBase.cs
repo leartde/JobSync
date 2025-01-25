@@ -17,7 +17,6 @@ namespace Repository;
             return _context.Set<T>()
                 .AsNoTracking();
         }
-
        
         
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)

@@ -7,7 +7,6 @@ namespace Repository.DataSeeders;
 
 public class SeedSkillData : IEntityTypeConfiguration<Skill>
 {
-    // private static readonly Skill[] skills = new Skill[200];
     private static readonly Dictionary<int, string> skillEnums = Enum.GetValues(typeof(SkillEnum))
         .Cast<SkillEnum>()
         .ToDictionary(s => (int)s, s => s.ToString());

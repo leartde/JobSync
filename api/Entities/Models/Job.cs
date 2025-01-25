@@ -21,7 +21,4 @@ public class Job
     public List<Skill> Skills { get; set; } = new();
     public List<Bookmark> Bookmarks { get; set; } = new();
     public List<JobBenefit> Benefits { get; set; } = new();
-
-
-
 }

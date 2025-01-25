@@ -126,21 +126,5 @@ internal sealed class JobService : IJobService
             await _repository.JobSkill.AddJobSkillsAsync(jobSkills);
             
         }
-
-    // private async Task AddBenefitsForJobAsync(Job job, IEnumerable<string> benefitNames)
-    // {
-    //     
-    //         foreach (string benefitName in benefitNames)
-    //         {
-    //             JobBenefit jobBenefit = new JobBenefit
-    //             {
-    //                 Benefit = (Benefit)Enum.Parse(typeof(Benefit), benefitName),
-    //                 JobId = job.Id
-    //             };
-    //             job.Benefits.Add(jobBenefit);
-    //         }
-    //         
-    // }
-    
-    
+        
 }

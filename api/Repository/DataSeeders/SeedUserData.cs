@@ -17,7 +17,6 @@ public class SeedUserData : IEntityTypeConfiguration<AppUser>
         
         for (int i = 0; i < 200; i++)
         {
-            
                 string email = Faker.User.Email();
                 AppUser user = new AppUser
                 {

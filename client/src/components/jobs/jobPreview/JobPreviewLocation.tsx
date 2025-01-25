@@ -1,7 +1,10 @@
 import { FaCar } from 'react-icons/fa6';
 import { TbMapPin } from 'react-icons/tb';
 
-const JobPreviewLocation = () => {
+type JobPreviewLocationProps = {
+    address : string;
+}
+const JobPreviewLocation = ({address}:JobPreviewLocationProps) => {
     return (
         <div className='flex flex-col gap-2 p-6 border border-gray-300'>
             <h2 className='text-base font-medium'>Location</h2>
@@ -20,7 +23,7 @@ const JobPreviewLocation = () => {
                 <p className='font-semibold'>Job Address</p>
 
             </div>
-              <p className='text-sm'>72 W 125th St, New York, NY 10027</p>
+              <p className='text-sm'>{address}</p>
             </div>
 
         </div>

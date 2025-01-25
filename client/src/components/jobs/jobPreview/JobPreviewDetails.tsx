@@ -3,7 +3,11 @@ import { FaCheck } from 'react-icons/fa6';
 import { PiMoneyLight } from 'react-icons/pi';
 import { RiSuitcaseLine } from 'react-icons/ri';
 
-const JobPreviewDetails = () => {
+type JobPreviewDetailsProps = {
+    pay: string;
+    jobType: string;
+}
+const JobPreviewDetails = ({pay, jobType}:JobPreviewDetailsProps) => {
     return (
         <div className='flex flex-col p-6 border border-gray-300'>
         <h2 className='text-base font-medium'>Job Details</h2>
@@ -16,7 +20,7 @@ const JobPreviewDetails = () => {
             <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
                 
            <FaCheck/>
-           <span>$18/hour</span>
+           <span>{pay}</span>
             </div>
 
         </div>
@@ -29,14 +33,9 @@ const JobPreviewDetails = () => {
             <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
                 
            <FaCheck/>
-           <span>Full-Time</span>
+           <span>{jobType}</span>
             </div>
 
-            <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
-                
-           <FaCheck/>
-           <span>$18/hour</span>
-            </div>
 
         </div>
         <div className='flex flex-col mt-4'>

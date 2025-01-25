@@ -21,12 +21,10 @@ type Headers = {
 
 export type JobResponse = {
     jobs: Job[];
-    headers: Headers;
     totalPages: number;
     hasNext: boolean;
     hasPrevious: boolean;
     currentPage: number;
-    url: string;
 }
 
 const FetchJobs = async ({jobType, searchTerm, hasMultipleSpots, isTakingApplications, orderBy, pageSize, pageNumber } : JobParameters) => {
@@ -52,7 +50,8 @@ const FetchJobs = async ({jobType, searchTerm, hasMultipleSpots, isTakingApplica
         }
         const response = await axios.get(url);
            console.log("URL: ", url);
-        if(response.status == 200){
+           console.log("RESPONSE: ", response);
+        if(response.status === 200){
             const headers = response.headers["x-pagination"];
             const parsedHeader : Headers = JSON.parse(headers);
             const totalPages = parsedHeader.totalPages;
@@ -60,16 +59,15 @@ const FetchJobs = async ({jobType, searchTerm, hasMultipleSpots, isTakingApplica
             const hasPrevious = parsedHeader.hasPrevious;
             const currentPage = parsedHeader.currentPage;
             const jobs: Job[] = response.data;
-            const jobData : JobResponse = {
+
+            const data : JobResponse =  {
                 jobs: jobs,
-                headers: parsedHeader,
                 totalPages : totalPages,
                 hasNext: hasNext,
                 hasPrevious: hasPrevious,
                 currentPage: currentPage,
-                url: url
             }
-            return jobData;
+            return data;
         }
         else{
             console.log("Error fetching jobs: ", response.statusText);

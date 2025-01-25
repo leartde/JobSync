@@ -22,6 +22,7 @@ public static class JobMapping
             HasMultipleSpots = entity.HasMultipleSpots,
             CreatedAt = entity.CreatedAt,
             Employer = entity.Employer?.Name ?? string.Empty,
+            EmployerId = entity.EmployerId,
             Skills = entity.Skills.Select(s => s.Name),
             Benefits = entity.Benefits.Select(b => b.Benefit.ToString())
             
@@ -55,15 +56,12 @@ public static class JobMapping
             if (addJobDto.Benefits?.Count() > 0)
             {
                 List<JobBenefit> jobBenefits = [];
-                foreach (string benefit in addJobDto.Benefits)
-                {
-                    jobBenefits.Add(new JobBenefit
+                jobBenefits.AddRange(addJobDto.Benefits
+                    .Select(benefit => new JobBenefit
                     {
                         JobId = entity.Id,
                         Benefit = (Benefit)Enum.Parse(typeof(Benefit), benefit)
-                    });
-                }
-
+                    }));
                 entity.Benefits = jobBenefits;
             }
             

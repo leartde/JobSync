@@ -1,7 +1,12 @@
 import React from 'react';
 import { FaCheck, FaRegLightbulb } from 'react-icons/fa6';
 
-const JobPreviewSkills = () => {
+
+type JobPreviewSkillsProps = {
+    skills: string[];
+
+}
+const JobPreviewSkills = ({skills}: JobPreviewSkillsProps) => {
     return (
         <div className='flex flex-col p-6 border border-gray-300'>
             <h2 className='text-base font-medium'>Profile insights</h2>
@@ -11,21 +16,15 @@ const JobPreviewSkills = () => {
             <p className='font-medium '>Skills</p>
             </div>
             <div className="flex gap-2">
-                <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
-                    
-               <FaCheck/>
-               <span>Cooking</span>
-                </div>
-                <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
-                    
-               <FaCheck/>
-               <span>Cooking</span>
-                </div>
-                <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
-                    
+                {skills.map((skill)=>(
+                    <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
+
                     <FaCheck/>
-                    <span>Cooking</span>
-                     </div>
+                    <span>{skill}</span>
+                    </div>
+
+                    ))}
+
 
             </div>
 

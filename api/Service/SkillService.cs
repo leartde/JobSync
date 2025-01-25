@@ -99,7 +99,7 @@ public class SkillService : ISkillService
     public async Task DeleteSkillsForJobAsync(Guid employerId, Guid jobId, List<Guid> skillIds)
     {
         Job job = await _repository.Job.GetJobForEmployerAsync(employerId, jobId);
-        if (job is null) throw new NotFoundException("job", jobId);
+        if (job is null) throw new NotFoundException(typeof(Job).ToString(), jobId);
         List<JobSkill> jobSkillsToDelete = skillIds
             .Select(skillId => new JobSkill { JobsId = job.Id, SkillsId = skillId })
             .ToList();
@@ -110,7 +110,7 @@ public class SkillService : ISkillService
     public async Task DeleteSkillsForJobSeekerAsync(Guid jobSeekerId, List<Guid> skillIds)
     {
         JobSeeker jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(jobSeekerId);
-        if (jobSeeker is null) throw new NotFoundException("job seeker", jobSeekerId);
+        if (jobSeeker is null) throw new NotFoundException(typeof(JobSeeker).ToString(), jobSeekerId);
         List<JobSeekerSkill> jobSeekerSkillsToDelete = skillIds
             .Select(skillId => new JobSeekerSkill { JobSeekersId = jobSeeker.Id, SkillsId = skillId })
             .ToList();

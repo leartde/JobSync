@@ -28,6 +28,7 @@ public static class ServiceExtensions
                     builder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
+                        .WithExposedHeaders("x-pagination")
                 );
             }
         );

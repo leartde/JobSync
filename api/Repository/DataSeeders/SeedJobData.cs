@@ -8,7 +8,6 @@ public class SeedJobData : IEntityTypeConfiguration<Job>
 {
     private static readonly Job[] jobs = new Job[100];
     public static IReadOnlyList<Job> Jobs => jobs;
-    private SeedEmployerData _employerData = new();
     public void Configure(EntityTypeBuilder<Job> builder)
     {
         for (int i = 0; i < 100; i++)
@@ -28,7 +27,6 @@ public class SeedJobData : IEntityTypeConfiguration<Job>
             };
             jobs[i] = job;
         }
-
         builder.HasData(jobs);
     }
     

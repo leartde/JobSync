@@ -43,6 +43,7 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             .Include(j => j.Employer)
             .Include(j => j.Address)
             .Include(j => j.Skills )
+            .Include(j => j.Benefits)
             .OrderBy(j => j.Employer)
             .ToListAsync();
     }
@@ -52,6 +53,7 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             return await FindByCondition(j => j.EmployerId.Equals(employerId) && j.Id.Equals(id))
                 .Include(j => j.Employer)
                 .Include(j => j.Address)
+                .Include(j => j.Benefits)
                 .Include(j => j.Skills)
                 .SingleAsync();
     }

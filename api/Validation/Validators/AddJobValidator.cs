@@ -37,4 +37,5 @@ public class AddJobValidator : AbstractValidator<AddJobDto>
     }
     
     
+    
 }

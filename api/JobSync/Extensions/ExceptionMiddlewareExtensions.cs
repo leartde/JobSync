@@ -27,11 +27,8 @@ namespace JobSync.Extensions
                         };
                         logger.LogError($"Something went wrong: {contextFeature.Error}");
 
-                        await context.Response.WriteAsync(new ErrorDetails
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = contextFeature.Error.Message,
-                        }.ToString());
+                        await context.Response.WriteAsync(new Error(context.Response.StatusCode.ToString(),contextFeature.Error.Message)
+                        .ToString());
                     }
                 });
             });
