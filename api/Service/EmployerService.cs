@@ -48,6 +48,7 @@ internal sealed class EmployerService : IEmployerService
         _repository.Employer.DeleteEmployer(employer);
         await _repository.SaveAsync();
     }
+    
 
     public async Task<ViewEmployerDto> UpdateEmployerAsync(Guid id,UpdateEmployerDto employerDto)
     {

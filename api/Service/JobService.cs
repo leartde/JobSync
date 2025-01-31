@@ -1,12 +1,10 @@
 ﻿using System.Dynamic;
 using CloudinaryDotNet.Actions;
 using Contracts;
-using Entities.Enums;
-using Entities.ErrorModel;
 using Entities.Exceptions;
 using Entities.Models;
+using Newtonsoft.Json;
 using Service.Contracts;
-using Shared.DataTransferObjects.AddressDtos;
 using Shared.DataTransferObjects.JobDtos;
 using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
@@ -34,6 +32,9 @@ internal sealed class JobService : IJobService
         PagedList<Job> jobs = await _repository.Job.GetAllJobsAsync(jobParameters);
         IEnumerable<ExpandoObject> shapedData = 
         _dataShaper.ShapeData(jobs.Select(j => j.ToDto()), jobParameters.Fields);
+        _logger.LogDebug(
+            string.Join(Environment.NewLine, JsonConvert.SerializeObject(shapedData)));
+        
         return (jobs: shapedData, metaData: jobs.MetaData);
     }
     

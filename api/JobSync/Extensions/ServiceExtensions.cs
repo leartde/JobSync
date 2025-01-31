@@ -16,6 +16,7 @@ using Service.Contracts;
 using Service.DataShaping;
 using Shared.DataTransferObjects.JobDtos;
 using Validation.Validators;
+using Validation.Validators.Job;
 
 namespace JobSync.Extensions;
 
@@ -108,6 +109,7 @@ public static class ServiceExtensions
     public static void ConfigureFluentValidation(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(typeof(AddJobValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(UpdateJobValidator).Assembly);
         services.AddFluentValidationAutoValidation();
     }
 
