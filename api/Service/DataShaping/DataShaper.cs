@@ -65,10 +65,13 @@ public class DataShaper<T> : IDataShaper<T> where T : class
         foreach (var property in requiredProperties)
         {
             var objectPropertyValue = property.GetValue(entity);
-            shapedObject.TryAdd(property.Name.ToLowerInvariant(), objectPropertyValue);
+            var camelCaseName = char.ToLowerInvariant(property.Name[0]) + property.Name.Substring(1);
+            shapedObject.TryAdd(camelCaseName, objectPropertyValue);
         }
 
         return shapedObject;
     }
+
+    
 }
 

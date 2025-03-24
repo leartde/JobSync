@@ -1,51 +1,34 @@
-
 import StickyPreview from './StickyPreview';
-import JobPreviewSkills from './JobPreviewSkills';
-import JobPreviewLocation from './JobPreviewLocation';
-import JobPreviewDetails from './JobPreviewDetails';
-import JobPreviewBenefits from './JobPreviewBenefits';
-import JobPreviewDescription from './JobPreviewDescription';
+import Skills from './Skills.tsx';
+import Location from './Location.tsx';
+import Details from './Details.tsx';
+import Benefits from './Benefits.tsx';
+import Description from './Description.tsx';
 
-type jobProps = {
-    title: string;
-    type: string;
-    employer: string;
-    address: string;
-    pay: string;
-    image: string;
-    skills: string[];
-    description: string;
-    benefits : string[]
-}
+import { useMainJobContext } from "../../../hooks/useMainJobContext.tsx";
 
-const JobPreview = ({ title, type, description, employer, address, pay, image, skills, benefits } : jobProps) => {
+const JobPreview = () => {
+    const { mainJob } = useMainJobContext();
     return (
-        <div className='flex w-1/2 max-h-[600px]  bg-gray-50 flex-col  rounded-md max-md:hidden overflow-scroll'>
+        <div id="preview" className='flex w-1/2 max-h-[600px]  bg-gray-50 flex-col max-md:w-full  rounded-md  overflow-scroll'>
 
             {/* //STICKY PREVIEW */}
-            <StickyPreview image={image}  title={title} type={type} employer={employer}  address={address} pay={pay}/>
+            <StickyPreview image={mainJob?.imageUrl} title={mainJob?.title} type={mainJob?.type} employer={mainJob?.employer} address={mainJob?.address} pay={mainJob?.pay}/>
 
+            {/* SKILLS SECTION */}
+            <Skills skills={mainJob?.skills || []}/>
 
-        {/* SKILLS SECTION */}
-        
-       <JobPreviewSkills skills={skills}/>
+            {/* DETAILS SECTION */}
+            <Details pay={mainJob?.pay} jobType={mainJob?.type} />
 
-        {/* DETAILS SECTION */}
-          <JobPreviewDetails pay={pay} jobType={type} />
+            {/* LOCATION SECTION */}
+            <Location address={mainJob?.address}/>
 
-        {/* LOCATION SECTION */}
-        <JobPreviewLocation address={address}/>
+            {/* BENEFITS SECTION */}
+            <Benefits benefits={mainJob?.benefits}/>
 
-
-
-        {/* BENEFITS SECTION */}
-        <JobPreviewBenefits benefits={benefits}/>
-
-        {/* FULL DESCRIPTION */}
-          <JobPreviewDescription description={description}/>
-
-
-            
+            {/* FULL DESCRIPTION */}
+            <Description description={mainJob?.description}/>
 
         </div>
     );

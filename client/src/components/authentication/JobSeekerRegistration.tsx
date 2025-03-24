@@ -14,7 +14,7 @@ const JobSeekerRegistration = () => {
       <h1 className="text-xl font-bold text-black mb-4">
         Register as a <span className="text-red-500">job seeker</span>
       </h1>
-      <div className=" w-full  ">
+      <div className="w-full">
         <form className="w-full flex flex-col gap-2 items-start p-2" action="">
           <legend className="text-md font-semibold">
             Personal Information
@@ -31,7 +31,7 @@ const JobSeekerRegistration = () => {
               />
             </div>
 
-            <div className=" max-md:w-full w-1/2 flex flex-col">
+            <div className="max-md:w-full w-1/2 flex flex-col">
               <label className="text-sm" htmlFor="middlename ">
                 Middle Name
               </label>

@@ -1,9 +1,15 @@
 import JobCardsColumn from '../components/jobs/JobCardsColumn';
 import JobPreview from '../components/jobs/jobPreview/JobPreview';
 import SearchBar from '../components/SearchBar';
-import { useLoaderData } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FetchAllJobs, { JobResponse } from "../services/job/FetchAllJobs.ts";
+import { MainJobProvider } from "../context/MainJobContext.tsx";
+import { useSearchParams } from "react-router-dom";
+import { useMainJobContext } from "../hooks/useMainJobContext.tsx";
+import FetchJob from "../services/job/FetchJob.ts";
+import { JobParametersProvider } from "../context/JobParametersContext.tsx";
+import { useJobParametersContext } from "../hooks/useJobParametersContext.tsx";
+
 export type Job = {
     id: string;
     title: string;
@@ -19,29 +25,46 @@ export type Job = {
     hasMultipleSpots: boolean;
     skills?: string[];
     benefits?: string[];
-
 }
 
-const HomePage = () => {
-    const [jobs, setJobs] = useState([]);
+const HomePageContent = () => {
+    const [jobs, setJobs] = useState<Job[]>([]);
+    const { updateMainJob } = useMainJobContext();
+    const { jobParameters } = useJobParametersContext();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const jobId = searchParams.get('jobId');
+    const employerId = searchParams.get('employerId');
+
     useEffect(() => {
         const getData = async () => {
             try {
-                const data : JobResponse = await FetchAllJobs({
-                    jobType: "FullTime",
-                    searchTerm: "",
-                    orderBy: "createdAt",
-                    pageSize: 5,
-                    pageNumber: 1,
-                    isTakingApplications: true,
-                    hasMultipleSpots: false,
+                const data: JobResponse = await FetchAllJobs({
+                    JobType: jobParameters.JobType ?? null,
+                    SearchTerm: jobParameters.SearchTerm ?? null,
+                    OrderBy: jobParameters.OrderBy ?? null,
+                    PageSize: jobParameters.PageSize ?? 10,
+                    PageNumber: jobParameters.PageNumber ?? 1,
+                    IsTakingApplications: jobParameters.IsTakingApplications ?? true,
+                    HasMultipleSpots: jobParameters.HasMultipleSpots ?? null
                 });
 
                 if (data?.jobs) {
-                    console.log("Fetched jobs: ", data.jobs);
+                    console.log("Fetched job: ", data.jobs);
                     setJobs(data.jobs);
+
+                    if (jobId && employerId) {
+                        const selectedJob = await FetchJob(employerId, jobId);
+                        if (selectedJob) {
+                            updateMainJob(selectedJob);
+                        }
+                    } else if (data.jobs.length > 0) {
+                        updateMainJob(data.jobs[0]);
+                        setSearchParams({
+                            employerId: data.jobs[0].employerId,
+                            jobId: data.jobs[0].id });
+                    }
                 } else {
-                    console.error("Data is undefined or jobs are missing.");
+                    console.error("Data is undefined or job are missing.");
                 }
             } catch (error) {
                 console.error("Error in getData: ", error);
@@ -49,32 +72,27 @@ const HomePage = () => {
         };
 
         getData().then();
-    }, []);
+    }, [jobId, employerId, setSearchParams,jobParameters.SearchTerm]);
+    console.log("SEARCHTERM:", jobParameters.SearchTerm)
 
-    const mainJob  = useLoaderData();
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col '>
             <SearchBar/>
-            <div className="mt-6 space-x-8 relative top-12 flex w-3/4 mx-auto  ">
-                <JobCardsColumn url={`/jobs/${mainJob.employerId}/${mainJob.id}`} jobs={jobs}/>
-                <JobPreview
-                    Id={mainJob.id}
-                    title={mainJob.title}
-                    createdAt={mainJob.createdAt}
-                    description={mainJob.description}
-                    employer={mainJob.employer}
-                    employerId={mainJob.employerId}
-                    hasMultipleSpots={mainJob.hasMultipleSpots}
-                    isTakingApplications={mainJob.isTakingApplications}
-                    type={mainJob.type}
-                    pay={mainJob.pay}
-                    image={mainJob.imageUrl || ""}
-                    skills={mainJob.skills || []}
-                    benefits={mainJob.benefits || []}
-                 address={mainJob.address || "Remote"} />
-
+            <div className="mt-6 max-md:flex-col-reverse md:space-x-8 relative top-12 flex w-3/4 mx-auto  ">
+                <JobCardsColumn jobs={jobs}/>
+                <JobPreview/>
             </div>
         </div>
+    );
+}
+
+const HomePage = () => {
+    return (
+        <JobParametersProvider>
+            <MainJobProvider>
+                <HomePageContent />
+            </MainJobProvider>
+        </JobParametersProvider>
     );
 }
 

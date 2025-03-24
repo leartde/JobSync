@@ -1,15 +1,15 @@
 import axios from "axios";
-import { Job } from "../../components/jobs/JobCardsColumn.tsx";
+import { Job } from "../../pages/HomePage.tsx";
 
-type JobParameters = {
-    jobType? : string;
-    searchTerm? : string;
-    hasMultipleSpots? : boolean;
-    isTakingApplications: boolean;
-    orderBy? : string;
-    pageSize: number;
-    pageNumber: number;
-}
+export type JobParameters = {
+    JobType?: string | null;
+    SearchTerm?: string | null;
+    HasMultipleSpots?: boolean | null;
+    IsTakingApplications?: boolean;
+    OrderBy?: string | null;
+    PageSize?: number;
+    PageNumber?: number;
+};
 
 type Headers = {
     totalPages: number;
@@ -27,30 +27,33 @@ export type JobResponse = {
     currentPage: number;
 }
 
-const FetchJobs = async ({jobType, searchTerm, hasMultipleSpots, isTakingApplications, orderBy, pageSize, pageNumber } : JobParameters) => {
-  try{
-      let url = `http://localhost:5248/api/jobs?pageSize=${pageSize}`;
-      if(jobType && jobType.trim() != ""){
-          url += `&jobType=${jobType}`;
-      }
-      if(searchTerm && searchTerm.trim() != ""){
-          url += `&searchTerm=${searchTerm}`;
-      }
-        if(hasMultipleSpots){
-            url += `&hasMultipleSpots=${hasMultipleSpots}`;
+const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplications, OrderBy, PageSize, PageNumber } : JobParameters) => {
+    try{
+        let url = `http://localhost:5248/api/jobs?`
+        if(PageSize && PageSize > 0){
+            url += `PageSize=${PageSize}`;
         }
-        if(isTakingApplications){
-            url += `&isTakingApplications=${isTakingApplications}`;
+        if(JobType && JobType.trim() != ""){
+            url += `&JobType=${JobType}`;
         }
-        if(orderBy && orderBy.trim() != ""){
-            url += `&orderBy=${orderBy}`;
+        if(SearchTerm && SearchTerm.trim() != ""){
+            url += `&SearchTerm=${SearchTerm}`;
         }
-        if(pageNumber && pageNumber > 0){
-            url += `&pageNumber=${pageNumber}`;
+        if(HasMultipleSpots){
+            url += `&HasMultipleSpots=${HasMultipleSpots}`;
+        }
+        if(IsTakingApplications){
+            url += `&IsTakingApplications=${IsTakingApplications}`;
+        }
+        if(OrderBy && OrderBy.trim() != ""){
+            url += `&OrderBy=${OrderBy}`;
+        }
+        if(PageNumber && PageNumber > 0){
+            url += `&PageNumber=${PageNumber}`;
         }
         const response = await axios.get(url);
-           console.log("URL: ", url);
-           console.log("RESPONSE: ", response);
+        console.log("URL: ", url);
+        console.log("RESPONSE: ", response);
         if(response.status === 200){
             const headers = response.headers["x-pagination"];
             const parsedHeader : Headers = JSON.parse(headers);
@@ -72,11 +75,11 @@ const FetchJobs = async ({jobType, searchTerm, hasMultipleSpots, isTakingApplica
         else{
             console.log("Error fetching jobs: ", response.statusText);
         }
-  }
-  catch (e)
-  {
-      console.log("Error fetching jobs: ", e);
-  }
+    }
+    catch (e)
+    {
+        console.log("Error fetching jobs: ", e);
+    }
 }
 
 export default FetchJobs;
