@@ -1,5 +1,5 @@
-import { JobParameters } from "../services/job/FetchAllJobs.ts";
 import { createContext, useState } from "react";
+import { JobParameters } from "../types/job/JobParameters.ts";
 
 type JobParametersContextType = {
     jobParameters: JobParameters;

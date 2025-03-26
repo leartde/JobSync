@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { Job } from "../pages/HomePage.tsx";
+import { Job } from "../types/job/Job.ts";
 
 type MainJobContextType = {
     mainJob: Job | undefined;

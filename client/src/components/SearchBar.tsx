@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
-import { FaMapPin, FaSistrix } from 'react-icons/fa6';
+import {  FaSistrix } from 'react-icons/fa6';
 import { useJobParametersContext } from "../hooks/useJobParametersContext.tsx";
-import { JobParameters } from "../services/job/FetchAllJobs.ts";
+import { useSearchParams } from "react-router-dom";
 
 const SearchBar = () => {
     const { updateJobParameters } = useJobParametersContext();
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [, setSearchParams] = useSearchParams();
+
     const handleSubmit = (e) => {
         e.preventDefault();
         updateJobParameters({
-            SearchTerm: searchTerm
+            SearchTerm: searchTerm,
+            PageNumber : 1
         })
+        setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            newParams.set('pageNumber','1');
+            newParams.set('searchTerm', searchTerm);
+            return newParams;
+        });
     }
 
     return (
@@ -23,10 +32,10 @@ const SearchBar = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         type="text"
                         placeholder="Job title,company or address"
-                        className='outline-none bg-transparent p-2'
+                        className='w-full outline-none bg-transparent p-2'
                     />
                 </div>
-                <button type="submit" className='text-white bg-red-500 py-2 px-4 rounded-lg'>
+                <button type="submit" className='active:bg-red-400 text-white bg-red-500 py-2 px-4 rounded-lg'>
                     Search
                 </button>
             </form>

@@ -1,7 +1,7 @@
 import JobCard from "./JobCard";
-import { Job } from "../../pages/HomePage.tsx";
 import { useSearchParams } from "react-router-dom";
 import { useMainJobContext } from "../../hooks/useMainJobContext.tsx";
+import { Job } from "../../types/job/Job.ts";
 
 type JobCardsColumnProp = {
     jobs: Job[];
@@ -13,9 +13,11 @@ const JobCardsColumn = ({jobs}: JobCardsColumnProp) => {
     
     const handleJobClick = (job: Job) => {
         updateMainJob(job);
-        setSearchParams({
-            employerId: job.employerId,
-            jobId: job.id
+        setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            newParams.set('employerId', job.employerId);
+            newParams.set('jobId', job.id);
+            return newParams;
         });
         if (window.innerWidth < 768) {
             window.scrollTo({ top: 0, behavior: 'smooth' });

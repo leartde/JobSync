@@ -1,6 +1,5 @@
 import { FaAlignJustify } from "react-icons/fa6";
-import { replace, useNavigate } from "react-router-dom";
-import { Job } from "../../pages/HomePage.tsx";
+import { Job } from "../../types/job/Job.ts";
 
 type JobCardParams = {
     job: Job;

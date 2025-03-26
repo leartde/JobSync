@@ -32,11 +32,25 @@ public static class RepositoryJobExtensions
     public static IQueryable<Job> Search(this IQueryable<Job> jobs, string searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm)) return jobs;
+    
+        string lowerSearchTerm = searchTerm.ToLower();
+    
         return jobs.Where(j =>
-            j.Employer != null && (j.Title.ToLower().Contains(searchTerm.ToLower()) ||
-                                   j.Employer.Name.ToLower().Contains(searchTerm.ToLower()))
-        );
+            j.Employer != null && (
+                j.Title.ToLower().Contains(lowerSearchTerm) ||
+                j.Employer.Name.ToLower().Contains(lowerSearchTerm) ||
+                (j.Address != null && (
+                    j.Address.Country.ToLower().Contains(lowerSearchTerm) ||
+                    j.Address.City.ToLower().Contains(lowerSearchTerm) ||
+                    j.Address.Street.ToLower().Contains(lowerSearchTerm) ||
+                    (j.Address.ZipCode.ToString().Contains(searchTerm)) ||
+                    (j.Address.Region != null && j.Address.Region.ToLower().Contains(lowerSearchTerm)) ||
+                    (j.Address.State != null && j.Address.State.ToLower().Contains(lowerSearchTerm))
+                ))
+            ));
     }
+
+
     
     public static IQueryable<Job> Sort(this IQueryable<Job> jobs, string? orderByQueryString)
     {

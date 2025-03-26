@@ -1,0 +1,16 @@
+export type Job = {
+    id: string;
+    title: string;
+    employer: string;
+    employerId: string;
+    description: string
+    address?: string;
+    createdAt: string;
+    pay: string;
+    type:string;
+    imageUrl? : string;
+    isTakingApplications: boolean;
+    hasMultipleSpots: boolean;
+    skills?: string[];
+    benefits?: string[];
+}

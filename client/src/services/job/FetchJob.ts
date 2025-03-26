@@ -1,12 +1,12 @@
 import axios from "axios";
-import { Job } from "../../pages/HomePage.tsx";
+import { Job } from "../../types/job/Job.ts";
 
 const FetchJob = async (employerId,jobId) => {
     try{
         const url : string = `http://localhost:5248/api/employers/${employerId}/jobs/${jobId}`;
         const response = await axios.get(url);
         if (response.status === 200){
-            const job:Job = response.data;
+            const job: Job = response.data;
             return job;
         }
         else{

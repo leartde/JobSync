@@ -1,31 +1,9 @@
 import axios from "axios";
-import { Job } from "../../pages/HomePage.tsx";
+import { Job } from "../../types/job/Job.ts";
+import { JobParameters } from "../../types/job/JobParameters.ts";
+import { JobResponseHeaders } from "../../types/job/JobResponseHeaders.ts";
+import { JobResponse } from "../../types/job/JobResponse.ts";
 
-export type JobParameters = {
-    JobType?: string | null;
-    SearchTerm?: string | null;
-    HasMultipleSpots?: boolean | null;
-    IsTakingApplications?: boolean;
-    OrderBy?: string | null;
-    PageSize?: number;
-    PageNumber?: number;
-};
-
-type Headers = {
-    totalPages: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-    pageSize: number;
-    currentPage: number;
-}
-
-export type JobResponse = {
-    jobs: Job[];
-    totalPages: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
-    currentPage: number;
-}
 
 const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplications, OrderBy, PageSize, PageNumber } : JobParameters) => {
     try{
@@ -56,19 +34,11 @@ const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplica
         console.log("RESPONSE: ", response);
         if(response.status === 200){
             const headers = response.headers["x-pagination"];
-            const parsedHeader : Headers = JSON.parse(headers);
-            const totalPages = parsedHeader.totalPages;
-            const hasNext = parsedHeader.hasNext;
-            const hasPrevious = parsedHeader.hasPrevious;
-            const currentPage = parsedHeader.currentPage;
+            const parsedHeader : JobResponseHeaders = JSON.parse(headers);
             const jobs: Job[] = response.data;
-
             const data : JobResponse =  {
                 jobs: jobs,
-                totalPages : totalPages,
-                hasNext: hasNext,
-                hasPrevious: hasPrevious,
-                currentPage: currentPage,
+                headers: parsedHeader
             }
             return data;
         }
