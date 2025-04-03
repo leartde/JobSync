@@ -5,7 +5,7 @@ import { JobResponseHeaders } from "../../types/job/JobResponseHeaders.ts";
 import { JobResponse } from "../../types/job/JobResponse.ts";
 
 
-const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplications, OrderBy, PageSize, PageNumber } : JobParameters) => {
+const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplications, MinimumPay, IsRemote, OrderBy, PageSize, PageNumber } : JobParameters) => {
     try{
         let url = `http://localhost:5248/api/jobs?`
         if(PageSize && PageSize > 0){
@@ -20,6 +20,12 @@ const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplica
         if(HasMultipleSpots){
             url += `&HasMultipleSpots=${HasMultipleSpots}`;
         }
+        if (MinimumPay && MinimumPay > 0){
+            url += `&MinimumPay=${MinimumPay}`;
+        }
+        if (IsRemote){
+            url += `&IsRemote=${IsRemote}`;
+        }
         if(IsTakingApplications){
             url += `&IsTakingApplications=${IsTakingApplications}`;
         }
@@ -30,8 +36,6 @@ const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplica
             url += `&PageNumber=${PageNumber}`;
         }
         const response = await axios.get(url);
-        console.log("URL: ", url);
-        console.log("RESPONSE: ", response);
         if(response.status === 200){
             const headers = response.headers["x-pagination"];
             const parsedHeader : JobResponseHeaders = JSON.parse(headers);

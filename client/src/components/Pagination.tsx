@@ -1,6 +1,6 @@
 import React from 'react';
 import { useJobResponseHeadersContext } from "../hooks/useJobResponseHeadersContext.ts";
-import { useJobParametersContext } from "../hooks/useJobParametersContext.tsx";
+import { useJobParametersContext } from "../hooks/useJobParametersContext.ts";
 import { useSearchParams } from "react-router-dom";
 
 const Pagination = () => {
@@ -51,7 +51,7 @@ const Pagination = () => {
             {headers.HasPrevious && (
                 <button
                     onClick={() => handlePageClick(headers.CurrentPage - 1)}
-                    className="bg-white text-red-500 px-4 py-2 rounded-md hover:bg-gray-100"
+                    className="active:bg-red-400 active:text-white bg-white text-red-500 px-4 py-2 rounded-md hover:bg-gray-100"
                 >
                     Previous
                 </button>
@@ -64,7 +64,7 @@ const Pagination = () => {
                     <button
                         key={item}
                         onClick={() => handlePageClick(item as number)}
-                        className={`px-4 py-2 rounded-md ${
+                        className={`px-4 py-2 rounded-md active:bg-red-400 active:text-white ${
                             headers.CurrentPage === item
                                 ? "bg-red-500 text-white"
                                 : "bg-white text-red-500 hover:bg-gray-100"
@@ -78,7 +78,7 @@ const Pagination = () => {
             {headers.HasNext && (
                 <button
                     onClick={() => handlePageClick(headers.CurrentPage + 1)}
-                    className="bg-white text-red-500 px-4 py-2 rounded-md hover:bg-gray-100"
+                    className="active:bg-red-400 active:text-white bg-white text-red-500 px-4 py-2 rounded-md hover:bg-gray-100"
                 >
                     Next
                 </button>

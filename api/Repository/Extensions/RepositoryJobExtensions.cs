@@ -7,7 +7,8 @@ namespace Repository.Extensions;
 public static class RepositoryJobExtensions
 {
     public static IQueryable<Job>
-        Filter(this IQueryable<Job> jobs, string? type, bool? hasMultipleSpots, bool? isTakingApplications)
+        Filter(this IQueryable<Job> jobs, string? type, bool? hasMultipleSpots, bool? isTakingApplications,
+            bool? isRemote, short? minimumPay)
     {
         if (!string.IsNullOrWhiteSpace(type))
         {
@@ -24,7 +25,19 @@ public static class RepositoryJobExtensions
             jobs = jobs.Where(j => j.IsTakingApplications == isTakingApplications);
         }
 
-        return jobs;
+        if (isRemote != null)
+        {
+            jobs = isRemote == true
+                ? jobs.Where(j => j.Address == null)
+                : jobs.Where(j => j.Address != null);
+        }
+
+        if (minimumPay != null)
+        {
+            jobs = jobs.Where(j => j.HourlyPay >= minimumPay);
+        }
+    
+    return jobs;
   
         
     }
@@ -34,7 +47,7 @@ public static class RepositoryJobExtensions
         if (string.IsNullOrWhiteSpace(searchTerm)) return jobs;
     
         string lowerSearchTerm = searchTerm.ToLower();
-    
+        if (lowerSearchTerm == "remote") return jobs.Where(j => j.Address == null);
         return jobs.Where(j =>
             j.Employer != null && (
                 j.Title.ToLower().Contains(lowerSearchTerm) ||
@@ -43,7 +56,7 @@ public static class RepositoryJobExtensions
                     j.Address.Country.ToLower().Contains(lowerSearchTerm) ||
                     j.Address.City.ToLower().Contains(lowerSearchTerm) ||
                     j.Address.Street.ToLower().Contains(lowerSearchTerm) ||
-                    (j.Address.ZipCode.ToString().Contains(searchTerm)) ||
+                    j.Address.ZipCode.ToString().Contains(searchTerm) ||
                     (j.Address.Region != null && j.Address.Region.ToLower().Contains(lowerSearchTerm)) ||
                     (j.Address.State != null && j.Address.State.ToLower().Contains(lowerSearchTerm))
                 ))
@@ -65,8 +78,8 @@ public static class RepositoryJobExtensions
         {
             case "pay":
                 return isDescending
-                    ? jobs.OrderByDescending(j => j.Pay)
-                    : jobs.OrderBy(j => j.Pay);
+                    ? jobs.OrderByDescending(j => j.HourlyPay)
+                    : jobs.OrderBy(j => j.HourlyPay);
 
             default:
                 PropertyInfo[] propertyInfos = typeof(Job).GetProperties(BindingFlags.Public | BindingFlags.Instance);

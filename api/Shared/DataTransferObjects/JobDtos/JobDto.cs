@@ -7,8 +7,8 @@ public abstract class JobDto
 {
     
     public string? Title { get; set; }
-    public string? Pay { get; set; }
     public string? Description { get; set; }
+    public double? HourlyPay { get; set; } 
     public string? Type { get; set; }
     public bool? IsTakingApplications { get; set; }
     public bool? HasMultipleSpots { get; set; }

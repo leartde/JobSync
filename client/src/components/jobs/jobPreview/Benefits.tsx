@@ -1,4 +1,5 @@
 import React from 'react';
+import { separateCamelCase } from "../../../helpers/StringHelpers.ts";
 
 type JobPreviewBenefitsProps = {
     benefits? : string[];
@@ -10,7 +11,7 @@ const Benefits = ({benefits}:JobPreviewBenefitsProps) => {
             <ul className='list-disc px-4'>
                 {
                     benefits?.map((benefit)=>(
-                        <li> {benefit}</li>
+                        <li> {separateCamelCase(benefit)}</li>
                     ))
                 }
             </ul>

@@ -1,4 +1,5 @@
-﻿using Entities.Enums;
+﻿using System.Text;
+using Entities.Enums;
 
 namespace Entities.Models;
 
@@ -10,7 +11,7 @@ public class Job
     public string Title { get; set; } = string.Empty;
     public Address? Address { get; set; }
     public Guid? AddressId { get; set; }
-    public string Pay { get; set; } = string.Empty;
+    public double HourlyPay { get; set; }
     public string Description { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
@@ -22,3 +23,5 @@ public class Job
     public List<Bookmark> Bookmarks { get; set; } = new();
     public List<JobBenefit> Benefits { get; set; } = new();
 }
+
+   

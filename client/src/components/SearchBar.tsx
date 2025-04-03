@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {  FaSistrix } from 'react-icons/fa6';
-import { useJobParametersContext } from "../hooks/useJobParametersContext.tsx";
+import { useJobParametersContext } from "../hooks/useJobParametersContext.ts";
 import { useSearchParams } from "react-router-dom";
 
 const SearchBar = () => {

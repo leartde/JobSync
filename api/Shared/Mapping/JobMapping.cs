@@ -14,7 +14,7 @@ public static class JobMapping
             Title = entity.Title,
             Address = entity.Address != null?$"{entity.Address.Street}, {entity.Address.City}, {entity.Address.Region ?? entity.Address.State}"
                 + $"{entity.Address.Country}, {entity.Address.ZipCode}":"Remote",
-            Pay = entity.Pay,
+            Pay = $"${entity.HourlyPay}/hour",
             Description = entity.Description,
             Type = entity.Type,
             ImageUrl = entity.ImageUrl,
@@ -33,7 +33,7 @@ public static class JobMapping
     public static void ToEntity(this JobDto dto, Job entity)
     {
         entity.Title = dto.Title ?? entity.Title;
-        entity.Pay = dto.Pay ?? entity.Pay;
+        entity.HourlyPay = dto.HourlyPay ?? entity.HourlyPay;
         entity.Description = dto.Description ?? entity.Description;
         entity.Type = dto.Type ?? entity.Type;
         entity.IsTakingApplications = dto.IsTakingApplications ?? entity.IsTakingApplications;

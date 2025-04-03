@@ -18,7 +18,7 @@ public class SeedJobData : IEntityTypeConfiguration<Job>
                 EmployerId = SeedEmployerData.Employers[i].Id,
                 Title = Faker.Company.Sector(),
                 AddressId = SeedAddressData.Addresses[i].Id,
-                Pay = $"${Faker.Number.RandomNumber(12, 40)}/hour",
+                HourlyPay = Faker.Number.RandomNumber(12, 50),
                 Description = Faker.Lorem.Paragraph(),
                 Type = i % 2 == 0 ? "FullTime" : "PartTime",
                 ImageUrl = "https://picsum.photos/200/300",

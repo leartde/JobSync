@@ -1,11 +1,13 @@
 import React from 'react';
 import { FaCheck, FaRegLightbulb } from 'react-icons/fa6';
+import { separateCamelCase } from "../../../helpers/StringHelpers.ts";
 
 
 type JobPreviewSkillsProps = {
-    skills?: string[];
+    skills: string[];
 
 }
+
 const Skills = ({skills}: JobPreviewSkillsProps) => {
     return (
         <div className='flex flex-col p-6 border border-gray-300'>
@@ -20,7 +22,7 @@ const Skills = ({skills}: JobPreviewSkillsProps) => {
                     <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
 
                     <FaCheck/>
-                    <span>{skill}</span>
+                    <span>{separateCamelCase(skill)}</span>
                     </div>
 
                     ))}

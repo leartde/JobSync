@@ -12,10 +12,10 @@ public class AddJobValidator : AbstractValidator<AddJobDto>
             .MinimumLength(5).WithError("Invalid title length", "Title must be at least 5 characters long")
             .MaximumLength(40).WithError("Invalid title length", "Title length cannot exceed 40 characters");
 
-        RuleFor(x => x.Pay)
+        RuleFor(x => x.HourlyPay)
             .NotNull()
-            .Must(StartWithDollarSign).WithMessage("Pay must start with $ sign")
-            .Must(EndsWithHourOrYear).WithMessage("Pay must be end with /year or /hour");
+            .GreaterThanOrEqualTo(2).WithMessage("Minimum hourly pay is 2 dollars/hr")
+            .LessThanOrEqualTo(200).WithMessage("Maximum hourly pay is 200 dollars/hr");
 
         RuleFor(x => x.Description)
             .NotNull()
@@ -25,15 +25,7 @@ public class AddJobValidator : AbstractValidator<AddJobDto>
         
     }
     
-    private bool StartWithDollarSign(string? pay)
-    {
-        return !string.IsNullOrEmpty(pay) && pay.StartsWith("$");
-    }
-
-    private bool EndsWithHourOrYear(string? pay)
-    {
-        return !string.IsNullOrEmpty(pay) && (pay.EndsWith("/year") || pay.EndsWith("/hour"));
-    }
+    
     
     
     

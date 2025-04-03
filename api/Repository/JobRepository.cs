@@ -21,16 +21,17 @@ internal sealed class JobRepository : RepositoryBase<Job>, IJobRepository
             .Include(j => j.Address)
             .Include(j => j.Skills)
             .Include(j => j.Benefits)
-            .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,jobParameters.IsTakingApplications)
+            .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,
+                jobParameters.IsTakingApplications,jobParameters.IsRemote, jobParameters.MinimumPay)
             .Search(jobParameters.SearchTerm)
             .Skip((jobParameters.PageNumber - 1) * jobParameters.PageSize)
             .Take(jobParameters.PageSize)
             .Sort(jobParameters.OrderBy)
-            
             .ToListAsync();
 
         int count = await FindAll()
-            .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,jobParameters.IsTakingApplications)
+            .Filter(jobParameters.JobType,jobParameters.HasMultipleSpots,
+                jobParameters.IsTakingApplications,jobParameters.IsRemote, jobParameters.MinimumPay)
             .Search(jobParameters.SearchTerm)
             .CountAsync();
 

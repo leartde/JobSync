@@ -5,15 +5,16 @@ import { useEffect, useState } from "react";
 import FetchAllJobs  from "../services/job/FetchAllJobs.ts";
 import { MainJobProvider } from "../context/MainJobContext.tsx";
 import { useSearchParams } from "react-router-dom";
-import { useMainJobContext } from "../hooks/useMainJobContext.tsx";
+import { useMainJobContext } from "../hooks/useMainJobContext.ts";
 import FetchJob from "../services/job/FetchJob.ts";
 import { JobParametersProvider } from "../context/JobParametersContext.tsx";
-import { useJobParametersContext } from "../hooks/useJobParametersContext.tsx";
+import { useJobParametersContext } from "../hooks/useJobParametersContext.ts";
 import { Job } from "../types/job/Job.ts";
 import Pagination from "../components/Pagination.tsx";
 import { JobResponse } from "../types/job/JobResponse.ts";
 import { useJobResponseHeadersContext } from "../hooks/useJobResponseHeadersContext.ts";
 import { JobResponseHeadersProvider } from "../context/JobResponseHeadersContext.tsx";
+import Filters from "../components/jobs/jobFilters/Filters.tsx";
 
 
 
@@ -27,6 +28,10 @@ const HomePageContent = () => {
     const employerId = searchParams.get('employerId');
     const searchTerm = searchParams.get('searchTerm');
     const pageNumber = searchParams.get('pageNumber');
+    const jobType = searchParams.get('jobType');
+    const isRemote = searchParams.get('isRemote');
+    const hasMultipleSpots = searchParams.get('hasMultipleSpots');
+    const minimumPay = searchParams.get('minimumPay');
 
     useEffect(() => {
         if (searchTerm){
@@ -35,6 +40,18 @@ const HomePageContent = () => {
         if(pageNumber){
             jobParameters.PageNumber = parseInt(pageNumber);
         }
+        if (jobType){
+            jobParameters.JobType = jobType;
+        }
+        if (isRemote){
+            jobParameters.IsRemote = isRemote === 'true';
+        }
+        if (hasMultipleSpots){
+            jobParameters.HasMultipleSpots = hasMultipleSpots === 'true';
+        }
+        if (minimumPay){
+            jobParameters.MinimumPay = parseInt(minimumPay);
+        }
         const getData = async () => {
             try {
                 const data: JobResponse = await FetchAllJobs({
@@ -42,12 +59,13 @@ const HomePageContent = () => {
                     SearchTerm: jobParameters.SearchTerm ?? null,
                     OrderBy: jobParameters.OrderBy ?? null,
                     PageSize: jobParameters.PageSize ?? 10,
+                    MinimumPay: jobParameters.MinimumPay ?? null,
+                    IsRemote: jobParameters.IsRemote ?? null,
                     PageNumber: jobParameters.PageNumber,
                     IsTakingApplications: jobParameters.IsTakingApplications ?? true,
                     HasMultipleSpots: jobParameters.HasMultipleSpots ?? null
                 });
                 if (data?.jobs) {
-                    console.log("Fetched job: ", data.jobs);
                     setJobs(data.jobs);
                     updateHeaders(data.headers);
                     if (jobId && employerId) {
@@ -70,13 +88,13 @@ const HomePageContent = () => {
         };
 
         getData().then();
-    }, [jobId, employerId,jobParameters.SearchTerm, jobParameters.PageNumber]);
-    console.log("SEARCHTERM:", jobParameters.SearchTerm)
+    }, [jobId, employerId,jobParameters.SearchTerm, jobParameters.PageNumber,jobParameters.IsRemote,jobParameters.HasMultipleSpots,jobParameters.JobType,jobParameters.OrderBy,jobParameters.PageSize,jobParameters.MinimumPay,jobParameters.IsTakingApplications]);
 
     return (
         <div className='flex flex-col gap-4 '>
             <SearchBar/>
-            <div className="mt-6 max-md:flex-col-reverse md:space-x-8 relative top-12 flex w-3/4 mx-auto  ">
+            {searchParams.has('searchTerm') && <Filters/>}
+            <div className=" max-md:flex-col-reverse md:space-x-8 relative top-12 flex w-3/4 mx-auto  ">
                 <JobCardsColumn jobs={jobs}/>
                 <JobPreview/>
             </div>

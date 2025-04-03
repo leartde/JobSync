@@ -12,20 +12,22 @@ const defaultJobParameters: JobParameters = {
     OrderBy: null,
     PageSize: 10,
     PageNumber: 1,
+    MinimumPay: null,
+    IsRemote: null,
     IsTakingApplications: true,
     HasMultipleSpots: null
 };
 
-export const JobParametersContext = createContext<JobParametersContextType>({
-    jobParameters: defaultJobParameters,
-    updateJobParameters: () => {}
-});
+export const JobParametersContext = createContext<JobParametersContextType | undefined>(undefined);
 
 export function JobParametersProvider({ children }: { children: React.ReactNode }) {
     const [jobParameters, setJobParameters] = useState<JobParameters>(defaultJobParameters);
 
-    const updateJobParameters = (newJobParameters: JobParameters) => {
-        setJobParameters(newJobParameters);
+    const updateJobParameters = (changes: Partial<JobParameters>) => {
+        setJobParameters(prev => ({
+            ...prev,
+            ...changes
+        }));
     };
 
     return (

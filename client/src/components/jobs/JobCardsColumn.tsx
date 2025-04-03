@@ -1,6 +1,6 @@
 import JobCard from "./JobCard";
 import { useSearchParams } from "react-router-dom";
-import { useMainJobContext } from "../../hooks/useMainJobContext.tsx";
+import { useMainJobContext } from "../../hooks/useMainJobContext.ts";
 import { Job } from "../../types/job/Job.ts";
 
 type JobCardsColumnProp = {
@@ -27,7 +27,7 @@ const JobCardsColumn = ({jobs}: JobCardsColumnProp) => {
     return (
         <div className='max-h-[80vh] max-md:mt-16 overflow-scroll gap-4 p-2 max-md:w-full w-1/3 flex flex-col'>
             {jobs.map((job: Job) => (
-                <JobCard 
+                <JobCard
                     onClick={() => handleJobClick(job)} 
                     key={job.id}  
                     job={job}
