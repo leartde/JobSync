@@ -24,34 +24,36 @@ const HomePageContent = () => {
     const { jobParameters } = useJobParametersContext();
     const { updateHeaders } = useJobResponseHeadersContext();
     const [searchParams, setSearchParams] = useSearchParams();
-    const jobId = searchParams.get('jobId');
-    const employerId = searchParams.get('employerId');
-    const searchTerm = searchParams.get('searchTerm');
-    const pageNumber = searchParams.get('pageNumber');
-    const jobType = searchParams.get('jobType');
-    const isRemote = searchParams.get('isRemote');
-    const hasMultipleSpots = searchParams.get('hasMultipleSpots');
-    const minimumPay = searchParams.get('minimumPay');
+    const urlParams = {
+    jobId: searchParams.get('jobId'),
+    employerId: searchParams.get('employerId'),
+    searchTerm: searchParams.get('searchTerm'),
+    pageNumber: searchParams.get('pageNumber'),
+    jobType: searchParams.get('jobType'),
+    isRemote: searchParams.get('isRemote'),
+    hasMultipleSpots: searchParams.get('hasMultipleSpots'),
+    minimumPay: searchParams.get('minimumPay')
+}
 
-    useEffect(() => {
-        if (searchTerm){
-            jobParameters.SearchTerm = searchTerm;
-        }
-        if(pageNumber){
-            jobParameters.PageNumber = parseInt(pageNumber);
-        }
-        if (jobType){
-            jobParameters.JobType = jobType;
-        }
-        if (isRemote){
-            jobParameters.IsRemote = isRemote === 'true';
-        }
-        if (hasMultipleSpots){
-            jobParameters.HasMultipleSpots = hasMultipleSpots === 'true';
-        }
-        if (minimumPay){
-            jobParameters.MinimumPay = parseInt(minimumPay);
-        }
+useEffect(() => {
+    if (urlParams.searchTerm){
+        jobParameters.SearchTerm = urlParams.searchTerm;
+    }
+    if(urlParams.pageNumber){
+        jobParameters.PageNumber = parseInt(urlParams.pageNumber);
+    }
+    if (urlParams.jobType){
+        jobParameters.JobType = urlParams.jobType;
+    }
+    if (urlParams.isRemote){
+        jobParameters.IsRemote = urlParams.isRemote === 'true';
+    }
+    if (urlParams.hasMultipleSpots){
+        jobParameters.HasMultipleSpots = urlParams.hasMultipleSpots === 'true';
+    }
+    if (urlParams.minimumPay){
+        jobParameters.MinimumPay = parseFloat(urlParams.minimumPay);
+    }
         const getData = async () => {
             try {
                 const data: JobResponse = await FetchAllJobs({
@@ -68,8 +70,8 @@ const HomePageContent = () => {
                 if (data?.jobs) {
                     setJobs(data.jobs);
                     updateHeaders(data.headers);
-                    if (jobId && employerId) {
-                        const selectedJob = await FetchJob(employerId, jobId);
+                    if (urlParams.jobId && urlParams.employerId) {
+                        const selectedJob = await FetchJob(urlParams.employerId, urlParams.jobId);
                         if (selectedJob) {
                             updateMainJob(selectedJob);
                         }
@@ -88,7 +90,7 @@ const HomePageContent = () => {
         };
 
         getData().then();
-    }, [jobId, employerId,jobParameters.SearchTerm, jobParameters.PageNumber,jobParameters.IsRemote,jobParameters.HasMultipleSpots,jobParameters.JobType,jobParameters.OrderBy,jobParameters.PageSize,jobParameters.MinimumPay,jobParameters.IsTakingApplications]);
+    }, [urlParams.jobId, urlParams.employerId, jobParameters.SearchTerm, jobParameters.PageNumber, jobParameters.IsRemote, jobParameters.HasMultipleSpots, jobParameters.JobType, jobParameters.OrderBy, jobParameters.PageSize, jobParameters.MinimumPay, jobParameters.IsTakingApplications]);
 
     return (
         <div className='flex flex-col gap-4 '>
