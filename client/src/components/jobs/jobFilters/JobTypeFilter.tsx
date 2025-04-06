@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from "react-router-dom";
-import { useJobParametersContext } from "../../../hooks/useJobParametersContext.ts";
+import { useJobParametersContext } from "../../../hooks/jobs/useJobParametersContext.ts";
 
 const JobTypeFilter = () => {
     const [jobType, setJobType] = useState<string | null | undefined>();

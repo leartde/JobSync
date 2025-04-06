@@ -5,7 +5,7 @@ import Details from './Details.tsx';
 import Benefits from './Benefits.tsx';
 import Description from './Description.tsx';
 
-import { useMainJobContext } from "../../../hooks/useMainJobContext.ts";
+import { useMainJobContext } from "../../../hooks/jobs/useMainJobContext.ts";
 
 const JobPreview = () => {
     const { mainJob } = useMainJobContext();

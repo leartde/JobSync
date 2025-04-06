@@ -1,6 +1,7 @@
 import React from 'react';
 import { CiBookmark, CiShare2 } from 'react-icons/ci';
 import { FaExternalLinkAlt } from 'react-icons/fa';
+import { separateCamelCase } from "../../../helpers/StringHelpers.ts";
 
 type StickyPreviewProps = {
     title?: string;
@@ -22,7 +23,7 @@ const StickyPreview = ({ title, employer, address, pay, type, image } : StickyPr
              <h1 className='font-semibold text-xl'>{title}</h1>
              <a className='underline  flex gap-1 items-center' href=""> <p>{employer} </p><FaExternalLinkAlt /></a>
                 <p>{address}</p>
-                <p>{pay} - {type}</p>
+                <p>{pay} - {separateCamelCase(type)}</p>
                 
              </div>
                 <div className='flex p-2 gap-2'>

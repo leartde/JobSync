@@ -1,24 +1,21 @@
 import React from 'react';
-import { useJobResponseHeadersContext } from "../hooks/useJobResponseHeadersContext.ts";
-import { useJobParametersContext } from "../hooks/useJobParametersContext.ts";
 import { useSearchParams } from "react-router-dom";
+import { PaginationProps } from "../types/Pagination.ts";
 
-const Pagination = () => {
-    const { headers } = useJobResponseHeadersContext();
-    const { updateJobParameters } = useJobParametersContext();
+const Pagination = ({headers, updateParameters}:PaginationProps) => {
     const [, setSearchParams] = useSearchParams();
-
-    if (!headers || headers.TotalPages <= 1) return null; // Hide if no pages
-
+    if (!headers || headers.TotalPages < 1) return null;
     const handlePageClick = (num: number) => {
-        updateJobParameters({ PageNumber: num });
+        updateParameters({ PageNumber: num });
         setSearchParams((prev) => {
             const newParams = new URLSearchParams(prev);
             newParams.set('pageNumber', num.toString());
             return newParams;
         });
+        if (window.innerWidth < 768) {
+            window.scrollTo({ top: 20, behavior: 'instant' });
+        }
     };
-
     const getPageRange = () => {
         const { CurrentPage, TotalPages } = headers;
         const range = [];
@@ -45,7 +42,6 @@ const Pagination = () => {
     };
 
     const pageRange = getPageRange();
-
     return (
         <div className="w-full p-2 space-x-2 mt-16 mx-auto flex justify-center items-center">
             {headers.HasPrevious && (

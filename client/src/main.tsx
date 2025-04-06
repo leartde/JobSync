@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage.tsx'
 import Authentication from './pages/Authentication.tsx'
 import Registration from './pages/Registration.tsx'
 import JobSeekerRegistration from './components/authentication/JobSeekerRegistration.tsx'
+import Employers from "./pages/Employers.tsx";
 
 const router = createBrowserRouter([
     {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
           {
             path : '/',
             element : <HomePage/>, },
+            {
+                path :"/employers",
+                element: <Employers/>
+            },
           {
             path: '/login',
             element: <Authentication/>

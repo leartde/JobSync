@@ -1,7 +1,7 @@
 import { Job } from "./Job.ts";
-import { JobResponseHeaders } from "./JobResponseHeaders.ts";
+import { ResponseHeaders } from "../ResponseHeaders.ts";
 
 export type JobResponse = {
     jobs: Job[];
-    headers: JobResponseHeaders;
+    headers: ResponseHeaders;
 }

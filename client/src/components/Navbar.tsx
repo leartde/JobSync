@@ -10,8 +10,8 @@ const Navbar = () => {
             <ul className="flex  text-md space-x-12 text-white max-md:hidden">
                 <li><a  href="#">Job<span
                     className="text-red-500 under">Sync </span></a></li>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Companies</a></li>
+                <li><Link to="/">Home</Link></li>
+                <li><Link to='/employers' >Employers </Link> </li>
                 <li><a href="#">Help</a></li>
             </ul>
 

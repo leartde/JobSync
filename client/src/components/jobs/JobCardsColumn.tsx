@@ -1,6 +1,6 @@
 import JobCard from "./JobCard";
 import { useSearchParams } from "react-router-dom";
-import { useMainJobContext } from "../../hooks/useMainJobContext.ts";
+import { useMainJobContext } from "../../hooks/jobs/useMainJobContext.ts";
 import { Job } from "../../types/job/Job.ts";
 
 type JobCardsColumnProp = {

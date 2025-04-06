@@ -1,13 +1,14 @@
 import axios from "axios";
 import { Job } from "../../types/job/Job.ts";
 import { JobParameters } from "../../types/job/JobParameters.ts";
-import { JobResponseHeaders } from "../../types/job/JobResponseHeaders.ts";
 import { JobResponse } from "../../types/job/JobResponse.ts";
+import { ResponseHeaders } from "../../types/ResponseHeaders.ts";
 
 
 const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplications, MinimumPay, IsRemote, OrderBy, PageSize, PageNumber } : JobParameters) => {
     try{
-        let url = `http://localhost:5248/api/jobs?`
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        let url = `${baseUrl}/jobs?`
         if(PageSize && PageSize > 0){
             url += `PageSize=${PageSize}`;
         }
@@ -38,7 +39,7 @@ const FetchJobs = async ({JobType, SearchTerm, HasMultipleSpots, IsTakingApplica
         const response = await axios.get(url);
         if(response.status === 200){
             const headers = response.headers["x-pagination"];
-            const parsedHeader : JobResponseHeaders = JSON.parse(headers);
+            const parsedHeader : ResponseHeaders = JSON.parse(headers);
             const jobs: Job[] = response.data;
             const data : JobResponse =  {
                 jobs: jobs,

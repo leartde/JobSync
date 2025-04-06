@@ -1,20 +1,20 @@
 import JobCardsColumn from '../components/jobs/JobCardsColumn';
 import JobPreview from '../components/jobs/jobPreview/JobPreview';
-import SearchBar from '../components/SearchBar';
 import { useEffect, useState } from "react";
 import FetchAllJobs  from "../services/job/FetchAllJobs.ts";
-import { MainJobProvider } from "../context/MainJobContext.tsx";
+import { MainJobProvider } from "../context/jobs/MainJobContext.tsx";
 import { useSearchParams } from "react-router-dom";
-import { useMainJobContext } from "../hooks/useMainJobContext.ts";
+import { useMainJobContext } from "../hooks/jobs/useMainJobContext.ts";
 import FetchJob from "../services/job/FetchJob.ts";
-import { JobParametersProvider } from "../context/JobParametersContext.tsx";
-import { useJobParametersContext } from "../hooks/useJobParametersContext.ts";
+import { JobParametersProvider } from "../context/jobs/JobParametersContext.tsx";
+import { useJobParametersContext } from "../hooks/jobs/useJobParametersContext.ts";
 import { Job } from "../types/job/Job.ts";
-import Pagination from "../components/Pagination.tsx";
+import JobsPagination from "../components/jobs/jobFilters/JobsPagination.tsx";
 import { JobResponse } from "../types/job/JobResponse.ts";
-import { useJobResponseHeadersContext } from "../hooks/useJobResponseHeadersContext.ts";
-import { JobResponseHeadersProvider } from "../context/JobResponseHeadersContext.tsx";
+import { useJobResponseHeadersContext } from "../hooks/jobs/useJobResponseHeadersContext.ts";
+import { JobResponseHeadersProvider } from "../context/jobs/JobResponseHeadersContext.tsx";
 import Filters from "../components/jobs/jobFilters/Filters.tsx";
+import JobSearch from "../components/jobs/jobFilters/JobSearch.tsx";
 
 
 
@@ -56,17 +56,7 @@ useEffect(() => {
     }
         const getData = async () => {
             try {
-                const data: JobResponse = await FetchAllJobs({
-                    JobType: jobParameters.JobType ?? null,
-                    SearchTerm: jobParameters.SearchTerm ?? null,
-                    OrderBy: jobParameters.OrderBy ?? null,
-                    PageSize: jobParameters.PageSize ?? 10,
-                    MinimumPay: jobParameters.MinimumPay ?? null,
-                    IsRemote: jobParameters.IsRemote ?? null,
-                    PageNumber: jobParameters.PageNumber,
-                    IsTakingApplications: jobParameters.IsTakingApplications ?? true,
-                    HasMultipleSpots: jobParameters.HasMultipleSpots ?? null
-                });
+                const data: JobResponse = await FetchAllJobs(jobParameters);
                 if (data?.jobs) {
                     setJobs(data.jobs);
                     updateHeaders(data.headers);
@@ -94,13 +84,13 @@ useEffect(() => {
 
     return (
         <div className='flex flex-col gap-4 '>
-            <SearchBar/>
+            <JobSearch/>
             {searchParams.has('searchTerm') && <Filters/>}
             <div className=" max-md:flex-col-reverse md:space-x-8 relative top-12 flex w-3/4 mx-auto  ">
                 <JobCardsColumn jobs={jobs}/>
                 <JobPreview/>
             </div>
-            <Pagination/>
+            <JobsPagination/>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useJobParametersContext } from "../../../hooks/useJobParametersContext.ts";
+import { useJobParametersContext } from "../../../hooks/jobs/useJobParametersContext.ts";
 import { useSearchParams } from "react-router-dom";
 
 const MinimumPayFilter = () => {
