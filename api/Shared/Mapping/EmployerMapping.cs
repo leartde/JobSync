@@ -14,7 +14,8 @@ public static class EmployerMapping
             Name = entity.Name,
             Email = entity.Email,
             Description = entity.Description,
-            Country = entity.Country,
+            Headquarters = entity.Headquarters,
+            Website = entity.Website,
             Industry = entity.IndustryString,
             Founded = entity.Founded,
             Phone = entity.Phone,
@@ -29,7 +30,8 @@ public static class EmployerMapping
         entity.Name = dto.Name ?? entity.Name;
         entity.Email = dto.Email ?? entity.Email;
         entity.Description = dto.Description ?? entity.Description;
-        entity.Country = dto.Country ?? entity.Country;
+        entity.Headquarters = dto.Headquarters ?? entity.Headquarters;
+        entity.Website = dto.Website ?? entity.Website;
         entity.Industry = (Industry)Enum.Parse(typeof(Industry), dto.Industry ?? entity.Industry.ToString()); 
         entity.Founded = dto.Founded ?? entity.Founded;
         entity.Phone = dto.Phone ?? entity.Phone;

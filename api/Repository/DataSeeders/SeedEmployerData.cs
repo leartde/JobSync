@@ -16,14 +16,16 @@ internal sealed class SeedEmployerData : IEntityTypeConfiguration<Employer>
     {
         for (int i = 0; i < 100; i++)
         {
+            string name = Name.FullName();
             Employer employer = new Employer
             {
                 Id = Guid.NewGuid(),
                 UserId = SeedUserData.Users[i].Id,
-                Name = Name.FullName(),
-                Email = $"{Name.FullName()}@gmail.com",
+                Name = name,
+                Email = $"{name}@gmail.com",
                 Description = Lorem.Paragraph(40),
-                Country = Faker.Address.Country() ?? "Unknown",
+                Headquarters = $"{Faker.Address.USCity()}, United States",
+                Website = $"{name}.com/careers",
                 Industry = (Industry)Number.RandomNumber(0,15),
                 Founded = DateOnly.FromDateTime(Date.Birthday(0, 50)),
                 Phone = Phone.GetPhoneNumber(),

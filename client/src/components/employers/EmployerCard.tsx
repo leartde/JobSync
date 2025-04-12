@@ -12,7 +12,7 @@ const EmployerCard = ({employer}:EmployerCardParams) => {
                 <img className="h-16 w-16 rounded-lg" src="https://picsum.photos/200/300" alt=""/>
                 <a className="flex flex-col">
                     <p className="text-red-500 font-semibold">{separateCamelCase(employer.name)}</p>
-                    <p className="text-gray-400">{employer.country}</p>
+                    <p className="text-gray-400">{employer.headquarters}</p>
                 </a>
             </Link>
             <a className="max-md:hidden text-white" href="">{separateCamelCase(employer.industry)}</a>

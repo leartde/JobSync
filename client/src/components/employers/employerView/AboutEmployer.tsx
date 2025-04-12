@@ -26,8 +26,8 @@ const AboutEmployer = ({ employer }: AboutEmployerProp) => {
                <AboutCard title={"Founded"} value={employer?.founded} />
             </div>
             <div className="flex md:gap-8 max-md:flex-col">
-                <AboutCard title={"Headquarters"} value={employer?.country} />
-                <AboutCard title={"Website"} value={`${employer?.name}.com/careers`} link="google.com"/>
+                <AboutCard title={"Headquarters"} value={employer?.headquarters} />
+                <AboutCard title={"Website"} value={employer?.website} link="google.com"/>
             </div>
             <div className="p-4 mt-8">
                 <p className="text-white">{`${more?employer?.description:employer?.description.slice(0, 500)+'...'}`}

@@ -39,10 +39,6 @@ public static class RepositoryEmployerExtensions
                 return isDescending
                     ? employers.OrderByDescending(e => e.Industry)
                     : employers.OrderBy(e => e.Industry);
-            case "country":
-                return isDescending
-                    ? employers.OrderByDescending(e => e.Country)
-                    : employers.OrderBy(e => e.Industry);
             default:
                 PropertyInfo[] propertyInfos = typeof(Job).GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 PropertyInfo? objectProperty = propertyInfos.FirstOrDefault(pi =>
