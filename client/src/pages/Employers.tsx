@@ -9,12 +9,31 @@ import EmployerSearch from "../components/employers/employerFilters/EmployerSear
 import { useEmployerResponseHeadersContext } from "../hooks/employers/useEmployerResponseHeadersContext.ts";
 import { EmployerResponseHeadersProvider } from "../context/employers/EmployerResponseHeadersContext.tsx";
 import EmployersPagination from "../components/employers/employerFilters/EmployersPagination.tsx";
+import IndustryFilter from "../components/employers/employerFilters/IndustryFilter.tsx";
+import { useSearchParams } from "react-router-dom";
 
 const EmployersPageContent = () => {
     const [employers,setEmployers] = useState<Employer[]>([]);
     const { employerParameters } = useEmployerParametersContext();
     const { updateHeaders } = useEmployerResponseHeadersContext();
+    const [searchParams] = useSearchParams();
+    const urlParams = {
+        searchTerm: searchParams.get('searchTerm'),
+        pageNumber: searchParams.get('pageNumber'),
+        industry: searchParams.get('industry')
+
+    }
        useEffect(() => {
+           if(urlParams.searchTerm){
+                employerParameters.SearchTerm = urlParams.searchTerm;
+           }
+              if(urlParams.pageNumber) {
+                  employerParameters.PageNumber = parseInt(urlParams.pageNumber);
+              }
+              if(urlParams.industry) {
+                  employerParameters.Industry = urlParams.industry;
+              }
+
             const getData = async () => {
                 try{
                     const data : EmployerResponse = await FetchAllEmployers(employerParameters);
@@ -29,11 +48,12 @@ const EmployersPageContent = () => {
 
             }
             getData().then();
-        }, [employerParameters.PageNumber,employerParameters.PageSize, employerParameters.SearchTerm]);
+        }, [employerParameters.PageNumber,employerParameters.PageSize, employerParameters.SearchTerm, employerParameters.Industry, urlParams.pageNumber, urlParams.searchTerm, urlParams.industry]);
 
     return (
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col">
                 <EmployerSearch/>
+                <IndustryFilter/>
                 <EmployerCardsColumn employers={employers}/>
                 <EmployersPagination/>
             </div>

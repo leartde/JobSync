@@ -6,6 +6,8 @@ public abstract class EmployerDto
 {
     public Guid? UserId { get; set; }
     public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? Description { get; set; }
     public string? Country { get; set; }
     public string? Industry { get; set; }
     public DateOnly? Founded { get; set; }

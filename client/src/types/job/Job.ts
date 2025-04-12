@@ -5,6 +5,7 @@ export type Job = {
     employerId: string;
     description: string
     address?: string;
+    city?: string;
     createdAt: string;
     pay: string;
     type:string;

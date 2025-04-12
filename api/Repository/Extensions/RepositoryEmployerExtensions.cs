@@ -9,10 +9,7 @@ public static class RepositoryEmployerExtensions
     public static IQueryable<Employer> Filter(this IQueryable<Employer> employers, string? industry)
     {
         if (!string.IsNullOrEmpty(industry))
-        {
-            employers = employers.Where(e => e.Industry.ToLower().Equals(industry.ToLower()));
-        }
-
+                employers = employers.Where(e => e.IndustryString.ToLower().Equals(industry.ToLower()));
         return employers;
     }
 

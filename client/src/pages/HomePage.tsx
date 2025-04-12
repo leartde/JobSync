@@ -85,7 +85,7 @@ useEffect(() => {
     return (
         <div className='flex flex-col gap-4 '>
             <JobSearch/>
-            {searchParams.has('searchTerm') && <Filters/>}
+            <Filters/>
             <div className=" max-md:flex-col-reverse md:space-x-8 relative top-12 flex w-3/4 mx-auto  ">
                 <JobCardsColumn jobs={jobs}/>
                 <JobPreview/>

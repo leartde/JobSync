@@ -6,10 +6,10 @@ type EmployerCardsColumnProp = {
 }
 const EmployerCardsColumn = ({employers}:EmployerCardsColumnProp) => {
     return (
-        <div className="mt-8  w-3/4 flex flex-col items-center gap-6 ">
+        <div className="mt-8 self-center  w-3/4 flex flex-col items-center gap-6 ">
             {
                 employers.map((employer: Employer) => (
-                    <EmployerCard employer={employer} onClick={()=>null} key={employer.id}/>
+                    <EmployerCard employer={employer}  key={employer.id}/>
                 ))
             }
         </div>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Entities.Enums;
 
 namespace Entities.Models;
 
@@ -9,13 +9,26 @@ public class Employer
     public Guid UserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
-    public string Industry { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    private Industry _industry;
+    public Industry Industry {
+        get => _industry;
+        set
+        {
+            _industry = value;
+            IndustryString = value.ToString();
+        }
+    }
+
+    public string IndustryString { get; set; } = string.Empty;
     public DateOnly Founded { get; set; }
     public string Phone { get; set; } = string.Empty;
     public string? PhotoUrl { get; set; }
     public string? SecondaryPhone { get; set; } = string.Empty;
     public List<Job> Jobs { get; set; } = new();
 
+   
 
 
 }

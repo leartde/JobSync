@@ -1,4 +1,6 @@
-﻿using Entities.Models;
+﻿using Entities.Enums;
+using Entities.Models;
+using Faker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,11 +20,13 @@ internal sealed class SeedEmployerData : IEntityTypeConfiguration<Employer>
             {
                 Id = Guid.NewGuid(),
                 UserId = SeedUserData.Users[i].Id,
-                Name = Faker.Name.FullName(),
+                Name = Name.FullName(),
+                Email = $"{Name.FullName()}@gmail.com",
+                Description = Lorem.Paragraph(40),
                 Country = Faker.Address.Country() ?? "Unknown",
-                Industry = Faker.Company.Industry(),
-                Founded = DateOnly.FromDateTime(Faker.Date.Birthday(0, 50)),
-                Phone = Faker.Phone.GetPhoneNumber(),
+                Industry = (Industry)Number.RandomNumber(0,15),
+                Founded = DateOnly.FromDateTime(Date.Birthday(0, 50)),
+                Phone = Phone.GetPhoneNumber(),
                 PhotoUrl = "https://picsum.photos/200/300"
             };
             employers[i] = employer;
