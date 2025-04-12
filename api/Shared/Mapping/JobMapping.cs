@@ -24,7 +24,8 @@ public static class JobMapping
             Employer = entity.Employer?.Name ?? string.Empty,
             EmployerId = entity.EmployerId,
             Skills = entity.Skills.Select(s => s.Name),
-            Benefits = entity.Benefits.Select(b => b.Benefit.ToString())
+            Benefits = entity.Benefits.Select(b => b.Benefit.ToString()),
+            City = entity.Address?.City
             
         };
         

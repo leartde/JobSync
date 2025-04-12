@@ -11,6 +11,7 @@ public class ViewJobDto : JobDto
     public string Address { get; set; } = string.Empty;
     public  IEnumerable<string>? Skills { get; set; } 
     public string? ImageUrl { get; set; }
+    public string? City { get; set; }
 
 
 }
