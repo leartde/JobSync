@@ -8,7 +8,7 @@ public static class RepositoryJobExtensions
 {
     public static IQueryable<Job>
         Filter(this IQueryable<Job> jobs, string? type, bool? hasMultipleSpots, bool? isTakingApplications,
-            bool? isRemote, short? minimumPay)
+            bool? isRemote, double? minimumPay)
     {
         if (!string.IsNullOrWhiteSpace(type))
         {

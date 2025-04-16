@@ -39,8 +39,6 @@ const FetchAllEmployers = async (
           return data
 
         } else {
-            const response = await axios.get(url);
-            console.log(url)
             console.error("Error fetching employers: ", response.statusText);
         }
     } catch (e) {

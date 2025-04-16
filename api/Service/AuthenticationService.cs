@@ -22,13 +22,19 @@ internal sealed class AuthenticationService : IAuthenticationService
         _userManager = userManager;
         _configuration = configuration;
     }
-    public async Task<IdentityResult> RegisterUser(RegisterUserDto userDto)
+    public async Task<(IdentityResult Result, AppUser User)> RegisterUser(RegisterUserDto userDto)
     {
-        AppUser user = new AppUser();
+        var user = new AppUser();
         userDto.ToEntity(user);
+
         IdentityResult result = await _userManager.CreateAsync(user, userDto.Password);
-        if (result.Succeeded) await _userManager.AddToRoleAsync(user, userDto.Role);
-        return result;
+
+        if (result.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(user, userDto.Role);
+        }
+
+        return (result: result, user : user);
     }
 
     public async Task<bool> ValidateUser(LoginUserDto userDto)

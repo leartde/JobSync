@@ -1,5 +1,4 @@
-﻿using Entities.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Shared.DataTransferObjects.AddressDtos;
 using Shared.DataTransferObjects.SkillDtos;
 

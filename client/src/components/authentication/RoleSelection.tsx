@@ -1,13 +1,19 @@
 import React from 'react';
 import {FaBriefcase, FaPerson} from "react-icons/fa6";
-import {useNavigate} from "react-router-dom";
+import { useRegisterFormContext } from "../../hooks/authentication/useRegisterFormContext.ts";
 
 const RoleSelection = () => {
-    const navigate = useNavigate();
-
-    const [type, setType] = React.useState('');
+    const { updateRegisterForm } = useRegisterFormContext();
+    const [type, setType] = React.useState<"jobseeker" | "employer" >();
+    const handleTypeSubmit = (type: "jobseeker" | "employer" | undefined) => {
+        updateRegisterForm({
+            type: type,
+            steps: 4,
+            currentStep: 1,
+        });
+    };
     return (
-        <div>
+        <div className='mx-auto w-3/4 md:w-1/3 xl:w-1/4 rounded-md mt-16 flex flex-col items-center bg-white py-12 px-6'>
             <h1 className='text-2xl font-bold text-black'>Register</h1>
 
             <div className='flex flex-col gap-4 mt-4'>
@@ -27,7 +33,8 @@ const RoleSelection = () => {
                 </div>
 
 
-                <button disabled={type === ''} onClick={() => navigate(`${type}`)}
+                <button onClick={()=>handleTypeSubmit(type)}
+                disabled={type === undefined}
                         className='disabled:bg-red-300 text-white h-12  text-center font-medium  bg-red-500  px-4 rounded-lg'>
                     Continue
                 </button>

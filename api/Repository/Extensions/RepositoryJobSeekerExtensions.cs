@@ -21,10 +21,10 @@ public static class RepositoryJobSeekerExtensions
         if (!string.IsNullOrEmpty(searchTerm))
         {
             string lowerSearch = searchTerm.ToLower();
-            jobSeekers = jobSeekers.Where(js => 
-                $"{js.FirstName} {js.MiddleName} {js.LastName}".ToLower()
-                .Contains(lowerSearch)
-            );
+            jobSeekers = jobSeekers.Where(js =>
+                js.FirstName.Contains(lowerSearch) ||
+                (js.MiddleName != null && js.MiddleName.Contains(lowerSearch)) ||
+                js.LastName.Contains(lowerSearch));
         }
         return jobSeekers;
     }

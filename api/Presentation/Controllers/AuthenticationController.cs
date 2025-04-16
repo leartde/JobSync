@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Entities.Exceptions;
+using Entities.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.UserDtos;
@@ -16,17 +19,49 @@ public class AuthenticationController : ControllerBase
         _service = service;
     }
     
-    [HttpPost("register")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto userDto)
+    [HttpPost("register/jobseeker")]
+    public async Task<IActionResult> RegisterUser([FromForm] RegisterJobSeekerDto userDto)
     {
-        IdentityResult result = await _service.AuthenticationService.RegisterUser(userDto);
-        if (result.Succeeded) return StatusCode(201);
-        foreach (var error in result.Errors)
+         (IdentityResult result,AppUser user) = await _service.AuthenticationService.RegisterUser(userDto);
+        if (result.Succeeded)
+        {
+            if (userDto.AddJobSeekerDto is null)
+            {
+                throw new BadRequestException("Job Seeker details are missing");
+            }
+            userDto.AddJobSeekerDto.UserId = user.Id;
+            await _service.JobSeekerService.AddJobSeekerAsync(userDto.AddJobSeekerDto);
+            return StatusCode(201);
+        }
+        foreach (IdentityError error in result.Errors)
         {
             ModelState.TryAddModelError(error.Code, error.Description);
         }
         return BadRequest(ModelState);
+    }
 
+    [HttpPost("register/employer")]
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterEmployerDto userDto)
+    {
+        (IdentityResult result, AppUser user) = await _service.AuthenticationService.RegisterUser(userDto);
+        if (result.Succeeded)
+        {
+            if (userDto.AddEmployerDto is null)
+            {
+                throw new BadRequestException("Employer details are missing");
+            }
+
+            userDto.AddEmployerDto.UserId = user.Id;
+            await _service.EmployerService.AddEmployerAsync(userDto.AddEmployerDto);
+            return StatusCode(201);
+        }
+
+        foreach (IdentityError error in result.Errors)
+        {
+            ModelState.TryAddModelError(error.Code, error.Description);
+        }
+
+        return BadRequest(ModelState);
     }
 
     [HttpPost("login")]
