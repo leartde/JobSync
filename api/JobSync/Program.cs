@@ -5,18 +5,20 @@ using FluentValidation.AspNetCore;
 using JobSync.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NLog;
+using Service;
+using Service.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
-builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureDataShaping();
 builder.Services.ConfigureFluentValidation();
 builder.Services.ConfigureCloudinary();

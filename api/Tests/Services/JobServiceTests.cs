@@ -202,11 +202,11 @@ public class JobServiceTests
     }
 
     [Fact]
-    public async Task ValidateJobAsync_ShouldReturnValidationError_WhenPayIsNotInCorrectFormat()
+    public async Task ValidateJobAsync_ShouldReturnValidationError_WhenPayExceedsRange()
     {
         //Arrange
         AddJobDto jobDto = FakeJobs.AddJobDto;
-        jobDto.Pay = "So much money!";
+        jobDto.HourlyPay = 8000;
         
         //Act
         var result = await _validator.ValidateAsync(jobDto);

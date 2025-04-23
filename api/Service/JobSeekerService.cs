@@ -1,12 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Transactions;
 using CloudinaryDotNet.Actions;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
-using Shared.DataTransferObjects.AddressDtos;
 using Shared.DataTransferObjects.JobSeekerDtos;
-using Shared.DataTransferObjects.SkillDtos;
 using Shared.Mapping;
 using Shared.RequestFeatures;
 
@@ -17,7 +15,7 @@ internal sealed class JobSeekerService : IJobSeekerService
     private readonly IRepositoryManager _repository;
     private readonly ILoggerManager _logger;
     private readonly ICloudinaryManager _cloudinaryManager;
-    
+
 
     public JobSeekerService(IRepositoryManager repository, ILoggerManager logger, ICloudinaryManager cloudinaryManager)
     {
@@ -25,10 +23,12 @@ internal sealed class JobSeekerService : IJobSeekerService
         _logger = logger;
         _cloudinaryManager = cloudinaryManager;
     }
+
     public async Task<PagedList<ViewJobSeekerDto>> GetAllJobSeekersAsync(JobSeekerParameters jobSeekerParameters)
     {
         PagedList<JobSeeker> jobSeekers = await _repository.JobSeeker.GetAllJobSeekersAsync(jobSeekerParameters);
-        return new PagedList<ViewJobSeekerDto>(jobSeekers.Select(js => js.ToDto()).ToList(), jobSeekers.MetaData.TotalCount , jobSeekerParameters.PageNumber,
+        return new PagedList<ViewJobSeekerDto>(jobSeekers.Select(js => js.ToDto()).ToList(),
+            jobSeekers.MetaData.TotalCount, jobSeekerParameters.PageNumber,
             jobSeekerParameters.PageSize);
     }
 
@@ -37,26 +37,39 @@ internal sealed class JobSeekerService : IJobSeekerService
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
         return jobSeeker.ToDto();
     }
-    
-    
+
+
     public async Task<ViewJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto)
     {
         JobSeeker jobSeeker = new JobSeeker();
-        jobSeekerDto.ToEntity(jobSeeker);
-        if (jobSeekerDto.Resume != null)
-        {
-            UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
-            jobSeeker.ResumeLink = result.Url.ToString();
-        }
-        await _repository.JobSeeker.AddJobSeekerAsync(jobSeeker);
-        if (jobSeekerDto.Skills != null)
-        {
-            await AddSkillsForJobSeekerAsync(jobSeeker, jobSeekerDto.Skills);
-        }
-        await _repository.SaveAsync();
+        
+            jobSeekerDto.ToEntity(jobSeeker);
+            if (jobSeekerDto.Resume != null)
+            {
+                UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
+                try
+                {
+                    jobSeeker.ResumeLink = result.Url.ToString();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Error uploading resume:" + e.Message);
+                    throw;
+                }
+            }
+
+            await _repository.JobSeeker.AddJobSeekerAsync(jobSeeker);
+            if (jobSeekerDto.Skills is { Count: > 0 })
+            {
+                await AddSkillsForJobSeekerAsync(jobSeeker, jobSeekerDto.Skills);
+            }
+
+            await _repository.SaveAsync();
         return jobSeeker.ToDto();
     }
-    
+        
+            
+
     public async Task DeleteJobSeekerAsync(Guid id)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
@@ -74,42 +87,53 @@ internal sealed class JobSeekerService : IJobSeekerService
             UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
             jobSeeker.ResumeLink = result.Url.ToString();
         }
-         _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
-         await _repository.SaveAsync();
-         return jobSeeker.ToDto();
+
+        _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
+        await _repository.SaveAsync();
+        return jobSeeker.ToDto();
     }
 
     private async Task<JobSeeker> RetrieveJobSeekerAsync(Guid id)
     {
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(id);
-        if (jobSeeker is null) throw new NotFoundException("jobSeeker",id);
+        if (jobSeeker is null) throw new NotFoundException("jobSeeker", id);
         return jobSeeker;
     }
-    private async Task AddSkillsForJobSeekerAsync(JobSeeker jobSeeker, List<AddSkillDto> skillDtos)
+
+    private async Task AddSkillsForJobSeekerAsync(JobSeeker jobSeeker, List<string> skillNames)
     {
-        List<Skill> newSkills = [];
         List<JobSeekerSkill> jobSeekerSkills = [];
-        foreach (AddSkillDto skillDto in skillDtos)
+        List<Skill> newSkills = [];
+        foreach (string skillName in skillNames)
         {
-            Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillDto.Name);
-            if (skill is null)
+            Skill? skill = await _repository.Skill.GetSkillByNameAsync(skillName);
+            if (skill == null)
             {
-                Skill newSkill = new Skill { Id = Guid.NewGuid() };
-                skillDto.ToEntity(newSkill);
+                Skill newSkill = new Skill
+                {
+                    Id = Guid.NewGuid(),
+                    Name = skillName
+                };
                 newSkills.Add(newSkill);
-                jobSeekerSkills.Add(new JobSeekerSkill { JobSeekersId = jobSeeker.Id, SkillsId = newSkill.Id });
+                jobSeekerSkills.Add(new JobSeekerSkill
+                {
+                    JobSeekersId = jobSeeker.Id,
+                    SkillsId = newSkill.Id
+                });
             }
             else
             {
-                skillDto.ToEntity(skill);
-                jobSeekerSkills.Add(new JobSeekerSkill { JobSeekersId = jobSeeker.Id, SkillsId = skill.Id });
+                jobSeekerSkills.Add(new JobSeekerSkill
+                {
+                    JobSeekersId = jobSeeker.Id,
+                    SkillsId = skill.Id
+                });
             }
+
+            if (newSkills.Count > 0) await _repository.Skill.AddSkillsAsync(newSkills);
+            await _repository.JobSeekerSkill.AddJobSeekerSkillsAsync(jobSeekerSkills);
         }
-        if (newSkills.Count > 0)
-        {
-            await _repository.Skill.AddSkillsAsync(newSkills);
-            await _repository.SaveAsync();
-        }
-        await _repository.JobSeekerSkill.AddJobSeekerSkillsAsync(jobSeekerSkills);
+
+        await _repository.SaveAsync();
     }
 }

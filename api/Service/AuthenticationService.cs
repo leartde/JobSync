@@ -34,7 +34,7 @@ internal sealed class AuthenticationService : IAuthenticationService
             await _userManager.AddToRoleAsync(user, userDto.Role);
         }
 
-        return (result: result, user : user);
+        return (result, user);
     }
 
     public async Task<bool> ValidateUser(LoginUserDto userDto)

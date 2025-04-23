@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Shared.DataTransferObjects.JobSeekerDtos;
+using Shared.DataTransferObjects.SkillDtos;
 
 namespace Shared.Mapping;
 
@@ -39,11 +40,6 @@ public static class JobSeekerMapping
         entity.Gender = dto.Gender??entity.Gender;
         if (dto is AddJobSeekerDto addJobSeekerDto)
         {
-            addJobSeekerDto.Skills?.ToList().ForEach(
-                skillDto => entity.Skills.ToList().ForEach(
-                    skill => skillDto.ToEntity(skill)
-                )
-            );
             if (addJobSeekerDto.Address != null)
             {
                 Address address = new Address();

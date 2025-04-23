@@ -112,12 +112,11 @@ public static class ServiceExtensions
         services.AddValidatorsFromAssembly(typeof(UpdateJobValidator).Assembly);
         services.AddFluentValidationAutoValidation();
     }
+    
 
     public static void ConfigureCloudinary(this IServiceCollection services)
     {
         services.AddScoped<ICloudinaryManager, CloudinaryManager>();
     }
-
-   
-
+    
 }

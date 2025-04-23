@@ -1,46 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRegisterFormContext } from "../../../hooks/authentication/useRegisterFormContext.ts";
 import {
     ButtonsGroup,
     DefaultInputDiv,
-     InputGroup,
+    InputGroup,
     MultiStepFormWrapper,
 } from "./FormComponents.tsx";
+import { RegisterJobSeeker } from "../../../types/jobseeker/RegisterJobSeeker.ts";
 
 const PersonalDetails = () => {
-  const { registerForm, updateRegisterForm } = useRegisterFormContext();
+    const { registerForm, updateRegisterForm, roleData, updateRoleData } = useRegisterFormContext();
 
-  return (
-      <MultiStepFormWrapper role="jobseeker" title="Personal Details" currentStep={registerForm.currentStep} steps={registerForm.steps}>
-          <InputGroup>
-             <DefaultInputDiv label="First Name" id="firstName" type="text"/>
-            <DefaultInputDiv label="Middle Name" id="middleName" type="text"/>
-          </InputGroup>
-          <InputGroup>
-            <DefaultInputDiv label="Last Name" id="lastName" type="text"/>
+    const [formData, setFormData] = useState<RegisterJobSeeker>({
+        FirstName: (roleData as RegisterJobSeeker)?.FirstName || "",
+        MiddleName: (roleData as RegisterJobSeeker)?.MiddleName || "",
+        LastName: (roleData as RegisterJobSeeker)?.LastName || "",
+        Gender: (roleData as RegisterJobSeeker)?.Gender || "",
+        BirthDate: (roleData as RegisterJobSeeker)?.BirthDate || new Date()
+    });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
+    const handleButton = (newStep: number) => {
+        updateRegisterForm({ currentStep: newStep });
+        updateRoleData(formData);
+    };
+
+    return (
+        <>
+            <InputGroup>
+                <DefaultInputDiv
+                    onChange={handleInputChange}
+                    value={formData.FirstName}
+                    label="First Name"
+                    id="FirstName"
+                    type="text"
+                />
+                <DefaultInputDiv
+                    onChange={handleInputChange}
+                    value={formData.MiddleName}
+                    label="Middle Name"
+                    id="MiddleName"
+                    type="text"
+                />
+            </InputGroup>
+
+            <InputGroup>
+                <DefaultInputDiv
+                    onChange={handleInputChange}
+                    value={formData.LastName}
+                    label="Last Name"
+                    id="LastName"
+                    type="text"
+                />
+                <DefaultInputDiv
+                    onChange={handleInputChange}
+                    value={formData.Gender}
+                    label="Gender"
+                    id="Gender"
+                    type="select"
+                    options={[
+                        { value: "", label: "---", disabled: true },
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" }
+                    ]}
+                />
+            </InputGroup>
+
             <DefaultInputDiv
-                label="Gender"
-                id="gender"
-                type="select"
-                options={[
-                  { value: "", label: "---",disabled:true  },
-                  { value: "male", label: "Male" },
-                  {value: "female", label:"Female"}
-                ]}
+                onChange={handleInputChange}
+                value={(formData.BirthDate)?.toString()}
+                id="BirthDate"
+                label="Birthdate"
+                type="date"
             />
-
-          </InputGroup>
-
-          <DefaultInputDiv id="birthday" label="Birthday" type="date" />
-
 
             <ButtonsGroup
-                onClick={(newStep) => updateRegisterForm({ currentStep: newStep })}
+                onClick={handleButton}
                 currentStep={registerForm.currentStep}
             />
-
-      </MultiStepFormWrapper>
-  );
+        </>
+    );
 };
 
 export default PersonalDetails;

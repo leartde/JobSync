@@ -32,8 +32,6 @@ internal sealed class JobService : IJobService
         PagedList<Job> jobs = await _repository.Job.GetAllJobsAsync(jobParameters);
         IEnumerable<ExpandoObject> shapedData = 
         _dataShaper.ShapeData(jobs.Select(j => j.ToDto()), jobParameters.Fields);
-        _logger.LogDebug(
-            string.Join(Environment.NewLine, JsonConvert.SerializeObject(shapedData)));
         
         return (jobs: shapedData, metaData: jobs.MetaData);
     }

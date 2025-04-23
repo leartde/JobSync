@@ -12,5 +12,4 @@ public interface IRepositoryBase<T>
     Task CreateBulk(List<T> entities);
     void DeleteBulk(List<T> entities);
 
-
 }

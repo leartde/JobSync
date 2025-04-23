@@ -50,4 +50,5 @@ namespace Repository;
         {
             _context.Set<T>().RemoveRange(entities);
         }
+        
     }

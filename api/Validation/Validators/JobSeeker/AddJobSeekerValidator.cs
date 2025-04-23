@@ -11,12 +11,12 @@ public class AddJobSeekerValidator : AbstractValidator<AddJobSeekerDto>
         RuleFor(x => x.FirstName)
             .NotNull()
             .MinimumLength(2).WithError("Invalid first name length", "First name must be at least 2 characters long")
-            .MinimumLength(25).WithError("Invalid first name length", "First name length cannot exceed 25 characters");
+            .MaximumLength(25).WithError("Invalid first name length", "First name length cannot exceed 25 characters");
 
         RuleFor(x => x.LastName)
             .NotNull()
             .MinimumLength(2).WithError("Invalid last name length", "Last name must be at least 2 characters long")
-            .MinimumLength(25).WithError("Invalid last name length", "Last name length cannot exceed 25 characters");
+            .MaximumLength(25).WithError("Invalid last name length", "Last name length cannot exceed 25 characters");
 
 
         RuleFor(x => x.Gender)

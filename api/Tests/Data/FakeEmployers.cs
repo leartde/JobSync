@@ -22,7 +22,7 @@ public static class FakeEmployers
     {
         Id = new Guid("586e6f00-d455-43b0-8bc7-bc045dadcf98"),
         Name = "Employer1",
-        Country = "Albania",
+        Headquarters = "Albania",
         Phone = "443191426"
     };
 }

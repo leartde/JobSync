@@ -107,7 +107,7 @@ public static class FakeJobs
     {
         Title = "Project Manager",
         Description = "The employee will lead and manage the team's projects",
-        Pay = "$50/hour",
+        HourlyPay = 32.5,
         Address = new AddAddressDto
         {
             Country = "United States",

@@ -102,7 +102,7 @@ public class EmployerServiceTests
         var employerDto = new AddEmployerDto
         {
             Name = "Employer",
-            Country = "Albania",
+            Headquarters = "Albania",
             Phone = "+383 43 887 111"
         };
 
@@ -122,7 +122,7 @@ public class EmployerServiceTests
         var employerDto = new AddEmployerDto
         {
             Name = "",
-            Country = "Albania",
+            Headquarters = "Albania",
             Phone = "+383 43 887 111"
         };
 
@@ -135,13 +135,13 @@ public class EmployerServiceTests
     }
 
     [Fact]
-    public async Task ValidateEmployer_ShouldReturnValidationError_WhenGivenInvalidCountryName()
+    public async Task ValidateEmployer_ShouldReturnValidationError_WhenGivenInvalidHeadquartersName()
     {
         // Arrange
         var employerDto = new AddEmployerDto
         {
             Name = "Leart",
-            Country = "America",
+            Headquarters = "America",
             Phone = "+383 43 887 111"
         };
 
@@ -150,7 +150,7 @@ public class EmployerServiceTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == nameof(AddEmployerDto.Country));
+        result.Errors.Should().Contain(e => e.PropertyName == nameof(AddEmployerDto.Headquarters));
     }
 
     [Fact]
@@ -160,14 +160,14 @@ public class EmployerServiceTests
         AddEmployerDto employerDto = new AddEmployerDto
         {
             Name = "Employer3",
-            Country = "Albania",
+            Headquarters = "Albania",
             Phone = "+383 43 887 111"
         };
         Employer employerToAdd = new Employer
         {
             Id = Guid.NewGuid(),
             Name = employerDto.Name!,
-            Country = employerDto.Country!,
+            Headquarters = employerDto.Headquarters!,
             Phone = employerDto.Phone!
         };
         _mockService.Setup(service => service.AddEmployerAsync(employerDto))
@@ -177,7 +177,7 @@ public class EmployerServiceTests
             .ReturnsAsync(new ViewEmployerDto
             {
                 Name = employerDto.Name,
-                Country = employerDto.Country,
+                Headquarters = employerDto.Headquarters,
                 Phone = employerDto.Phone
             });
 
@@ -197,7 +197,7 @@ public class EmployerServiceTests
         var employerDto = new UpdateEmployerDto
         {
             Name = "UpdatedName",
-            Country = "Kosovo",
+            Headquarters = "Kosovo",
             Phone = "+123 444 444"
         };
 
@@ -208,7 +208,7 @@ public class EmployerServiceTests
             {
                 var employerToUpdate = _employers.First(e => e.Id == id);
                 employerToUpdate.Name = dto.Name!;
-                employerToUpdate.Country = dto.Country!;
+                employerToUpdate.Headquarters = dto.Headquarters!;
                 employerToUpdate.Phone = dto.Phone!;
             })
             .ReturnsAsync(employer.ToDto);
@@ -222,7 +222,7 @@ public class EmployerServiceTests
 
         var updatedEmployer = _employers.First(e => e.Id == result.Id);
         updatedEmployer.Name.Should().Be(result.Name);
-        updatedEmployer.Country.Should().Be(result.Country);
+        updatedEmployer.Headquarters.Should().Be(result.Headquarters);
         updatedEmployer.Phone.Should().Be(result.Phone);
 
             _mockService.Verify(service => service.UpdateEmployerAsync(employer.Id, employerDto), Times.Once);
