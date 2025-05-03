@@ -67,9 +67,13 @@ useEffect(() => {
                         }
                     } else if (data.jobs.length > 0) {
                         updateMainJob(data.jobs[0]);
-                        setSearchParams({
-                            employerId: data.jobs[0].employerId,
-                            jobId: data.jobs[0].id });
+                        setSearchParams(prev =>{
+                            const newParams = new URLSearchParams(prev);
+                            newParams.set('jobId', data.jobs[0].id);
+                            newParams.set('employerId', data.jobs[0].employerId);
+                            return newParams;
+
+                        });
                     }
                 } else {
                     console.error("Data is undefined or job are missing.");

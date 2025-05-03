@@ -19,7 +19,7 @@ const Skills = ({skills}: JobPreviewSkillsProps) => {
             </div>
             <div className="flex gap-2">
                 {skills?.map((skill)=>(
-                    <div className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
+                    <div key={skill} className="flex p-2 items-center gap-2 font-semibold bg-green-100 border rounded-md border-green-200 text-green-900 text-sm">
 
                     <FaCheck/>
                     <span>{separateCamelCase(skill)}</span>

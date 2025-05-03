@@ -8,7 +8,7 @@ public class RegisterEmployerValidator : AbstractValidator<RegisterEmployerDto>
 {
     public RegisterEmployerValidator()
     {
-        RuleFor(x => x.AddEmployerDto)
+        RuleFor(x => x.Employer)
             .SetValidator(new AddEmployerValidator());
 
     }

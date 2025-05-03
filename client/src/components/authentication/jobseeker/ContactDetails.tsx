@@ -4,15 +4,28 @@ import {
     ButtonsGroup,
     DefaultInputDiv,
     InputGroup,
-    MultiStepFormWrapper,
-} from "./FormComponents.tsx";
+} from "../FormComponents.tsx";
 import { RegisterJobSeeker } from "../../../types/jobseeker/RegisterJobSeeker.ts";
 import { Address } from "../../../types/address/Address.ts";
+import { ContactDetailsSchema } from "../../../schemas/jobseeker/ContactDetails.schema.ts";
+import { States } from "../../../utils/AmericanStates.ts";
+type ContactDetailsErrors = {
+    phone?: string;
+
+    street?: string;
+        city?: string;
+        country?: string;
+        state?: string;
+        region?: string;
+        zipCode?: string;
+
+};
+
 
 const ContactDetails = () => {
     const { registerForm, updateRegisterForm, roleData, updateRoleData } = useRegisterFormContext();
-
-    const initialAddress = (roleData as RegisterJobSeeker)?.Address || {
+    const [errors, setErrors] = useState<ContactDetailsErrors>({});
+    const initialAddress = (roleData as RegisterJobSeeker)?.address || {
         street: "",
         city: "",
         country: "",
@@ -22,7 +35,7 @@ const ContactDetails = () => {
     };
 
     const [address, setAddress] = useState<Address>(initialAddress);
-    const [phone, setPhone] = useState<string>((roleData as RegisterJobSeeker)?.Phone || "");
+    const [phone, setPhone] = useState<string>((roleData as RegisterJobSeeker)?.phone || "");
 
 
 
@@ -37,13 +50,42 @@ const ContactDetails = () => {
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPhone(e.target.value);
     };
+    const formData = {
+        ...address,
+        phone
+    };
 
     const handleButton = (newStep: number) => {
-        updateRegisterForm({ currentStep: newStep });
-        updateRoleData({
-            Address: address,
-            Phone: phone
-        });
+        if (newStep < registerForm.currentStep) {
+            updateRegisterForm({ currentStep: newStep });
+            updateRoleData({
+                address: address,
+                phone: phone
+            });
+            return;
+        }
+        setErrors({});
+        const validationData = {
+            ...formData,
+        };
+        const validation = ContactDetailsSchema.safeParse(validationData);
+        console.log(validation);
+        if (!validation.success) {
+                const newErrors = validation.error.errors.reduce((acc, error) => {
+                    const fieldName = error.path[0] as keyof ContactDetailsErrors;
+                    return {
+                        ...acc,
+                        [fieldName]: error.message
+                    };
+                }, {} as ContactDetailsErrors);
+                setErrors(newErrors);
+            } else {
+                updateRegisterForm({ currentStep: newStep });
+                updateRoleData({
+                    address: address,
+                    phone: phone
+                });
+            }
     };
 
     return (
@@ -62,6 +104,7 @@ const ContactDetails = () => {
                     { value: "UK", label: "United Kingdom" },
                     { value: "AUS", label: "Australia" }
                 ]}
+                error={errors?.country}
             />
             <DefaultInputDiv
                 value={address.street}
@@ -70,6 +113,7 @@ const ContactDetails = () => {
                 label="Street"
                 id="street"
                 type="text"
+                error={errors?.street}
             />
             <InputGroup size="small">
                 <DefaultInputDiv
@@ -79,15 +123,20 @@ const ContactDetails = () => {
                     label="City"
                     id="city"
                     type="text"
+                    error={errors?.city}
                 />
-                <DefaultInputDiv
-                    value={address.state}
-                    onChange={handleAddressChange}
-                    size="small"
-                    label="State"
-                    id="state"
-                    type="text"
-                />
+                {address.country == "US" &&
+                    <DefaultInputDiv
+                        value={address.state}
+                        onChange={handleAddressChange}
+                        size="small"
+                        label="State"
+                        id="state"
+                        type="select"
+                        options={States}
+                        error={errors?.state}
+                    />
+                }
                 <DefaultInputDiv
                     value={address.zipCode.toString()}
                     onChange={handleAddressChange}
@@ -95,6 +144,7 @@ const ContactDetails = () => {
                     label="ZIP Code"
                     id="zipCode"
                     type="text"
+                    error={errors?.zipCode}
                 />
             </InputGroup>
             <DefaultInputDiv
@@ -104,6 +154,7 @@ const ContactDetails = () => {
                 label="Phone Number"
                 id="phone"
                 type="text"
+                error={errors?.phone}
             />
 
             <ButtonsGroup

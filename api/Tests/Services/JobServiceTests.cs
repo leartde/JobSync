@@ -10,7 +10,6 @@ using Shared.DataTransferObjects.JobDtos;
 using Shared.Mapping;
 using Shared.RequestFeatures;
 using Tests.Data;
-using Validation.Validators;
 using Validation.Validators.Job;
 
 namespace Tests.Services;

@@ -1,6 +1,4 @@
-﻿using Shared.DataTransferObjects.AddressDtos;
-using Shared.DataTransferObjects.SkillDtos;
-
+﻿
 namespace Shared.DataTransferObjects.JobSeekerDtos;
 
 public abstract class JobSeekerDto

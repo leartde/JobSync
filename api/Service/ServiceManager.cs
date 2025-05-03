@@ -34,7 +34,7 @@ public class ServiceManager : IServiceManager
             JobSeekerService(repository, logger, _cloudinaryManager)
             );
         _authenticationService = new Lazy<IAuthenticationService>(() => new
-            AuthenticationService(userManager,configuration)
+            AuthenticationService(userManager,configuration, repository)
         );
         _applicationService = new Lazy<IJobApplicationService>(() => new
             JobApplicationService(repository));

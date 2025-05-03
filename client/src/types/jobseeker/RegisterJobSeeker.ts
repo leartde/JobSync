@@ -1,15 +1,15 @@
 import { Address } from "../address/Address.ts";
 
 export type RegisterJobSeeker = {
-    UserId?: string;
-    FirstName?: string;
-    MiddleName?: string;
-    LastName?: string;
-    BirthDate?: Date;
-    Gender?: string;
-    Phone?: string;
-    SecondaryPhone?: string;
-    Resume? : File;
-    Address? : Address;
-    Skills? : string[];
+    userId?: string;
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    birthDate?: Date;
+    gender?: string;
+    phone?: string;
+    secondaryPhone?: string;
+    resume? : File;
+    address? : Address;
+    skills? : string[];
 }

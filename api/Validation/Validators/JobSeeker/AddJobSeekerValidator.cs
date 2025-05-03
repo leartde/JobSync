@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Text.RegularExpressions;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Shared.DataTransferObjects.JobSeekerDtos;
 
@@ -25,20 +26,28 @@ public class AddJobSeekerValidator : AbstractValidator<AddJobSeekerDto>
 
         RuleFor(x => x.Resume)
             .Must(IsPdfOrWord)
+            .When(x => x.Resume != null)
             .WithError("File type error", "Resume must be in pdf or word format");
+
+        RuleFor(x => x.Skills)
+            .Must(ValidSkills)
+            .When(x => x.Skills is { Count: > 0 });
     }
 
     private bool IsPdfOrWord(IFormFile? file)
     {
-        if (file is null) return true;
-        string type = Path.GetExtension(file.FileName);
+        string? type = Path.GetExtension(file?.FileName);
         return type is ".pdf" or ".doc" or ".docx";
     }
 
     private bool ValidGender(string? gender)
-    {
-        if (gender is null) return false;
-        List<string> validGenders = ["male", "female", "non-binary"];
-        return validGenders.Contains(gender.ToLower());
+    { List<string?> validGenders = ["male", "female", "non-binary"];
+        return validGenders.Contains(gender?.ToLower());
     }
+
+    private bool ValidSkills(List<string>? skills)
+    {
+        return skills?.Count <= 20;
+    }
+    
 }

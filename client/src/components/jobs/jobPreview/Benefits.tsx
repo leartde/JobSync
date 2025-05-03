@@ -11,7 +11,7 @@ const Benefits = ({benefits}:JobPreviewBenefitsProps) => {
             <ul className='list-disc px-4'>
                 {
                     benefits?.map((benefit)=>(
-                        <li> {separateCamelCase(benefit)}</li>
+                        <li key={benefit}> {separateCamelCase(benefit)}</li>
                     ))
                 }
             </ul>

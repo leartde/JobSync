@@ -2,10 +2,14 @@ import React, { useState, KeyboardEvent, useEffect } from 'react';
 import { useRegisterFormContext } from "../../../hooks/authentication/useRegisterFormContext.ts";
 import { RegisterJobSeeker } from "../../../types/jobseeker/RegisterJobSeeker.ts";
 
-const SkillsInput = () => {
+type SkillsInputProps = {
+    error?: string;
+};
+
+const SkillsInput = ({error}:SkillsInputProps) => {
     const [inputValue, setInputValue] = useState('');
     const { roleData, updateRoleData } = useRegisterFormContext();
-    const [skills, setSkills] = useState<string[]>((roleData as RegisterJobSeeker).Skills || []);
+    const [skills, setSkills] = useState<string[]>((roleData as RegisterJobSeeker).skills || []);
 
     const handleAddSkill = () => {
         if (inputValue.trim() && !skills.includes(inputValue.trim())) {
@@ -26,7 +30,7 @@ const SkillsInput = () => {
     };
 
     useEffect(() => {
-        updateRoleData({ Skills: skills });
+        updateRoleData({ skills: skills });
     }, [skills]);
 
     return (
@@ -62,6 +66,7 @@ const SkillsInput = () => {
                     <p className="text-gray-400 text-sm">No skills added yet</p>
                 )}
             </div>
+            <span className="text-red-600 text-sm">{error}</span>
             {skills.length > 0 &&
                 <button
                     onClick={() => setSkills([])}

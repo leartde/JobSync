@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace Entities.Models;
-
+﻿namespace Entities.Models;
 public class JobSeeker
 {
     public Guid Id { get; set; }

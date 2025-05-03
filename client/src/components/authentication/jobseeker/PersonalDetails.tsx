@@ -4,81 +4,124 @@ import {
     ButtonsGroup,
     DefaultInputDiv,
     InputGroup,
-    MultiStepFormWrapper,
-} from "./FormComponents.tsx";
+} from "../FormComponents.tsx";
 import { RegisterJobSeeker } from "../../../types/jobseeker/RegisterJobSeeker.ts";
+import { personalDetailsSchema } from "../../../schemas/jobseeker/PersonalDetails.schema.ts";
+
+type PersonalDetailsErrors = {
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    gender?: string;
+    birthDate?: string;
+};
 
 const PersonalDetails = () => {
     const { registerForm, updateRegisterForm, roleData, updateRoleData } = useRegisterFormContext();
+    const [errors, setErrors] = useState<PersonalDetailsErrors>({});
 
     const [formData, setFormData] = useState<RegisterJobSeeker>({
-        FirstName: (roleData as RegisterJobSeeker)?.FirstName || "",
-        MiddleName: (roleData as RegisterJobSeeker)?.MiddleName || "",
-        LastName: (roleData as RegisterJobSeeker)?.LastName || "",
-        Gender: (roleData as RegisterJobSeeker)?.Gender || "",
-        BirthDate: (roleData as RegisterJobSeeker)?.BirthDate || new Date()
+        firstName: (roleData as RegisterJobSeeker)?.firstName || "",
+        middleName: (roleData as RegisterJobSeeker)?.middleName || "",
+        lastName: (roleData as RegisterJobSeeker)?.lastName || "",
+        gender: (roleData as RegisterJobSeeker)?.gender || "",
+        birthDate: (roleData as RegisterJobSeeker)?.birthDate
+            ? new Date((roleData as RegisterJobSeeker).birthDate)
+            : new Date()
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { id, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [id]: value
+            [id]: id === "birthDate" ? new Date(value) : value
         }));
     };
 
     const handleButton = (newStep: number) => {
-        updateRegisterForm({ currentStep: newStep });
-        updateRoleData(formData);
-    };
+        if (newStep < registerForm.currentStep) {
+            updateRegisterForm({ currentStep: newStep });
+            updateRoleData(formData);
+            return;
+        }
+        setErrors({});
+        const validationData = {
+            ...formData,
+        };
+            const result = personalDetailsSchema.safeParse(validationData);
+
+            if (!result.success) {
+                const newErrors = result.error.errors.reduce((acc, error) => {
+                    const fieldName = error.path[0] as keyof PersonalDetailsErrors;
+                    return {
+                        ...acc,
+                        [fieldName]: error.message
+                    };
+                }, {} as PersonalDetailsErrors);
+
+                setErrors(newErrors);
+            } else {
+                updateRegisterForm({ currentStep: newStep });
+                updateRoleData(formData);
+            }
+    }
 
     return (
         <>
             <InputGroup>
                 <DefaultInputDiv
                     onChange={handleInputChange}
-                    value={formData.FirstName}
+                    value={formData.firstName}
                     label="First Name"
-                    id="FirstName"
+                    id="firstName"
                     type="text"
+                    error={errors.firstName}
+                    required
                 />
                 <DefaultInputDiv
                     onChange={handleInputChange}
-                    value={formData.MiddleName}
+                    value={formData.middleName}
                     label="Middle Name"
-                    id="MiddleName"
+                    id="middleName"
                     type="text"
+                    error={errors.middleName}
                 />
             </InputGroup>
 
             <InputGroup>
                 <DefaultInputDiv
                     onChange={handleInputChange}
-                    value={formData.LastName}
+                    value={formData.lastName}
                     label="Last Name"
-                    id="LastName"
+                    id="lastName"
                     type="text"
+                    error={errors.lastName}
+                    required
                 />
                 <DefaultInputDiv
                     onChange={handleInputChange}
-                    value={formData.Gender}
+                    value={formData.gender}
                     label="Gender"
-                    id="Gender"
+                    id="gender"
                     type="select"
+                    error={errors.gender}
+                    required
                     options={[
-                        { value: "", label: "---", disabled: true },
-                        { value: "male", label: "Male" },
-                        { value: "female", label: "Female" }
+                        { value: "", label: "Select Gender", disabled: true },
+                        { value: "Male", label: "Male" },
+                        { value: "Female", label: "Female" }
                     ]}
                 />
             </InputGroup>
 
             <DefaultInputDiv
                 onChange={handleInputChange}
-                value={(formData.BirthDate)?.toString()}
-                id="BirthDate"
+                value={formData.birthDate?.toString()}
+                id="birthDate"
                 label="Birthdate"
                 type="date"
+                error={errors.birthDate}
+                required
             />
 
             <ButtonsGroup

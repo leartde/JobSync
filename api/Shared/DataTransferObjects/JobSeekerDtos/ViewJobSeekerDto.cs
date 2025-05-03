@@ -1,4 +1,5 @@
 ﻿using Shared.DataTransferObjects.AddressDtos;
+using Shared.DataTransferObjects.JobApplicationDtos;
 
 namespace Shared.DataTransferObjects.JobSeekerDtos;
 
@@ -8,4 +9,6 @@ public class ViewJobSeekerDto : JobSeekerDto
     public string? Address { get; set; }
     public string? ResumeLink { get; set; }
     public IEnumerable<string>? Skills { get; set; }
+    public IEnumerable<JobApplicationDto>? JobApplications{ get; set; }
+    public IEnumerable<string>? Bookmarks { get; set; }
 }

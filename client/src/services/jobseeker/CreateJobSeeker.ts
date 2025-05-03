@@ -5,10 +5,10 @@ type CreateJobSeekerProps = {
     email: string;
     password: string;
     role: string;
-    addJobSeekerDto: RegisterJobSeeker;
+    jobSeeker: RegisterJobSeeker;
 };
 
-const CreateJobSeeker = async ({ email, password, addJobSeekerDto, role }: CreateJobSeekerProps) => {
+const CreateJobSeeker = async ({ email, password, jobSeeker, role }: CreateJobSeekerProps) => {
     try {
         const formData = new FormData();
 
@@ -16,36 +16,33 @@ const CreateJobSeeker = async ({ email, password, addJobSeekerDto, role }: Creat
         formData.append("Password", password);
         formData.append("Role", role);
 
-        formData.append("AddJobSeekerDto.FirstName", addJobSeekerDto.FirstName || "");
-        formData.append("AddJobSeekerDto.MiddleName", addJobSeekerDto.MiddleName || "");
-        formData.append("AddJobSeekerDto.LastName", addJobSeekerDto.LastName || "");
-        formData.append("AddJobSeekerDto.Gender", addJobSeekerDto.Gender || "");
-        const birthday = addJobSeekerDto.BirthDate ? new Date(addJobSeekerDto.BirthDate) : new Date();
+        formData.append("JobSeeker.FirstName", jobSeeker.firstName || "");
+        formData.append("JobSeeker.MiddleName", jobSeeker.middleName || "");
+        formData.append("JobSeeker.LastName", jobSeeker.lastName || "");
+        formData.append("JobSeeker.Gender", jobSeeker.gender || "");
+        const birthday = jobSeeker.birthDate ? new Date(jobSeeker.birthDate) : new Date();
         const formattedBirthday = `${birthday.getFullYear()}-${String(birthday.getMonth()+1).padStart(2, '0')}-${String(birthday.getDate()).padStart(2, '0')}`;
 
-        formData.append("AddJobSeekerDto.BirthDate", formattedBirthday);
+        formData.append("JobSeeker.BirthDate", formattedBirthday);
 
-        formData.append("AddJobSeekerDto.Address.Street", addJobSeekerDto.Address?.street || "");
-        formData.append("AddJobSeekerDto.Address.City", addJobSeekerDto.Address?.city || "");
-        formData.append("AddJobSeekerDto.Address.ZipCode", addJobSeekerDto.Address?.zipCode?.toString() || "");
+        formData.append("JobSeeker.Address.Street", jobSeeker.address?.street || "");
+        formData.append("JobSeeker.Address.City", jobSeeker.address?.city || "");
+        formData.append("JobSeeker.Address.ZipCode", jobSeeker.address?.zipCode?.toString() || "");
 
-        const skills = Array.isArray(addJobSeekerDto.Skills) ? addJobSeekerDto.Skills : [];
+        const skills = Array.isArray(jobSeeker.skills) ? jobSeeker.skills : [];
 
         skills.forEach(skill => {
-            formData.append('AddJobSeekerDto.Skills', skill);
+            formData.append('JobSeeker.Skills', skill);
         });
 
-        if (addJobSeekerDto?.Resume) {
-            formData.append("AddJobSeekerDto.Resume", addJobSeekerDto.Resume);
+        if (jobSeeker?.resume) {
+            formData.append("JobSeeker.Resume", jobSeeker.resume);
         }
 
         const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const url = `${baseUrl}/authentication/register/jobseeker`;
 
-        const response = await axios.post(url, formData);
-
-        console.log("Response from server:", response.data);
-        return response.data;
+        return await axios.post(url, formData);
 
     } catch (e) {
         console.error("Error adding job seeker:", e);

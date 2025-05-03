@@ -1,21 +1,49 @@
 import { useRegisterFormContext } from "../../hooks/authentication/useRegisterFormContext.ts";
-import { ButtonsGroup, DefaultInputDiv, MultiStepFormWrapper } from "./jobseeker/FormComponents.tsx";
-import { useState } from "react"; // Import useState
+import { ButtonsGroup, DefaultInputDiv } from "./FormComponents.tsx";
+import { useState } from "react";
+import { AccountDetailsSchema } from "../../schemas/AccountDetails.schema.ts";
 
+type AccountDetailsErrors = {
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+};
 const UserRegistration = () => {
-    const {  updateRegisterForm,userData, updateUserData } = useRegisterFormContext();
+    const {  registerForm, updateRegisterForm, userData, updateUserData } = useRegisterFormContext();
+    const [errors, setErrors] = useState<AccountDetailsErrors>({});
     const [formData, setFormData] = useState({
         email: userData.email,
         password: "",
         confirmPassword: ""
     });
-
     const handleButton = (newStep: number) => {
-        updateRegisterForm({ currentStep: newStep });
-        updateUserData({
-            email: formData.email,
-            password: formData.password
-        });
+        if (newStep < registerForm.currentStep) {
+            updateRegisterForm({ currentStep: newStep });
+            updateUserData(formData);
+            return;
+        }
+        setErrors({});
+        const result = AccountDetailsSchema.safeParse(formData);
+        console.log(result);
+        if(!result.success){
+            const newErrors = result.error.errors.reduce((acc, error) => {
+                const fieldName = error.path[0] as keyof AccountDetailsErrors;
+                return {
+                    ...acc,
+                    [fieldName]: error.message
+                };
+            }, {} as AccountDetailsErrors);
+            setErrors(newErrors);
+            return;
+        }
+
+        else{
+            updateRegisterForm({ currentStep: newStep });
+            updateUserData({
+                email: formData.email,
+                password: formData.password
+            });
+        }
     }
 
     const handleInputChange = (e) => {
@@ -34,6 +62,7 @@ const UserRegistration = () => {
                 id="email"
                 type="email"
                 value={formData.email}
+                error={errors.email}
             />
             <DefaultInputDiv
                 onChange={handleInputChange}
@@ -41,6 +70,8 @@ const UserRegistration = () => {
                 id="password"
                 type="password"
                 value={formData.password}
+                error={errors?.password}
+                rightIcon="eye"
             />
             <DefaultInputDiv
                 onChange={handleInputChange}
@@ -48,8 +79,9 @@ const UserRegistration = () => {
                 id="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
+                error={errors?.confirmPassword}
             />
-            <ButtonsGroup onClick={handleButton} currentStep={1} />
+            <ButtonsGroup onClick={handleButton} currentStep={registerForm.currentStep} />
 
 </>    );
 }

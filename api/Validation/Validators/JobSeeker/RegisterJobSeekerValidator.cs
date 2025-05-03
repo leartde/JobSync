@@ -7,7 +7,7 @@ public class RegisterJobSeekerValidator : AbstractValidator<RegisterJobSeekerDto
 {
     public RegisterJobSeekerValidator()
     {
-        RuleFor(x => x.AddJobSeekerDto)
+        RuleFor(x => x.JobSeeker)
             .SetValidator(new AddJobSeekerValidator());
     }
 }

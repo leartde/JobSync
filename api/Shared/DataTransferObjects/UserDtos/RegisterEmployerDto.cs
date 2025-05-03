@@ -4,6 +4,6 @@ namespace Shared.DataTransferObjects.UserDtos;
 
 public class RegisterEmployerDto : RegisterUserDto
 {
-    public AddEmployerDto AddEmployerDto { get; set; } = new();
+    public AddEmployerDto Employer { get; set; } = new();
 
 }

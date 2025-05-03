@@ -47,15 +47,7 @@ internal sealed class JobSeekerService : IJobSeekerService
             if (jobSeekerDto.Resume != null)
             {
                 UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
-                try
-                {
-                    jobSeeker.ResumeLink = result.Url.ToString();
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Error uploading resume:" + e.Message);
-                    throw;
-                }
+                  jobSeeker.ResumeLink = result.Url.ToString();
             }
 
             await _repository.JobSeeker.AddJobSeekerAsync(jobSeeker);

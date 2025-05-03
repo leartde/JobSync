@@ -21,6 +21,8 @@ public static class JobSeekerMapping
             Birthday = entity.Birthday,
             ResumeLink = entity.ResumeLink,
             Skills = entity.Skills.Select(s => s.Name),
+            JobApplications = entity.Applications.Select(a => a.ToDto()),
+            Bookmarks = entity.Bookmarks.Select(b => b.JobId.ToString()),
             Address = entity.Address != null
                 ? $"{entity.Address.Street}, {entity.Address.City}, {entity.Address.Region ?? entity.Address.State}"
                   + $", {entity.Address.Country}, {entity.Address.ZipCode}"

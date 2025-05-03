@@ -1,6 +1,5 @@
 ﻿using Entities.Exceptions;
 using Entities.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -18,20 +17,28 @@ public class AuthenticationController : ControllerBase
     {
         _service = service;
     }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetUsers()
+    {
+        List<ViewUserDto> users = await _service.AuthenticationService.GetAllUsersAsync();
+        return Ok(users);
+    }
     
     [HttpPost("register/jobseeker")]
-    public async Task<IActionResult> RegisterUser([FromForm] RegisterJobSeekerDto userDto)
+    public async Task<IActionResult> RegisterJobSeeker([FromForm] RegisterJobSeekerDto userDto)
     {
+        if (userDto.JobSeeker is null)
+        {
+            throw new BadRequestException("Job Seeker details are missing");
+        }
          (IdentityResult result,AppUser user) = await _service.AuthenticationService.RegisterUser(userDto);
         if (result.Succeeded)
         {
-            if (userDto.AddJobSeekerDto is null)
-            {
-                throw new BadRequestException("Job Seeker details are missing");
-            }
-            userDto.AddJobSeekerDto.UserId = user.Id;
-            await _service.JobSeekerService.AddJobSeekerAsync(userDto.AddJobSeekerDto);
-            return StatusCode(201);
+            userDto.JobSeeker.UserId = user.Id;
+            await _service.JobSeekerService.AddJobSeekerAsync(userDto.JobSeeker);
+            TokenDto tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
+            return Ok(tokenDto);
         }
         foreach (IdentityError error in result.Errors)
         {
@@ -41,18 +48,18 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("register/employer")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterEmployerDto userDto)
+    public async Task<IActionResult> RegisterEmployer([FromBody] RegisterEmployerDto userDto)
     {
         (IdentityResult result, AppUser user) = await _service.AuthenticationService.RegisterUser(userDto);
         if (result.Succeeded)
         {
-            if (userDto.AddEmployerDto is null)
+            if (userDto.Employer is null)
             {
                 throw new BadRequestException("Employer details are missing");
             }
 
-            userDto.AddEmployerDto.UserId = user.Id;
-            await _service.EmployerService.AddEmployerAsync(userDto.AddEmployerDto);
+            userDto.Employer.UserId = user.Id;
+            await _service.EmployerService.AddEmployerAsync(userDto.Employer);
             return StatusCode(201);
         }
 
@@ -68,6 +75,7 @@ public class AuthenticationController : ControllerBase
     public async Task<IActionResult> Authenticate([FromBody] LoginUserDto userDto)
     {
         if (!await _service.AuthenticationService.ValidateUser(userDto)) return Unauthorized();
-        return Ok(new { Token = await _service.AuthenticationService.CreateToken() });
+        TokenDto tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
+        return Ok(tokenDto);
     }
 }
