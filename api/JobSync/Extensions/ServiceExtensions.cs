@@ -26,9 +26,11 @@ public static class ServiceExtensions
         services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
-                    builder.AllowAnyOrigin()
+                    builder
+                        .WithOrigins("http://localhost:5173")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
+                        .AllowCredentials()
                         .WithExposedHeaders("x-pagination")
                 );
             }
@@ -112,7 +114,11 @@ public static class ServiceExtensions
         services.AddValidatorsFromAssembly(typeof(UpdateJobValidator).Assembly);
         services.AddFluentValidationAutoValidation();
     }
-    
+
+    public static void ConfigureHttpContextAccessor(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+    }
 
     public static void ConfigureCloudinary(this IServiceCollection services)
     {

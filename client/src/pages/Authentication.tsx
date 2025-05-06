@@ -1,47 +1,121 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaMailBulk } from 'react-icons/fa';
 import { FaLock } from 'react-icons/fa6';
-import { RegisterFormProvider } from "../context/authentication/RegisterFormContext.tsx";
+import { useAuth } from "../hooks/authentication/useAuth.ts";
+import { Link, useNavigate } from 'react-router-dom';
+import { Authorize } from "../services/authentication/Authorize.ts";
 
 const AuthenticationPage = () => {
-   return (
-       <div className='mx-auto w-3/4 md:w-1/3 lg:w-1/4 rounded-md mt-16 flex flex-col items-center bg-white py-12 px-6'>
-           <h1 className='text-2xl font-bold text-black'>LOGIN</h1>
-           <div className=' bg-white w-full'>
-               <form className='flex p-4 gap-4 flex-col' action="">
-                   <div className='flex p-2  bg-gray-300 items-center gap-2 rounded-md'>
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        rememberMe: false
+    });
 
-                       <FaMailBulk className='text-white'/>
-                       <input className='bg-gray-300 outline-none w-full' type="text" placeholder='Email'/>
-                   </div>
-                   <div className='flex p-2 bg-gray-300 items-center gap-2 rounded-md'>
+    const { login, user } = useAuth();
+    const [error, setError] = useState("");
+   const [loading, setLoading] = useState(false);
+   const navigate = useNavigate();
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
 
-                       <FaLock className='text-white'/>
-                       <input className='w-full bg-gray-300 outline-none' type="text" placeholder='Password'/>
-                   </div>
-                   <div className=' mt-1 max-sm:flex-col max-sm:items-start flex gap-1'>
-                       <input type='checkbox' id='remember' name='remember'/>
-                       <label htmlFor="remember">Remember Me</label>
-                   </div>
-                   <button className='text-white h-12 text-md text-center font-medium  bg-red-500  px-4 rounded-lg'>
-                       Login
-                   </button>
-                   <div className='relative top-6'>
-                       <p>Click <span className='text-blue-600'> <a href="/register">here</a> </span> to register
-                           instead.
-                       </p>
-                   </div>
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+            if (user) throw new Error("User already logged in");
 
-               </form>
+            const res = await Authorize({
+                email: formData.email,
+                password: formData.password,
+                rememberMe: formData.rememberMe
+            });
+        console.log(res);
+        if (!res) {
+                setError( "Login failed");
+                setLoading(false);
+                return;
+            }
+           await login(res.data, formData.rememberMe);
+            setLoading(false);
+           navigate('/')
 
-           </div>
-       </div>
-   )
-}
-const Authentication = () => {
+    };
+
+
     return (
-        <AuthenticationPage/>
+        <div
+                className='mx-auto w-3/4 md:w-1/3 lg:w-1/4 rounded-md mt-16 flex flex-col items-center bg-white py-12 px-6'>
+                <h1 className='text-2xl font-bold text-black'>LOGIN</h1>
+                {error && <div className="text-red-500 mb-4">{error}</div>}
+                <div className='bg-white w-full'>
+                    <form action="/" onSubmit={handleLogin} className='flex p-4 gap-4 flex-col'>
+                        <div className='flex p-2 bg-gray-300 items-center gap-2 rounded-md'>
+                            <FaMailBulk className='text-white'/>
+                            <input
+                                name="email"
+                                onChange={handleChange}
+                                value={formData.email}
+                                className='bg-gray-300 outline-none w-full'
+                                type="email"
+                                placeholder='Email'
+                                required
+                            />
+                        </div>
+                        <div className='flex p-2 bg-gray-300 items-center gap-2 rounded-md'>
+                            <FaLock className='text-white'/>
+                            <input
+                                onChange={handleChange}
+                                name="password"
+                                value={formData.password}
+                                className='w-full bg-gray-300 outline-none'
+                                type="password"
+                                placeholder='Password'
+                                required
+                            />
+                        </div>
+                        <div className='mt-1 max-sm:flex-col max-sm:items-start flex gap-1'>
+                            <input
+                                onChange={handleChange}
+                                type='checkbox'
+                                id='rememberMe'
+                                name='rememberMe'
+                                checked={formData.rememberMe}
+                            />
+                            <label htmlFor="rememberMe">Remember Me</label>
+                        </div>
+                        <button
+                            type="submit"
+                            className='text-white h-12 text-md text-center font-medium bg-red-500 px-4 rounded-lg hover:bg-red-600 transition'
+                        >
+                            Login
+                        </button>
+                        {loading && (
+                            <div className="flex justify-center">
+                                <div className="rounded-full h-5 w-5 border-b-2">
+                                    Logging in...
+                                </div>
+                            </div>
+                        )}
+                        <div className='relative top-6'>
+                            <p>Click <span className='text-blue-600 hover:text-blue-800'>
+                            <Link to="/register">here</Link>
+                        </span> to register instead.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
     );
+}
+
+const Authentication = () => {
+    return <AuthenticationPage/>;
 }
 
 export default Authentication;

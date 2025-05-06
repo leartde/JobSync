@@ -10,4 +10,6 @@ public interface IAuthenticationService
     Task<List<ViewUserDto>> GetAllUsersAsync();
     Task<bool> ValidateUser(LoginUserDto userDto);
     Task<TokenDto> CreateToken(bool populateExp);
+    Task<TokenDto> RefreshToken(TokenDto tokenDto, bool rememberMe);
+    Task ClearCookies();
 }

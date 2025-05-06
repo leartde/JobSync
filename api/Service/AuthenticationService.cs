@@ -5,12 +5,12 @@ using System.Text;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts;
-using Shared.DataTransferObjects.EmployerDtos;
 using Shared.DataTransferObjects.JobApplicationDtos;
 using Shared.DataTransferObjects.JobSeekerDtos;
 using Shared.DataTransferObjects.UserDtos;
@@ -23,15 +23,15 @@ internal sealed class AuthenticationService : IAuthenticationService
     private readonly UserManager<AppUser> _userManager;
     private readonly IRepositoryManager _repository;
     private readonly IConfiguration _configuration;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private AppUser? _user;
-    private ViewEmployerDto? _viewEmployerDto;
-    private ViewJobSeekerDto? _viewJobSeekerDto;
 
-    public AuthenticationService(UserManager<AppUser> userManager, IConfiguration configuration, IRepositoryManager repository)
+    public AuthenticationService(UserManager<AppUser> userManager, IConfiguration configuration, IRepositoryManager repository, IHttpContextAccessor contextAccessor)
     {
         _userManager = userManager;
         _configuration = configuration;
         _repository = repository;
+        _httpContextAccessor = contextAccessor;
     }
 
     public async Task<(IdentityResult Result, AppUser User)> RegisterUser(RegisterUserDto userDto)
@@ -61,8 +61,8 @@ internal sealed class AuthenticationService : IAuthenticationService
             userDto.Role = role;
             userDtos.Add(userDto);
         }
-
         return userDtos;
+        
     }
 
     public async Task<bool> ValidateUser(LoginUserDto userDto)
@@ -72,7 +72,7 @@ internal sealed class AuthenticationService : IAuthenticationService
         return result;
     }
     
-    public async Task<TokenDto> CreateToken(bool populateExp)
+    public async Task<TokenDto> CreateToken(bool rememberMe)
     {
         if (_user is null) throw new BadRequestException("User is null");
         SigningCredentials signingCredentials = GetSigningCredentials();
@@ -80,12 +80,49 @@ internal sealed class AuthenticationService : IAuthenticationService
         JwtSecurityToken tokenOptions = GenerateTokenOptions(signingCredentials, claims);
         string refreshToken = GenerateRefreshToken();
         _user.RefreshToken = refreshToken;
-        if (populateExp) _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+        _user.RefreshTokenExpiryTime = rememberMe 
+            ? DateTime.Now.AddDays(30) 
+            : DateTime.Now.AddHours(8); 
+
         await _userManager.UpdateAsync(_user);
         string accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        SetCookie("accessToken", accessToken, 15);
+
+        SetCookie("refreshToken", refreshToken, rememberMe ? 60 * 24 * 7 : 60 * 24);
         return new TokenDto(accessToken, refreshToken);
+        
+    }
+
+    private void SetCookie(string key, string value, int minutes)
+    {
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddMinutes(minutes)
+        };
+
+        _httpContextAccessor.HttpContext?.Response.Cookies.Append(key, value, cookieOptions);
+    }
 
 
+    public async Task<TokenDto> RefreshToken(TokenDto tokenDto, bool rememberMe)
+    {
+        ClaimsPrincipal principal =  GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+        string email = principal.Claims.First().Value;
+        AppUser? user = await _userManager.FindByEmailAsync(email);
+        if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            throw new RefreshTokenBadRequest();
+        _user = user;
+        return await CreateToken(rememberMe);
+    }
+
+    public async Task ClearCookies()
+    {
+        
+        _httpContextAccessor.HttpContext?.Response.Cookies.Delete("accessToken");
+        _httpContextAccessor.HttpContext?.Response.Cookies.Delete("refreshToken");
     }
 
     private SigningCredentials GetSigningCredentials()
@@ -107,12 +144,8 @@ internal sealed class AuthenticationService : IAuthenticationService
             claims.AddRange(
                 [ new Claim("id",jobSeekerDto.Id.ToString()),
                     new Claim("role","jobseeker"),
-                    new Claim("firstName",jobSeekerDto.FirstName ?? ""),
-                new Claim("middleName",jobSeekerDto.MiddleName ?? ""),
-                    new Claim("lastName",jobSeekerDto.LastName ?? ""),
                     new Claim("address",jobSeekerDto.Address ?? "")
                 ]
-                
                 );
             claims.AddRange(from skill in jobSeekerDto.Skills ?? Enumerable.Empty<string>() select new Claim("skills", skill));
             claims.AddRange(from jobApplication in jobSeekerDto.JobApplications ?? Enumerable.Empty<JobApplicationDto>() select new Claim("jobApplications", jobApplication.ToString()));
@@ -127,8 +160,6 @@ internal sealed class AuthenticationService : IAuthenticationService
         List<Claim> roleClaims = await GetRoleClaims();
         claims.AddRange(roleClaims);
         if (_user == null) return claims;
-        IList<string> roles = await _userManager.GetRolesAsync(_user);
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         return claims;
     }
 

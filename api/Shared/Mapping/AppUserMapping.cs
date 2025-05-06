@@ -1,6 +1,6 @@
 ﻿namespace Shared.Mapping;
 
-public class AppUserMapping
+public static class AppUserMapping
 {
     
 }

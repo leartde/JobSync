@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Service.Contracts;
@@ -20,7 +21,7 @@ public class ServiceManager : IServiceManager
     private readonly Lazy<ISkillService> _skillService;
     public ServiceManager(IRepositoryManager repository, ILoggerManager logger, UserManager<AppUser>
         userManager, IConfiguration configuration,IDataShaper<ViewJobDto>dataShaper, 
-        ICloudinaryManager _cloudinaryManager
+        ICloudinaryManager _cloudinaryManager, IHttpContextAccessor _httpContextAccessor
         )
     {
         _addressService = new Lazy<IAddressService>(() => new
@@ -34,7 +35,7 @@ public class ServiceManager : IServiceManager
             JobSeekerService(repository, logger, _cloudinaryManager)
             );
         _authenticationService = new Lazy<IAuthenticationService>(() => new
-            AuthenticationService(userManager,configuration, repository)
+            AuthenticationService(userManager,configuration, repository, _httpContextAccessor)
         );
         _applicationService = new Lazy<IJobApplicationService>(() => new
             JobApplicationService(repository));

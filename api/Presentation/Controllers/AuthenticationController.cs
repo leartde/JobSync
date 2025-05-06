@@ -28,6 +28,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost("register/jobseeker")]
     public async Task<IActionResult> RegisterJobSeeker([FromForm] RegisterJobSeekerDto userDto)
     {
+        
         if (userDto.JobSeeker is null)
         {
             throw new BadRequestException("Job Seeker details are missing");
@@ -72,10 +73,24 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Authenticate([FromBody] LoginUserDto userDto)
+    public async Task<IActionResult> Authenticate([FromBody] LoginUserDto userDto,bool rememberMe)
     {
-        if (!await _service.AuthenticationService.ValidateUser(userDto)) return Unauthorized();
-        TokenDto tokenDto = await _service.AuthenticationService.CreateToken(populateExp: true);
+        await _service.AuthenticationService.ValidateUser(userDto);
+        TokenDto tokenDto = await _service.AuthenticationService.CreateToken(rememberMe);
         return Ok(tokenDto);
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _service.AuthenticationService.ClearCookies();
+        return Ok();
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto, bool rememberMe)
+    {
+        var tokenDtoToReturn = await _service.AuthenticationService.RefreshToken(tokenDto, rememberMe);
+        return Ok(tokenDtoToReturn);
     }
 }

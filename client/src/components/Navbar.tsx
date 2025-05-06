@@ -1,27 +1,41 @@
 import React from "react";
-import {FaArrowRight, FaBars, FaBell, FaHouse, FaPerson, FaSuitcase, FaUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import {FaArrowRight, FaBars, FaBell, FaHouse, FaSuitcase, FaUser } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/authentication/useAuth.ts";
 
 const Navbar = () => {
     const [open, setOpen] = React.useState(false);
+    const { user, logout} = useAuth();
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        logout();
+        setOpen(false);
+        navigate("/login");
+    }
     return (
         <nav className="sticky z-10 bg-black top-0 w-[90%] flex mx-auto  justify-between gap-4   border-red-100 border-b  p-4">
-            
+
             <ul className="flex  text-md space-x-12 text-white max-md:hidden">
-                <li><a  href="#">Job<span
+                <li><a href="#">Job<span
                     className="text-red-500 under">Sync </span></a></li>
                 <li><Link to="/">Home</Link></li>
-                <li><Link to='/employers' >Employers </Link> </li>
+                <li><Link to='/employers'>Employers </Link></li>
                 <li><a href="#">Help</a></li>
+                <li><a href="#">{user?.email}</a></li>
             </ul>
 
             <div className="flex max-md:hidden   gap-6  items-center">
-                <div   className="cursor-pointer text-white  text-lg">
-                    <Link to="/login">Login</Link>
+                <div className="cursor-pointer text-white  text-lg">
+                    {(!user ?
+                        (<Link to="/login">Login</Link>):(<button type="button" onClick={handleLogout} className="cursor-pointer text-white">
+                    Logout
+                </button>))}
                 </div>
 
-                <div className="text-white  text-2xl p-1 rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer ">
-                    <FaBell/>
+
+                <div
+                    className="text-white  text-2xl p-1 rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer ">
+                <FaBell/>
                 </div>
                 <div className=" text-white p-1 text-2xl rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer ">
                     <FaUser/>

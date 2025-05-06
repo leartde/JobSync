@@ -8,38 +8,61 @@ import Authentication from './pages/Authentication.tsx'
 import Registration from './pages/Registration.tsx'
 import Employers from "./pages/Employers.tsx";
 import ViewEmployer from "./pages/ViewEmployer.tsx";
+import { AuthProvider } from "./context/authentication/AuthContext.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
     {
-        path : '/',
-        element : <App />,
-        children : [
-          {
-            path : '/',
-            element : <HomePage/>
-          },
+        path: '/',
+        element: <App />,
+        children: [
             {
-                path :"/employers",
-                element: <Employers/>
+                path: '/',
+                element:<ProtectedRoute login={true}>
+                    <HomePage />
+                </ProtectedRoute>
             },
             {
-                path : '/employers/:id',
-                element: <ViewEmployer/>
+                path: '/employers',
+                element: (
+                    <ProtectedRoute login={true}>
+                        <Employers />
+                    </ProtectedRoute>
+                )
             },
             {
-            path: '/login',
-            element: <Authentication/>
-          },
-          {
-            path: '/register',
-            element: <Registration/>
-          }
+                path: '/employers/:id',
+                element: (
+                    <ProtectedRoute login={true}>
+                        <ViewEmployer />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: '/login',
+                element: (
+                    <ProtectedRoute login={false}>
+                        <Authentication />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: '/register',
+                element: (
+                    <ProtectedRoute login={false}>
+                        <Registration />
+                    </ProtectedRoute>
+
+                )
+            }
         ]
     }
-])
+]);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router}/>
+    <AuthProvider>
+        <RouterProvider router={router}/>
+    </AuthProvider>
   </StrictMode>,
 )
