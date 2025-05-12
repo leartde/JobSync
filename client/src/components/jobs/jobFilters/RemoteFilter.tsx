@@ -18,6 +18,7 @@ const RemoteFilter = () => {
             });
             setSearchParams(prev => {
                 const newParams = new URLSearchParams(prev);
+                newParams.set('pageNumber','1');
                 newParams.set('isRemote', 'true');
                 return newParams;
             })

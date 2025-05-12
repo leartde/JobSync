@@ -1,5 +1,5 @@
-import axios from "axios";
 import { RegisterJobSeeker } from "../../types/jobseeker/RegisterJobSeeker";
+import api from "../../utils/api.ts";
 
 type CreateJobSeekerProps = {
     email: string;
@@ -39,10 +39,9 @@ const CreateJobSeeker = async ({ email, password, jobSeeker, role }: CreateJobSe
             formData.append("JobSeeker.Resume", jobSeeker.resume);
         }
 
-        const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const url = `${baseUrl}/authentication/register/jobseeker`;
+        const url = `/authentication/register/jobseeker`;
 
-        return await axios.post(url, formData);
+        return await api.post(url, formData);
 
     } catch (e) {
         console.error("Error adding job seeker:", e);

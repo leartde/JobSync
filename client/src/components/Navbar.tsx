@@ -7,8 +7,8 @@ const Navbar = () => {
     const [open, setOpen] = React.useState(false);
     const { user, logout} = useAuth();
     const navigate = useNavigate();
-    const handleLogout = () => {
-        logout();
+    const handleLogout  = async () => {
+        await logout();
         setOpen(false);
         navigate("/login");
     }
@@ -20,7 +20,7 @@ const Navbar = () => {
                     className="text-red-500 under">Sync </span></a></li>
                 <li><Link to="/">Home</Link></li>
                 <li><Link to='/employers'>Employers </Link></li>
-                <li><a href="#">Help</a></li>
+                <li><Link to="my-jobs">My Jobs</Link></li>
                 <li><a href="#">{user?.email}</a></li>
             </ul>
 
@@ -37,9 +37,9 @@ const Navbar = () => {
                     className="text-white  text-2xl p-1 rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer ">
                 <FaBell/>
                 </div>
-                <div className=" text-white p-1 text-2xl rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer ">
+                <Link className=" text-white p-1 text-2xl rounded-lg hover:text-red-500 hover:bg-red-300 cursor-pointer " to='/profile'>
                     <FaUser/>
-                </div>
+                </Link>
             </div>
 
             <div className="w-full flex  justify-between space-x-12 text-white md:hidden">

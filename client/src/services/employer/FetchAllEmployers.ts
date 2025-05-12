@@ -1,15 +1,14 @@
 import { EmployerParameters } from "../../types/employer/EmployerParameters.ts";
-import axios from "axios";
 import { ResponseHeaders } from "../../types/ResponseHeaders.ts";
 import { Employer } from "../../types/employer/Employer.ts";
 import { EmployerResponse } from "../../types/employer/EmployerResponse.ts";
+import api from "../../utils/api.ts";
 
 const FetchAllEmployers = async (
     {SearchTerm, Industry, PageSize, PageNumber, OrderBy} : EmployerParameters
 ) => {
     try {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        let url = `${baseUrl}/employers?`;
+        let url = `/employers?`;
 
         if (PageSize && PageSize > 0) {
             url += `PageSize=${PageSize}`;
@@ -27,7 +26,7 @@ const FetchAllEmployers = async (
             url += `&PageNumber=${PageNumber}`;
         }
 
-            const response = await axios.get(url);
+            const response = await api.get(url);
         if (response.status === 200) {
             const headers = response.headers["x-pagination"];
             const parsedHeader : ResponseHeaders = JSON.parse(headers);

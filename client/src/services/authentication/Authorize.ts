@@ -1,14 +1,11 @@
-import axios from "axios";
+import api from "../../utils/api";
 import { LogUser } from "../../types/authentication/LogUser.ts";
 
 export const Authorize = async ({ email, password, rememberMe }: LogUser) => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    const url = `${baseUrl}/authentication/login?rememberMe=${rememberMe}`;
+    const url = `/authentication/login?rememberMe=${rememberMe}`;
 
     try {
-        const response = await axios.post(url, { email, password }, {
-            withCredentials: true,
-        });
+        const response = await api.post(url, { email, password });
 
         console.log("RESPONSE: ", response);
         return response;

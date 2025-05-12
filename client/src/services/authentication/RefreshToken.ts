@@ -1,23 +1,17 @@
-// services/authentication/RefreshToken.ts
-import axios from "axios";
+import api from "../../utils/api";
 
 const RefreshToken = async (rememberMe: boolean) => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    const url = `${baseUrl}/authentication/refresh`;
-
+const url = `/authentication/refresh?rememberMe=${rememberMe}`;
     try {
-        const response = await axios.post(url, { rememberMe }, {
-            withCredentials: true
-        });
-
+        const response = await api.post(url);
         if (response.status !== 200) {
             throw new Error("Invalid response status");
         }
 
-        const accessToken = response.data.accessToken;
-        const refreshToken = response.data.refreshToken;
+        const newAccessToken = response.data.accessToken;
+        const newRefreshToken = response.data.refreshToken;
 
-        return { accessToken, refreshToken };
+        return { newAccessToken, newRefreshToken };
     } catch (error) {
         console.error("Refresh failed:", error);
         throw error;

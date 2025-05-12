@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using CloudinaryDotNet.Actions;
+﻿using CloudinaryDotNet.Actions;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
@@ -46,8 +45,8 @@ internal sealed class JobSeekerService : IJobSeekerService
             jobSeekerDto.ToEntity(jobSeeker);
             if (jobSeekerDto.Resume != null)
             {
-                UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
-                  jobSeeker.ResumeLink = result.Url.ToString();
+                RawUploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
+                jobSeeker.ResumeLink = result.Url.ToString();
             }
 
             await _repository.JobSeeker.AddJobSeekerAsync(jobSeeker);
@@ -76,7 +75,7 @@ internal sealed class JobSeekerService : IJobSeekerService
         if (jobSeekerDto.Resume != null)
         {
             if (jobSeeker.ResumeLink != null) await _cloudinaryManager.DeleteFile(jobSeeker.ResumeLink);
-            UploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
+            RawUploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
             jobSeeker.ResumeLink = result.Url.ToString();
         }
 

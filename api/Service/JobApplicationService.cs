@@ -40,13 +40,13 @@ public class JobApplicationService : IJobApplicationService
     }
     
 
-    public async Task<ViewJobApplicationDto> AddApplicationAsync(Guid jobSeekerId,AddJobApplicationDto jobApplicationDto)
+    public async Task<ViewJobApplicationDto> AddApplicationAsync(Guid jobSeekerId, Guid jobId)
     {
         JobApplication jobApplication = new JobApplication
         {
-            JobSeekerId = jobSeekerId
+            JobSeekerId = jobSeekerId,
+            JobId =  jobId
         };
-        jobApplicationDto.ToEntity(jobApplication);
         await _repository.JobApplication.AddApplicationAsync(jobApplication);
         await _repository.SaveAsync();
         return jobApplication.ToDto();
@@ -72,4 +72,8 @@ public class JobApplicationService : IJobApplicationService
         _repository.JobApplication.DeleteApplication(jobApplication);
         await _repository.SaveAsync();
     }
+
+    
+
+    
 }

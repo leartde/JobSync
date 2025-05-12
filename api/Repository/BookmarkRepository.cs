@@ -14,8 +14,6 @@ public class BookmarkRepository : RepositoryBase<Bookmark>, IBookmarkRepository
     {
         return await FindByCondition(b => b.JobSeekerId.Equals(jobSeekerId)
                                           && b.JobId.Equals(jobId))
-            .Include(b => b.Job)
-            .Include(b => b.JobSeeker)
             .SingleAsync();
     }
 
@@ -23,6 +21,7 @@ public class BookmarkRepository : RepositoryBase<Bookmark>, IBookmarkRepository
     {
         return await FindByCondition(b => b.JobSeekerId.Equals(jobSeekerId))
             .Include(b => b.Job)
+            .ThenInclude(j => j!.Employer)
             .Include(b => b.JobSeeker)
             .OrderBy(b => b.CreatedAt)
             .ToListAsync();

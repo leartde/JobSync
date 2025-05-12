@@ -5,5 +5,5 @@ namespace Contracts;
 
 public interface IRawUploader
 {
-    Task<UploadResult> AddFileAsync(IFormFile file);
+    Task<RawUploadResult> AddFileAsync(IFormFile file);
 }

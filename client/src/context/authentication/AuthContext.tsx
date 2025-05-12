@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { User } from "../../types/authentication/User.ts";
 import Logout from "../../services/authentication/Logout.ts";
+import GetTokens from "../../services/authentication/GetTokens.ts";
 type UserClaims = {
     id: string;
     email: string;
@@ -19,17 +20,14 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({children}: {children}) => {
     const [user, setUser] = useState<User | null>(null);
+    const [authLoading, setAuthLoading] = useState(true);
 
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-                    const [name, value] = cookie.trim().split('=');
-                    return { ...acc, [name]: value };
-                }, {} as Record<string, string>);
-
-                if (cookies.accessToken) {
-                    const decoded = jwtDecode(cookies.accessToken) as UserClaims;
+                const tokens = await GetTokens();
+                if (tokens.accessToken) {
+                    const decoded = jwtDecode(tokens.accessToken) as UserClaims;
                     const user: User = {
                         id: decoded.id,
                         email: decoded.email,
@@ -38,12 +36,16 @@ export const AuthProvider = ({children}: {children}) => {
                     setUser(user);
                 }
             } catch (error) {
-                console.error("Auth initialization error:", error);
+                console.error("Auth init error:", error);
+            } finally {
+                setAuthLoading(false);
             }
         };
         initializeAuth().then();
     }, []);
-
+    if (authLoading) {
+        return <div>Loading...</div>;
+    }
     const login = async (tokens: {accessToken: string, refreshToken: string}, rememberMe: boolean) => {
         try {
             const decodedToken = jwtDecode(tokens.accessToken) as UserClaims;
@@ -78,6 +80,5 @@ export const AuthProvider = ({children}: {children}) => {
         </AuthContext.Provider>
     );
 
-    }
-
+}
 

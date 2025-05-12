@@ -21,6 +21,7 @@ const IndustryFilter = () => {
         setSearchParams(prev => {
             const newParams = new URLSearchParams(prev);
             if (selectedValue) {
+                newParams.set('pageNumber', '1');
                 newParams.set('industry', selectedValue);
             } else {
                 newParams.delete('industry');

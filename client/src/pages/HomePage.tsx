@@ -72,7 +72,6 @@ useEffect(() => {
                             newParams.set('jobId', data.jobs[0].id);
                             newParams.set('employerId', data.jobs[0].employerId);
                             return newParams;
-
                         });
                     }
                 } else {
@@ -85,6 +84,7 @@ useEffect(() => {
 
         getData().then();
     }, [urlParams.jobId, urlParams.employerId, jobParameters.SearchTerm, jobParameters.PageNumber, jobParameters.IsRemote, jobParameters.HasMultipleSpots, jobParameters.JobType, jobParameters.OrderBy, jobParameters.PageSize, jobParameters.MinimumPay, jobParameters.IsTakingApplications]);
+
 
     return (
         <div className='flex flex-col gap-4 '>

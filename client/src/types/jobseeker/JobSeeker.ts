@@ -3,11 +3,13 @@ export type JobSeeker = {
     userId?: string;
     firstName: string;
     lastName: string;
+    middleName?: string;
     phone: string;
     secondaryPhone?: string;
     address: string;
     gender: string;
     photoUrl?: string;
-    resumeUrl?: string;
+    resumeLink?: string;
+    skills? : string[];
 
 }

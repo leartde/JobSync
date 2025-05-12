@@ -68,7 +68,7 @@ internal sealed class AuthenticationService : IAuthenticationService
     public async Task<bool> ValidateUser(LoginUserDto userDto)
     {
         _user = await _userManager.FindByEmailAsync(userDto.Email);
-        bool result = (_user != null && await _userManager.CheckPasswordAsync(_user, userDto.Password));
+        bool result = _user != null && await _userManager.CheckPasswordAsync(_user, userDto.Password);
         return result;
     }
     
@@ -87,8 +87,7 @@ internal sealed class AuthenticationService : IAuthenticationService
         await _userManager.UpdateAsync(_user);
         string accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         SetCookie("accessToken", accessToken, 15);
-
-        SetCookie("refreshToken", refreshToken, rememberMe ? 60 * 24 * 7 : 60 * 24);
+        SetCookie("refreshToken", refreshToken, rememberMe ? 60 * 24 * 7 : 60 * 24 * 2);
         return new TokenDto(accessToken, refreshToken);
         
     }
@@ -107,18 +106,47 @@ internal sealed class AuthenticationService : IAuthenticationService
     }
 
 
-    public async Task<TokenDto> RefreshToken(TokenDto tokenDto, bool rememberMe)
+    public async Task<TokenDto> RefreshToken(bool rememberMe)
     {
-        ClaimsPrincipal principal =  GetPrincipalFromExpiredToken(tokenDto.AccessToken);
-        string email = principal.Claims.First().Value;
-        AppUser? user = await _userManager.FindByEmailAsync(email);
-        if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        string? refreshToken = _httpContextAccessor.HttpContext?.Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken))
             throw new RefreshTokenBadRequest();
+
+        string? accessToken = _httpContextAccessor.HttpContext?.Request.Cookies["accessToken"];                                
+        if (string.IsNullOrEmpty(accessToken))
+            throw new RefreshTokenBadRequest();
+
+        ClaimsPrincipal principal = GetPrincipalFromExpiredToken(accessToken);
+        string email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value ?? 
+                       throw new BadRequestException("Null email")
+                       ;
+
+        if (string.IsNullOrEmpty(email))
+            throw new RefreshTokenBadRequest();
+
+        AppUser? user = await _userManager.FindByEmailAsync(email);
+        if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            throw new RefreshTokenBadRequest();
+
         _user = user;
+
         return await CreateToken(rememberMe);
     }
 
-    public async Task ClearCookies()
+    public  TokenDto GetToken()
+    {
+        string? refreshToken = _httpContextAccessor.HttpContext?.Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken))
+            throw new RefreshTokenBadRequest();
+        string? accessToken = _httpContextAccessor.HttpContext?.Request.Cookies["accessToken"];                                
+        if (string.IsNullOrEmpty(accessToken))
+            throw new RefreshTokenBadRequest();
+        
+        return new TokenDto(accessToken, refreshToken);
+    }
+
+
+    public void ClearCookies()
     {
         
         _httpContextAccessor.HttpContext?.Response.Cookies.Delete("accessToken");
@@ -127,7 +155,7 @@ internal sealed class AuthenticationService : IAuthenticationService
 
     private SigningCredentials GetSigningCredentials()
     {
-        byte[] key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET") ?? string.Empty);
+        byte[] key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET") ?? throw new BadRequestException("Cannot access env variable \" SECRET\" "));
         SymmetricSecurityKey secret = new SymmetricSecurityKey(key);
         return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
     }

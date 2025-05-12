@@ -1,6 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Contracts;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace CloudinaryService;
@@ -13,21 +14,20 @@ internal sealed class RawUploader : IRawUploader
         _cloudinary = cloudinary;
     }
 
-    public async Task<UploadResult> AddFileAsync(IFormFile file)
+    public async Task<RawUploadResult> AddFileAsync(IFormFile file)
     {
         RawUploadResult uploadResult = new RawUploadResult();
+
         if (file.Length <= 0) return uploadResult;
+
         await using Stream stream = file.OpenReadStream();
-        using MemoryStream memoryStream = new MemoryStream();
-        await stream.CopyToAsync(memoryStream);
-        memoryStream.Position = 0;
         RawUploadParams uploadParams = new RawUploadParams
         {
-            File = new FileDescription(file.FileName, memoryStream),
+            File = new FileDescription(file.FileName, stream)
         };
-        uploadResult = await _cloudinary.UploadAsync(uploadParams);
-        Console.WriteLine($"Upload Result: {uploadResult.StatusCode}, Error: {uploadResult.Error?.Message}");
 
+        uploadResult = await _cloudinary.UploadAsync(uploadParams);
         return uploadResult;
     }
+
 }

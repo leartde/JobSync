@@ -26,13 +26,13 @@ internal sealed class BookmarkService : IBookmarkService
         return bookmarks.Select(b => b.ToDto());
     }
 
-    public async Task<ViewBookmarkDto> AddBookmarkForJobSeekerAsync(Guid jobSeekerId, AddBookmarkDto dto)
+    public async Task<ViewBookmarkDto> AddBookmarkForJobSeekerAsync(Guid jobSeekerId, Guid jobId)
     {
         Bookmark bookmark = new Bookmark
         {
-            JobSeekerId = jobSeekerId
+            JobSeekerId = jobSeekerId,
+            JobId = jobId,
         };
-        dto.ToEntity(bookmark);
          await _repository.Bookmark.AddBookmarkAsync(bookmark);
          await _repository.SaveAsync();
          return bookmark.ToDto();

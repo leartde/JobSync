@@ -40,10 +40,10 @@ public class JobApplicationController : ControllerBase
         return Ok(applications);
     }
 
-    [HttpPost("/api/jobseekers/{jobSeekerId}/applications")]
-    public async Task<IActionResult> AddApplication(Guid jobSeekerId, AddJobApplicationDto jobApplicationDto)
+    [HttpPost("/api/jobseekers/{jobSeekerId}/applications/{jobId}")]
+    public async Task<IActionResult> AddApplication(Guid jobSeekerId, Guid jobId)
     {
-        ViewJobApplicationDto application = await _service.JobApplicationService.AddApplicationAsync(jobSeekerId,jobApplicationDto);
+        ViewJobApplicationDto application = await _service.JobApplicationService.AddApplicationAsync(jobSeekerId,jobId);
         return Ok(application);
     }
 

@@ -1,5 +1,6 @@
 ﻿using Entities.Exceptions;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -18,6 +19,7 @@ public class AuthenticationController : ControllerBase
         _service = service;
     }
 
+    [Authorize]
     [HttpGet("users")]
     public async Task<IActionResult> GetUsers()
     {
@@ -48,6 +50,7 @@ public class AuthenticationController : ControllerBase
         return BadRequest(ModelState);
     }
 
+    
     [HttpPost("register/employer")]
     public async Task<IActionResult> RegisterEmployer([FromBody] RegisterEmployerDto userDto)
     {
@@ -72,6 +75,7 @@ public class AuthenticationController : ControllerBase
         return BadRequest(ModelState);
     }
 
+    
     [HttpPost("login")]
     public async Task<IActionResult> Authenticate([FromBody] LoginUserDto userDto,bool rememberMe)
     {
@@ -80,17 +84,24 @@ public class AuthenticationController : ControllerBase
         return Ok(tokenDto);
     }
 
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    [HttpGet("me")]
+    public IActionResult GetTokens()
     {
-        await _service.AuthenticationService.ClearCookies();
+        TokenDto tokenDto = _service.AuthenticationService.GetToken();
+        return Ok(tokenDto);
+    }
+    
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+         _service.AuthenticationService.ClearCookies();
         return Ok();
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto, bool rememberMe)
+    public async Task<IActionResult> Refresh(bool rememberMe)
     {
-        var tokenDtoToReturn = await _service.AuthenticationService.RefreshToken(tokenDto, rememberMe);
+        var tokenDtoToReturn = await _service.AuthenticationService.RefreshToken(rememberMe);
         return Ok(tokenDtoToReturn);
     }
 }

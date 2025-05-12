@@ -1,11 +1,22 @@
-// utils/api.ts
 import axios from "axios";
-import { useRefresh } from "../hooks/authentication/useRefresh.ts";
+
+import RefreshToken from "../services/authentication/RefreshToken.ts";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true
 });
+
+const refreshAuthToken = async () => {
+    try {
+        const rememberMe = localStorage.getItem("rememberMe") === "true";
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken } = await RefreshToken(rememberMe);
+        return { newAccessToken, newRefreshToken };
+    } catch (error) {
+        console.error("Token refresh failed:", error);
+        throw error;
+    }
+};
 
 api.interceptors.response.use(
     response => response,
@@ -15,18 +26,16 @@ api.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
-            try {
-                const { refresh } = useRefresh();
-                await refresh();
+                const { newAccessToken } =  await refreshAuthToken();
+                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                originalRequest.withCredentials = true;
                 return api(originalRequest);
-            } catch (refreshError) {
-                console.error("Token refresh failed:", refreshError);
-                throw refreshError;
-            }
+
         }
 
         return Promise.reject(error);
     }
 );
+
 
 export default api;

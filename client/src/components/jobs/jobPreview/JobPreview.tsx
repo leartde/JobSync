@@ -12,7 +12,7 @@ const JobPreview = () => {
     return (
         <div id="preview" className='flex w-1/2 max-h-[600px]  bg-gray-50 flex-col max-md:w-full  rounded-md  overflow-scroll'>
 
-            <StickyPreview image={mainJob?.imageUrl} title={mainJob?.title} type={mainJob?.type} employer={mainJob?.employer} address={mainJob?.address} pay={mainJob?.pay}/>
+            <StickyPreview id={mainJob?.id} image={mainJob?.imageUrl} title={mainJob?.title} type={mainJob?.type} employer={mainJob?.employer} address={mainJob?.address} pay={mainJob?.pay}/>
 
             <Skills skills={mainJob?.skills || []}/>
 

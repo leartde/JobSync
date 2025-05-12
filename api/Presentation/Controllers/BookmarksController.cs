@@ -5,7 +5,7 @@ using Shared.DataTransferObjects.BookmarkDtos;
 namespace Presentation.Controllers;
 
 [ApiController]
-[Route("api/jobseeker/{jobSeekerId}/bookmarks")]
+[Route("api/jobseekers/{jobSeekerId}/bookmarks")]
 public class BookmarksController : ControllerBase
 {
     private readonly IServiceManager _service;
@@ -30,11 +30,11 @@ public class BookmarksController : ControllerBase
         return Ok(bookmark);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> AddBookmark(Guid jobSeekerId, AddBookmarkDto bookmarkDto)
+    [HttpPost("{jobId}")]
+    public async Task<IActionResult> AddBookmark(Guid jobSeekerId, Guid jobId)
     {
         ViewBookmarkDto bookmark =
-            await _service.BookmarkService.AddBookmarkForJobSeekerAsync(jobSeekerId, bookmarkDto);
+            await _service.BookmarkService.AddBookmarkForJobSeekerAsync(jobSeekerId, jobId);
         return Ok(bookmark);
     }
 

@@ -19,6 +19,7 @@ const JobTypeFilter = () => {
         setSearchParams(prev => {
             const newParams = new URLSearchParams(prev);
             if(e.target.value != null && e.target.value != ''){
+                newParams.set('pageNumber','1');
                 newParams.set('jobType', e.target.value);
             }
             else{

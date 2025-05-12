@@ -1,11 +1,10 @@
-import axios from "axios";
 import { Job } from "../../types/job/Job.ts";
+import api from "../../utils/api.ts";
 
 const FetchJobsForEmployer = async (id: string) => {
+    const url = `/employers/${id}/jobs`;
     try{
-        const baseUrl = import.meta.env.VITE_API_BASE_URL;
-        const url = `${baseUrl}/employers/${id}/jobs`;
-        const response = await axios.get(url);
+        const response = await api.get(url);
         if(response.status === 200){
             const jobs :Job[] = response.data;
             return jobs;

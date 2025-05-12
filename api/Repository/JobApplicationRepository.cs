@@ -21,6 +21,7 @@ public class JobApplicationRepository : RepositoryBase<JobApplication>, IJobAppl
     {
         return await FindByCondition(a => a.JobSeekerId.Equals(jobSeeker.Id))
             .Include(a => a.Job)
+            .ThenInclude(j => j.Employer)
             .Include(a => a.JobSeeker)
             .ToListAsync();
     }

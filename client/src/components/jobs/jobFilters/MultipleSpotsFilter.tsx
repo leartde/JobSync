@@ -18,6 +18,7 @@ const MultipleSpotsFilter = () => {
             });
             setSearchParams(prev => {
                 const newParams = new URLSearchParams(prev);
+                newParams.set('pageNumber','1');
                 newParams.set('hasMultipleSpots', 'true');
                 return newParams;
             })

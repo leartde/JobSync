@@ -10,6 +10,8 @@ import Employers from "./pages/Employers.tsx";
 import ViewEmployer from "./pages/ViewEmployer.tsx";
 import { AuthProvider } from "./context/authentication/AuthContext.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import ViewJobSeeker from "./pages/ViewJobSeeker.tsx";
+import MyJobs from "./pages/MyJobs.tsx";
 
 const router = createBrowserRouter([
     {
@@ -35,6 +37,22 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute login={true}>
                         <ViewEmployer />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: '/profile',
+                element: (
+                    <ProtectedRoute login={true}>
+                        <ViewJobSeeker />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: '/my-jobs',
+                element: (
+                    <ProtectedRoute login={true}>
+                        <MyJobs />
                     </ProtectedRoute>
                 )
             },

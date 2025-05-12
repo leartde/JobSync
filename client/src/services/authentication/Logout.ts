@@ -1,11 +1,12 @@
-import axios from "axios";
+import api from "../../utils/api";
 
 const Logout = async () => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    const url = `${baseUrl}/authentication/logout`;
+    const url = `/authentication/logout`;
 
     try{
-        return await axios.post(url);
+        return await api.post(url,{},{
+            withCredentials: true,
+        });
     }
     catch (e){
         console.log("Error logging out:", e);
