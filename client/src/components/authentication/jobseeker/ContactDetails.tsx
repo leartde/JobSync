@@ -11,7 +11,6 @@ import { ContactDetailsSchema } from "../../../schemas/jobseeker/ContactDetails.
 import { States } from "../../../utils/AmericanStates.ts";
 type ContactDetailsErrors = {
     phone?: string;
-
     street?: string;
         city?: string;
         country?: string;
@@ -69,7 +68,6 @@ const ContactDetails = () => {
             ...formData,
         };
         const validation = ContactDetailsSchema.safeParse(validationData);
-        console.log(validation);
         if (!validation.success) {
                 const newErrors = validation.error.errors.reduce((acc, error) => {
                     const fieldName = error.path[0] as keyof ContactDetailsErrors;

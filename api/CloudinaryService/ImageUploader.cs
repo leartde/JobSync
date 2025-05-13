@@ -28,7 +28,6 @@ internal sealed class ImageUploader : IImageUploader
         };
 
         uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
         return uploadResult;
     }
     

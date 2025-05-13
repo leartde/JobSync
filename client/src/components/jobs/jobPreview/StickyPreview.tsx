@@ -96,7 +96,7 @@ const StickyPreview = ({ id, title, employer, address, pay, type, image }: Stick
                     >
                         {hasApplied ? "Applied" : "Apply now!"}
                     </button>
-                    <button disabled={bookmarked} onClick={handleBookmark} className={`${bookmarked?'bg-red-300':'bg-red-500'} text-white  cursor-pointer rounded-xl h-10 w-10 flex items-center justify-center`}>
+                    <button disabled={bookmarked} onClick={handleBookmark} className={`${bookmarked?'bg-gray-500':'bg-gray-800'} text-white  cursor-pointer rounded-xl h-10 w-10 flex items-center justify-center`}>
                        <FaBookmark className="font-semibold text-xl  " />
                     </button>
                     <div className='bg-[#E4E2E0] cursor-pointer rounded-xl h-10 w-10 flex items-center justify-center'>

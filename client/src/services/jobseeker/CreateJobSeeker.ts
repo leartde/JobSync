@@ -24,10 +24,12 @@ const CreateJobSeeker = async ({ email, password, jobSeeker, role }: CreateJobSe
         const formattedBirthday = `${birthday.getFullYear()}-${String(birthday.getMonth()+1).padStart(2, '0')}-${String(birthday.getDate()).padStart(2, '0')}`;
 
         formData.append("JobSeeker.BirthDate", formattedBirthday);
-
+        formData.append("JobSeeker.Phone", jobSeeker.phone || "");
         formData.append("JobSeeker.Address.Street", jobSeeker.address?.street || "");
         formData.append("JobSeeker.Address.City", jobSeeker.address?.city || "");
+        formData.append("JobSeeker.Address.State", jobSeeker.address?.state?.toString() || "");
         formData.append("JobSeeker.Address.ZipCode", jobSeeker.address?.zipCode?.toString() || "");
+
 
         const skills = Array.isArray(jobSeeker.skills) ? jobSeeker.skills : [];
 

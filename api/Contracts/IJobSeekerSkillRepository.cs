@@ -8,4 +8,5 @@ public interface IJobSeekerSkillRepository
     Task<JobSeekerSkill> GetJobSeekerSkillAsync(Guid jobSeekerId, Guid skillId);
     Task AddJobSeekerSkillsAsync(List<JobSeekerSkill> jobSeekerSkills);
     void DeleteJobSeekerSkills(List<JobSeekerSkill> jobSeekerSkills);
+    void DeleteJobSeekerSkill(JobSeekerSkill jobSeekerSkill);
 }

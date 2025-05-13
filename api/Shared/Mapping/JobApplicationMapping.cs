@@ -12,6 +12,7 @@ public static class JobApplicationMapping
            JobId = entity.JobId,
             JobSeekerId = entity.JobSeekerId,
             Employer = entity.Job?.Employer?.Name ?? string.Empty,
+            EmployerId = entity.Job?.EmployerId ?? Guid.Empty,
             JobTitle = entity.Job?.Title ?? string.Empty,
             Candidate = $"{entity.JobSeeker?.FirstName ?? string.Empty}" +
                         $"{entity.JobSeeker?.MiddleName ?? string.Empty}" +

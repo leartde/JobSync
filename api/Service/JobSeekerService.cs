@@ -47,6 +47,7 @@ internal sealed class JobSeekerService : IJobSeekerService
             {
                 RawUploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
                 jobSeeker.ResumeLink = result.Url.ToString();
+                jobSeeker.ResumeName = result.OriginalFilename;
             }
 
             await _repository.JobSeeker.AddJobSeekerAsync(jobSeeker);
@@ -77,8 +78,14 @@ internal sealed class JobSeekerService : IJobSeekerService
             if (jobSeeker.ResumeLink != null) await _cloudinaryManager.DeleteFile(jobSeeker.ResumeLink);
             RawUploadResult result = await _cloudinaryManager.RawUploader.AddFileAsync(jobSeekerDto.Resume);
             jobSeeker.ResumeLink = result.Url.ToString();
+            jobSeeker.ResumeName = result.OriginalFilename;
         }
-
+        else
+        {
+            await _cloudinaryManager.DeleteFile(jobSeeker.ResumeLink ??"");
+            jobSeeker.ResumeLink = null;
+            jobSeeker.ResumeName = null;
+        }
         _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
         await _repository.SaveAsync();
         return jobSeeker.ToDto();

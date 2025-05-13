@@ -10,6 +10,7 @@ export type JobSeeker = {
     gender: string;
     photoUrl?: string;
     resumeLink?: string;
+    resumeName?: string;
     skills? : string[];
 
 }

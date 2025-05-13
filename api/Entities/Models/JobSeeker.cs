@@ -14,6 +14,7 @@ public class JobSeeker
     public Address? Address { get; set; }
     public Guid? AddressId { get; set; }
     public string? ResumeLink { get; set; }
+    public string? ResumeName { get; set; }
     public List<JobApplication> Applications { get; set; } = new();
     public List<Skill> Skills { get; set; } = new();
     public List<Bookmark> Bookmarks { get; set; } = new();

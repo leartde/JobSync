@@ -32,18 +32,18 @@ public class SkillsController : ControllerBase
 
 
     [HttpPost("/api/employers/{employerId}/jobs/{jobId}/skills")]
-    public async Task<IActionResult> AddSkillsForJob(Guid employerId, Guid jobId, IEnumerable<AddSkillDto> skillDtos)
+    public async Task<IActionResult> AddSkillsForJob(Guid employerId, Guid jobId, List<string> skillNames)
     {
         IEnumerable<ViewSkillDto> skills =
-            await _service.SkillService.AddSkillsForJobAsync(employerId, jobId, skillDtos);
+            await _service.SkillService.AddSkillsForJobAsync(employerId, jobId, skillNames);
         return Ok(skills);
     }
     
     [HttpPost("/api/jobseekers/{jobSeekerId}/skills")]
-    public async Task<IActionResult> AddSkillsForJobSeeker(Guid jobSeekerId, IEnumerable<AddSkillDto> skillDtos)
+    public async Task<IActionResult> AddSkillsForJobSeeker(Guid jobSeekerId, List<string> skillNames)
     {
         IEnumerable<ViewSkillDto> skills =
-            await _service.SkillService.AddSkillsForJobSeekerAsync(jobSeekerId,skillDtos);
+            await _service.SkillService.AddSkillsForJobSeekerAsync(jobSeekerId,skillNames);
         return Ok(skills);
     }
     
@@ -59,6 +59,13 @@ public class SkillsController : ControllerBase
     {
         await _service.SkillService.DeleteSkillsForJobSeekerAsync(jobSeekerId, skillIds);
         return Ok("Skills for this job seeker successfully deleted");
+    }
+
+    [HttpDelete("/api/jobseekers/{jobSeekerId}/skills/{skillId}")]
+    public async Task<IActionResult> DeleteSkillForJobSeeker(Guid jobSeekerId, Guid skillId)
+    {
+        await _service.SkillService.DeleteSkillForJobSeekerAsync(jobSeekerId, skillId);
+        return Ok();
     }
 
     

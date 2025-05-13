@@ -14,7 +14,7 @@ type DeleteModalProps = {
 }
 const DeleteModal = ({onDelete, onCancel}:DeleteModalProps)=>{
     return(
-        <div className="absolute top-auto">
+        <div className="fixed text-black inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="flex flex-col gap-4 bg-white shadow-lg rounded-lg p-6">
                 <h2 className="text-lg font-semibold">Delete Job Application</h2>
                 <p>Are you sure you want to delete this job application?</p>

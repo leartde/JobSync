@@ -10,8 +10,9 @@ import Employers from "./pages/Employers.tsx";
 import ViewEmployer from "./pages/ViewEmployer.tsx";
 import { AuthProvider } from "./context/authentication/AuthContext.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
-import ViewJobSeeker from "./pages/ViewJobSeeker.tsx";
-import MyJobs from "./pages/MyJobs.tsx";
+import ViewJobSeeker from "./pages/jobseeker/ViewJobSeeker.tsx";
+import MyJobs from "./pages/jobseeker/MyJobs.tsx";
+import UpdateJobSeeker from "./pages/jobseeker/UpdateJobSeeker.tsx";
 
 const router = createBrowserRouter([
     {
@@ -45,6 +46,14 @@ const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute login={true}>
                         <ViewJobSeeker />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: '/profile-update',
+                element:(
+                    <ProtectedRoute login={true}>
+                        <UpdateJobSeeker />
                     </ProtectedRoute>
                 )
             },

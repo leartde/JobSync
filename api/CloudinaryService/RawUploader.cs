@@ -23,10 +23,20 @@ internal sealed class RawUploader : IRawUploader
         await using Stream stream = file.OpenReadStream();
         RawUploadParams uploadParams = new RawUploadParams
         {
-            File = new FileDescription(file.FileName, stream)
+            File = new FileDescription(file.FileName, stream),
+            PublicId = Guid.NewGuid().ToString(),
+            Overwrite = true,
+            Type = "upload" 
         };
 
         uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        
+        if (uploadResult.Url != null)
+        {
+            string newUri = uploadResult.Url.AbsoluteUri.Replace("upload/", "upload/fl_attachment/");
+            uploadResult.Url = new Uri(newUri);
+        }
+        
         return uploadResult;
     }
 

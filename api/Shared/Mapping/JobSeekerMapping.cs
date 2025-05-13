@@ -20,12 +20,13 @@ public static class JobSeekerMapping
             SecondaryPhone = entity.SecondaryPhone,
             Birthday = entity.Birthday,
             ResumeLink = entity.ResumeLink,
+            ResumeName = entity.ResumeName,
             Skills = entity.Skills.Select(s => s.Name),
             JobApplications = entity.Applications.Select(a => a.ToDto()),
             Bookmarks = entity.Bookmarks.Select(b => b.JobId.ToString()),
             Address = entity.Address != null
-                ? $"{entity.Address.Street}, {entity.Address.City}, {entity.Address.Region ?? entity.Address.State}"
-                  + $", {entity.Address.Country}, {entity.Address.ZipCode}"
+                ? $"{entity.Address.Street}, {entity.Address.City},{entity.Address.State ??""}"
+                  + $"{entity.Address.Country}, {entity.Address.ZipCode}"
                 : ""
         };
     }
@@ -37,7 +38,6 @@ public static class JobSeekerMapping
         entity.MiddleName = dto.MiddleName??entity.MiddleName;
         entity.LastName = dto.LastName??entity.LastName;
         entity.Phone = dto.Phone??entity.Phone;
-        entity.SecondaryPhone = dto.SecondaryPhone??entity.SecondaryPhone;
         entity.Birthday = dto.Birthday??entity.Birthday;
         entity.Gender = dto.Gender??entity.Gender;
         if (dto is AddJobSeekerDto addJobSeekerDto)
