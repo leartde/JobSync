@@ -14,8 +14,6 @@ public class UpdateEmployerValidator : AbstractValidator<UpdateEmployerDto>
 
         
         
-        RuleFor(x => x.UserId)
-            .Null().WithError("UserId error", "UserId cannot be updated");
         
     }
     

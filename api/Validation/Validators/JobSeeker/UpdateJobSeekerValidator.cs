@@ -10,13 +10,11 @@ public class UpdateJobSeekerValidator : AbstractValidator<UpdateJobSeekerDto>
     {
         RuleFor(x => x.FirstName)
             .MinimumLength(2).WithError("Invalid first name length", "First name must be at least 2 characters long")
-            .MinimumLength(25).WithError("Invalid first name length", "First name length cannot exceed 25 characters")
-            .When(x => x.FirstName != null);
+            .MaximumLength(25).WithError("Invalid first name length", "First name length cannot exceed 25 characters");
 
         RuleFor(x => x.LastName)
             .MinimumLength(2).WithError("Invalid last name length", "Last name must be at least 2 characters long")
-            .MinimumLength(25).WithError("Invalid last name length", "Last name length cannot exceed 25 characters")
-            .When(x => x.LastName != null);
+            .MaximumLength(25).WithError("Invalid last name length", "Last name length cannot exceed 25 characters");
 
 
         RuleFor(x => x.Gender)
@@ -26,8 +24,7 @@ public class UpdateJobSeekerValidator : AbstractValidator<UpdateJobSeekerDto>
             .Must(IsPdfOrWord)
             .WithError("File type error", "Resume must be in pdf or word format");
 
-        RuleFor(x => x.UserId)
-            .Null().WithError("UserId error", "UserId cannot be updated");
+        
 
     }
 

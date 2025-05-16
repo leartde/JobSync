@@ -34,7 +34,7 @@ const IndustryFilter = () => {
             <select value={selectedIndustry ?? ""} onChange={handleIndustryChange} className="text-sm  border rounded-xl bg-[#e4e2e0] text-gray-800 px-4 py-2">
                 <option value="">All industries</option>
                 {industries.map((industry) => (
-                    <option value={industry}>
+                    <option key={industry} value={industry}>
                         {separateCamelCase(industry)}
                     </option>
                 ))}

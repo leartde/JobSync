@@ -1,6 +1,5 @@
 ﻿using Entities.Models;
 using Shared.DataTransferObjects.JobSeekerDtos;
-using Shared.DataTransferObjects.SkillDtos;
 
 namespace Shared.Mapping;
 
@@ -33,13 +32,12 @@ public static class JobSeekerMapping
 
     public static void ToEntity(this JobSeekerDto dto,JobSeeker entity)
     {
-        entity.UserId = dto.UserId ?? entity.UserId;
-        entity.FirstName = dto.FirstName??entity.FirstName;
-        entity.MiddleName = dto.MiddleName??entity.MiddleName;
-        entity.LastName = dto.LastName??entity.LastName;
-        entity.Phone = dto.Phone??entity.Phone;
-        entity.Birthday = dto.Birthday??entity.Birthday;
-        entity.Gender = dto.Gender??entity.Gender;
+        entity.FirstName = dto.FirstName;
+        entity.MiddleName = dto.MiddleName;
+        entity.LastName = dto.LastName;
+        entity.Phone = dto.Phone;
+        entity.Birthday = dto.Birthday;
+        entity.Gender = dto.Gender;
         if (dto is AddJobSeekerDto addJobSeekerDto)
         {
             if (addJobSeekerDto.Address != null)

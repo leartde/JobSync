@@ -17,9 +17,9 @@ const ViewJobSeeker = () => {
         fetchJobSeekerData().then()
     }, [user]);
     return (
-        <div className=" text-white px-4 mt-8 w-full flex flex-col items-center justify-center gap-8 py-4">
+        <div className="text-white px-4 mt-8 w-full flex flex-col items-center justify-center gap-8 py-4">
             <ContactDetails profile={profile} user={user}/>
-            <ResumeLink id={user?.id} resumeName={profile?.resumeName} resumeLink={profile?.resumeLink} />
+            <ResumeLink profile={profile} />
 
             <Skills />
         </div>

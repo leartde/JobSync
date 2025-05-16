@@ -8,7 +8,7 @@ type JobCardParams = {
 
 const JobCard = ({job, onClick}: JobCardParams) => {
     return (
-        <button onClick={onClick} className="flex flex-col bg-white px-12 py-6 border border-gray-800 rounded-md">
+        <div onClick={onClick} className="flex flex-col bg-white px-12 py-6 border border-gray-800 rounded-md">
             <div className="flex justify-between items-center">
                 <h1 className="text-lg font-semibold">{job.title}</h1>
                 <FaAlignJustify className="cursor-pointer" />
@@ -26,7 +26,7 @@ const JobCard = ({job, onClick}: JobCardParams) => {
                 </a>
 
             </div>
-        </button>
+        </div>
     );
 }
 

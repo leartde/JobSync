@@ -53,7 +53,13 @@ public class JobSeekersController : ControllerBase
     {
         await _service.JobSeekerService.DeleteJobSeekerAsync(id);
         return Ok();
+    }
 
+    [HttpDelete("{id}/resume")]
+    public async Task<IActionResult> DeleteResume(Guid id)
+    {
+        await _service.JobSeekerService.DeleteResumeAsync(id);
+        return Ok();
     }
 
    

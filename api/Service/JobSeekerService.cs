@@ -1,4 +1,5 @@
-﻿using CloudinaryDotNet.Actions;
+﻿using System.Net;
+using CloudinaryDotNet.Actions;
 using Contracts;
 using Entities.Exceptions;
 using Entities.Models;
@@ -80,12 +81,6 @@ internal sealed class JobSeekerService : IJobSeekerService
             jobSeeker.ResumeLink = result.Url.ToString();
             jobSeeker.ResumeName = result.OriginalFilename;
         }
-        else
-        {
-            await _cloudinaryManager.DeleteFile(jobSeeker.ResumeLink ??"");
-            jobSeeker.ResumeLink = null;
-            jobSeeker.ResumeName = null;
-        }
         _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
         await _repository.SaveAsync();
         return jobSeeker.ToDto();
@@ -94,8 +89,19 @@ internal sealed class JobSeekerService : IJobSeekerService
     private async Task<JobSeeker> RetrieveJobSeekerAsync(Guid id)
     {
         JobSeeker? jobSeeker = await _repository.JobSeeker.GetJobSeekerAsync(id);
-        if (jobSeeker is null) throw new NotFoundException("jobSeeker", id);
+        if (jobSeeker is null) throw new NotFoundException(nameof(jobSeeker), id);
         return jobSeeker;
+    }
+
+    public async Task DeleteResumeAsync(Guid id)
+    {
+        JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);
+       DeletionResult result =  await _cloudinaryManager.DeleteFile(jobSeeker.ResumeLink ?? "");
+       if (result.Error != null) throw new BadRequestException("Resume deletion failed");
+       jobSeeker.ResumeLink = null;
+       jobSeeker.ResumeName = null;
+       _repository.JobSeeker.UpdateJobSeeker(jobSeeker);
+       await _repository.SaveAsync();
     }
 
     private async Task AddSkillsForJobSeekerAsync(JobSeeker jobSeeker, List<string> skillNames)

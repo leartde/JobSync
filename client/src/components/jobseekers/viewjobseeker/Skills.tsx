@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from "../../../hooks/authentication/useAuth.ts";
 import FetchJobSeekerSkills from "../../../services/skills/FetchJobSeekerSkills.ts";
 import { Skill } from "../../../types/skill/Skill.ts";
@@ -12,6 +12,7 @@ const Skills = () => {
      const [skills, setSkills] = useState<Skill[]>([]);
     const [openSkillInput, setOpenSkillInput]=  useState(false);
     const[skillToAdd, setSkillToAdd] = useState<string>("");
+    const inputRef = useRef<HTMLInputElement | null>(null );
     useEffect(() => {
         const fetchSkills = async()=>{
             const res = await FetchJobSeekerSkills(user?.id ?? "");
@@ -19,6 +20,13 @@ const Skills = () => {
         }
         fetchSkills().then();
     }, [user]);
+
+    useEffect(() => {
+        const inputEl = inputRef.current;
+        if (inputEl) {
+            inputEl.focus();
+        }
+    }, [openSkillInput]);
 
     const handleAdd = async() => {
        const res =  await CreateJobSeekerSkills(user?.id ?? "", [skillToAdd]);
@@ -39,12 +47,15 @@ const Skills = () => {
 
             <ul className="list-disc list-inside">
                 {skills?.map((skill) => (
-                    <div className="flex justify-between" key={skill.id}>
-                        <li  className="text-white text-lg">{skill.name}</li>
-                        <button onClick={()=>handleDelete(skill.id)} className="hover:text-red-500"> <FaTrash/> </button>
-                    </div>
+                    <li key={skill.id} className="flex justify-between text-white text-lg">
+                        <span>{skill.name}</span>
+                        <button onClick={() => handleDelete(skill.id)} className="hover:text-red-500">
+                            <FaTrash/>
+                        </button>
+                    </li>
                 ))}
             </ul>
+
             {
                 (!openSkillInput && skills.length < 21) &&
                 <div className="flex justify-start">
@@ -55,7 +66,7 @@ const Skills = () => {
                 </div>
             }
             {openSkillInput && <div className="flex gap-2 max-lg:flex-col">
-                <input value={skillToAdd} onChange={(e) => setSkillToAdd(e.target.value)}
+                <input ref={inputRef} value={skillToAdd} onChange={(e) => setSkillToAdd(e.target.value)}
                        className="px-2 py-1  bg-gray-700  rounded-md text-white" type="text"/>
                 <button disabled={skillToAdd.trim()=="" || false} className="bg-gray-800 text-white px-4 py-2 rounded-md" onClick={() => handleAdd()}
                         type="button">Add

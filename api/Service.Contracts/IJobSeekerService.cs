@@ -11,5 +11,6 @@ public interface IJobSeekerService
     Task<ViewJobSeekerDto> AddJobSeekerAsync(AddJobSeekerDto jobSeekerDto);
     Task<ViewJobSeekerDto> UpdateJobSeekerAsync(Guid id, UpdateJobSeekerDto jobSeekerDto);
     Task DeleteJobSeekerAsync(Guid id);
-    
+    Task DeleteResumeAsync(Guid id);
+
 }

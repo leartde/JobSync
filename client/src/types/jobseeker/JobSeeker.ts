@@ -8,6 +8,7 @@ export type JobSeeker = {
     secondaryPhone?: string;
     address: string;
     gender: string;
+    birthday?: Date;
     photoUrl?: string;
     resumeLink?: string;
     resumeName?: string;

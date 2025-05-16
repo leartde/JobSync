@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { RegisterJobSeeker } from "../../../types/jobseeker/RegisterJobSeeker.ts";
 import UpdateJobSeeker from "../../../services/jobseeker/UpdateJobSeeker.ts";
+import { JobSeeker } from "../../../types/jobseeker/JobSeeker.ts";
+import DeleteResume from "../../../services/jobseeker/DeleteResume.ts";
 
 type ResumeProps = {
-    resumeLink? : string
-    resumeName? : string
-    id? : string
+    profile: JobSeeker | undefined
 }
 
 type DeleteModalProps = {
@@ -32,42 +32,56 @@ const DeleteModal = ({onDelete, onCancel}:DeleteModalProps)=>{
 
 
 
-const Resume = ({resumeLink,resumeName, id}:ResumeProps) => {
+const Resume = ({profile}:ResumeProps) => {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [fileToAdd, setFileToAdd] = useState<File>()
     const [updateResume, setUpdateResume] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState<RegisterJobSeeker>({});
     const [resume, setResume] = useState({
-        resumeLink,
-        resumeName
+        resumeLink: profile?.resumeLink,
+        resumeName: profile?.resumeName
     });
 
     useEffect(() => {
         setResume({
-            resumeLink,
-            resumeName
+           resumeLink: profile?.resumeLink,
+            resumeName: profile?.resumeName
+
         })
-    }, [resumeLink,resumeName]);
+    }, [profile?.resumeLink,profile?.resumeName]);
+    useEffect(() => {
+        setFormData({
+            firstName: profile?.firstName,
+            middleName: profile?.middleName,
+            lastName: profile?.lastName,
+            phone: profile?.phone,
+            gender: profile?.gender,
+            birthDate: profile?.birthday
+        })
+    }, [profile]);
     const handleDelete = async() => {
-        const js : RegisterJobSeeker = {};
-       const result= await UpdateJobSeeker(id??"",js);
-        if (result.status === 200){
-            setResume(
-                {
-                    resumeLink: "",
-                    resumeName: ""
-                })
-        }
-        setOpenDeleteModal(false);
+       const result = await DeleteResume(profile?.id ?? "");
+         if (result.status === 200){
+              setResume({
+                resumeLink: "",
+                resumeName: ""
+              })
+         }
+         setOpenDeleteModal(false);
     }
-    const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleResumeChange = (e) => {
        setFileToAdd(e.target.files?.[0]);
 
     }
     const handleUpload = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const result = await UpdateJobSeeker(id??"", {resume: fileToAdd});
+        setFormData({
+            ...formData,
+            resume: fileToAdd
+        })
+        const result = await UpdateJobSeeker(profile?.id ?? "", formData);
         if (result.status === 200){
             setResume(
                 {
@@ -79,7 +93,6 @@ const Resume = ({resumeLink,resumeName, id}:ResumeProps) => {
         setUpdateResume(false);
         setLoading(false);
     }
-    console.log("RESUME: ", resume);
     return (
         <div className="flex flex-col w-1/2 p-8 gap-4 border border-gray-600 rounded-lg shadow-sm">
             {openDeleteModal && <DeleteModal onDelete={handleDelete} onCancel={()=>setOpenDeleteModal(false)}/>}
@@ -89,7 +102,7 @@ const Resume = ({resumeLink,resumeName, id}:ResumeProps) => {
                         {!updateResume ? (
                             <div className="flex max-lg:flex-col gap-4">
                                 <Link
-                                    to={resume.resumeLink ?? resumeLink}
+                                    to={resume.resumeLink}
                                     className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900 ">{resume.resumeName?.slice(0, 10)}.{resume.resumeLink?.endsWith("x") ?resume.resumeLink?.slice(-4) : resume.resumeLink?.slice(-3)}</Link>
                                 <button onClick={()=>setUpdateResume(true)} className="hover:bg-gray-800 bg-gray-700 px-4 py-1 rounded-md">Update</button>
                                 <button onClick={() => setOpenDeleteModal(true)}
