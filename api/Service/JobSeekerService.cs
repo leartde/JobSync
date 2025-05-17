@@ -60,9 +60,7 @@ internal sealed class JobSeekerService : IJobSeekerService
             await _repository.SaveAsync();
         return jobSeeker.ToDto();
     }
-        
-            
-
+    
     public async Task DeleteJobSeekerAsync(Guid id)
     {
         JobSeeker jobSeeker = await RetrieveJobSeekerAsync(id);

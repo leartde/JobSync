@@ -1,4 +1,4 @@
-import  { StrictMode } from 'react'
+import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import ViewJobSeeker from "./pages/jobseeker/ViewJobSeeker.tsx";
 import MyJobs from "./pages/jobseeker/MyJobs.tsx";
 import UpdateJobSeeker from "./pages/jobseeker/UpdateJobSeeker.tsx";
+import { ToastContainer } from "react-toastify/unstyled";
 
 const router = createBrowserRouter([
     {
@@ -89,6 +90,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
+        <ToastContainer/>
         <RouterProvider router={router}/>
     </AuthProvider>
   </StrictMode>,

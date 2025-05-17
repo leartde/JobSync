@@ -14,9 +14,9 @@ public static class JobApplicationMapping
             Employer = entity.Job?.Employer?.Name ?? string.Empty,
             EmployerId = entity.Job?.EmployerId ?? Guid.Empty,
             JobTitle = entity.Job?.Title ?? string.Empty,
-            Candidate = $"{entity.JobSeeker?.FirstName ?? string.Empty}" +
+            Candidate = $"{entity.JobSeeker?.FirstName}" +
                         $"{entity.JobSeeker?.MiddleName ?? string.Empty}" +
-                        $"{entity.JobSeeker?.LastName ?? string.Empty} ",
+                        $"{entity.JobSeeker?.LastName} ",
             StatusString = entity.Status.ToString()
             
         };
@@ -24,8 +24,8 @@ public static class JobApplicationMapping
 
     public static void ToEntity(this JobApplicationDto dto, JobApplication entity)
     {
-        entity.JobId = dto.JobId ?? entity.JobId;
-        entity.Status = dto.Status ?? entity.Status;
+        entity.JobId = dto.JobId;
+        entity.Status = dto.Status;
 
     }
     

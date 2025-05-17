@@ -33,20 +33,16 @@ public static class JobMapping
 
     public static void ToEntity(this JobDto dto, Job entity)
     {
-        entity.Title = dto.Title ?? entity.Title;
-        entity.HourlyPay = dto.HourlyPay ?? entity.HourlyPay;
-        entity.Description = dto.Description ?? entity.Description;
-        entity.Type = dto.Type ?? entity.Type;
-        entity.IsTakingApplications = dto.IsTakingApplications ?? entity.IsTakingApplications;
-        entity.HasMultipleSpots = dto.HasMultipleSpots ?? entity.HasMultipleSpots;
-        entity.CreatedAt = dto.CreatedAt ?? entity.CreatedAt;
+        entity.Title = dto.Title;
+        entity.HourlyPay = dto.HourlyPay;
+        entity.Description = dto.Description;
+        entity.Type = dto.Type;
+        entity.IsTakingApplications = dto.IsTakingApplications;
+        entity.HasMultipleSpots = dto.HasMultipleSpots;
+        entity.CreatedAt = dto.CreatedAt;
             
     if (dto is AddJobDto addJobDto)
         {
-            addJobDto.Skills?.ToList().ForEach(skillDto => 
-                entity.Skills.ToList().ForEach(skill => 
-                    skillDto.ToEntity(skill)));
-
             if (addJobDto.Address != null)
             {
                 Address address = new Address();
@@ -54,7 +50,7 @@ public static class JobMapping
                 entity.Address = address;
             }
 
-            if (addJobDto.Benefits?.Count() > 0)
+            if (addJobDto.Benefits.Any())
             {
                 List<JobBenefit> jobBenefits = [];
                 jobBenefits.AddRange(addJobDto.Benefits

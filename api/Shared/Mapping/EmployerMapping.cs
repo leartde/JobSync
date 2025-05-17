@@ -26,16 +26,15 @@ public static class EmployerMapping
 
     public static void ToEntity(this EmployerDto dto, Employer entity )
     {
-        entity.UserId = dto.UserId ?? entity.UserId;
-        entity.Name = dto.Name ?? entity.Name;
-        entity.Email = dto.Email ?? entity.Email;
-        entity.Description = dto.Description ?? entity.Description;
-        entity.Headquarters = dto.Headquarters ?? entity.Headquarters;
-        entity.Website = dto.Website ?? entity.Website;
-        entity.Industry = (Industry)Enum.Parse(typeof(Industry), dto.Industry ?? entity.Industry.ToString()); 
-        entity.Founded = dto.Founded ?? entity.Founded;
-        entity.Phone = dto.Phone ?? entity.Phone;
-        entity.SecondaryPhone = dto.SecondaryPhone?? entity.SecondaryPhone;
+        entity.Name = dto.Name;
+        entity.Email = dto.Email;
+        entity.Description = dto.Description;
+        entity.Headquarters = dto.Headquarters;
+        entity.Website = dto.Website;
+        entity.Industry = (Industry)Enum.Parse(typeof(Industry), dto.Industry ); 
+        entity.Founded = dto.Founded;
+        entity.Phone = dto.Phone;
+        entity.SecondaryPhone = dto.SecondaryPhone;
         
     }
 }

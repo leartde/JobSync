@@ -5,7 +5,7 @@ export type RegisterJobSeeker = {
     firstName?: string;
     middleName?: string;
     lastName?: string;
-    birthDate?: Date;
+    birthday?: Date;
     gender?: string;
     phone?: string;
     secondaryPhone?: string;

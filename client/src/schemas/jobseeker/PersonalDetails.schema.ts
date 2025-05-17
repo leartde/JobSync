@@ -12,10 +12,11 @@ export const personalDetailsSchema = z.object({
     ]).optional().transform(val => val === undefined ? null : val),
     lastName: z.string()
         .min(2, "Last name must be at least 2 characters"),
-    gender: z.enum(["Male", "Female"], {
+    gender: z.enum(["male", "female"], {
         errorMap: () => ({ message: "Please select a valid gender" })
     }),
-    birthDate: z.date().refine(date => date <= new Date(), {
-        message: "Birthdate must be in the past"
-    })
+    phone: z.string()
+        .min(9, "Phone number must be at least 9 digits")
+        .max(15, "Phone number cannot exceed 15 digits")
+        .regex(/^\+?[0-9]+$/, "Phone number must be a valid phone number"),
 });

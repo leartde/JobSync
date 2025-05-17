@@ -4,8 +4,8 @@ namespace Shared.DataTransferObjects.JobApplicationDtos;
 
 public abstract class JobApplicationDto
 {
-    public Guid? JobId { get; set; }
-    public ApplicationStatus? Status { get; set; }
+    public Guid JobId { get; set; }
+    public ApplicationStatus Status { get; set; }
 
      
     public override string ToString()

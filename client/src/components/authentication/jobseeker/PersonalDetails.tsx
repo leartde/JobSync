@@ -7,14 +7,9 @@ import {
 } from "../FormComponents.tsx";
 import { RegisterJobSeeker } from "../../../types/jobseeker/RegisterJobSeeker.ts";
 import { personalDetailsSchema } from "../../../schemas/jobseeker/PersonalDetails.schema.ts";
+import { PersonalDetailsErrors } from "../../../types/jobseeker/PersonalDetailsErrors.ts";
 
-type PersonalDetailsErrors = {
-    firstName?: string;
-    middleName?: string;
-    lastName?: string;
-    gender?: string;
-    birthDate?: string;
-};
+
 
 const PersonalDetails = () => {
     const { registerForm, updateRegisterForm, roleData, updateRoleData } = useRegisterFormContext();
@@ -25,8 +20,8 @@ const PersonalDetails = () => {
         middleName: (roleData as RegisterJobSeeker)?.middleName || "",
         lastName: (roleData as RegisterJobSeeker)?.lastName || "",
         gender: (roleData as RegisterJobSeeker)?.gender || "",
-        birthDate: (roleData as RegisterJobSeeker)?.birthDate
-            ? new Date((roleData as RegisterJobSeeker).birthDate)
+        birthday: (roleData as RegisterJobSeeker)?.birthday
+            ? new Date((roleData as RegisterJobSeeker).birthday)
             : new Date()
     });
 
@@ -108,19 +103,19 @@ const PersonalDetails = () => {
                     required
                     options={[
                         { value: "", label: "Select Gender", disabled: true },
-                        { value: "Male", label: "Male" },
-                        { value: "Female", label: "Female" }
+                        { value: "Male", label: "male" },
+                        { value: "Female", label: "female" }
                     ]}
                 />
             </InputGroup>
 
             <DefaultInputDiv
                 onChange={handleInputChange}
-                value={formData.birthDate?.toString()}
+                value={formData.birthday?.toString()}
                 id="birthDate"
                 label="Birthdate"
                 type="date"
-                error={errors.birthDate}
+                error={errors.birthday}
                 required
             />
 

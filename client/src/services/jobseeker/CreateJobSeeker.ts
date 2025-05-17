@@ -20,7 +20,7 @@ const CreateJobSeeker = async ({ email, password, jobSeeker, role }: CreateJobSe
         formData.append("JobSeeker.MiddleName", jobSeeker.middleName || "");
         formData.append("JobSeeker.LastName", jobSeeker.lastName || "");
         formData.append("JobSeeker.Gender", jobSeeker.gender || "");
-        const birthday = jobSeeker.birthDate ? new Date(jobSeeker.birthDate) : new Date();
+        const birthday = jobSeeker.birthday ? new Date(jobSeeker.birthday) : new Date();
         const formattedBirthday = `${birthday.getFullYear()}-${String(birthday.getMonth()+1).padStart(2, '0')}-${String(birthday.getDate()).padStart(2, '0')}`;
 
         formData.append("JobSeeker.BirthDate", formattedBirthday);

@@ -9,7 +9,7 @@ const UpdateJobSeeker = async(id:string,jobSeeker:RegisterJobSeeker)=>{
         formData.append("LastName", jobSeeker.lastName ?? "");
         formData.append("Phone", jobSeeker.phone ?? "");
         formData.append("Resume", jobSeeker.resume ?? "");
-        formData.append("Birthday", jobSeeker.birthDate?.toString());
+        formData.append("Birthday", jobSeeker.birthday?.toString());
         formData.append("Gender",jobSeeker.gender ?? "");
         const url = `/jobseekers/${id}`;
         return await api.put(url, formData);

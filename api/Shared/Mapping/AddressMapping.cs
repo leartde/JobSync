@@ -1,7 +1,5 @@
-﻿using System.Reflection.Metadata;
-using Entities.Exceptions;
+﻿using Entities.Exceptions;
 using Entities.Models;
-using Shared.DataTransferObjects;
 using Shared.DataTransferObjects.AddressDtos;
 
 namespace Shared.Mapping;
@@ -25,17 +23,13 @@ public static class AddressMapping
 
     public static void ToEntity(this AddressDto dto, Address entity)
     {
-       
-        if (dto == null )
-            throw new ArgumentNullException(nameof(dto), "AddressDto is null");
-        entity.Country = dto.Country??entity.Country;
+        entity.Country = dto.Country;
         entity.State = dto.State??entity.State;
-        entity.City = dto.City??entity.City;
-        entity.Region = dto.Region??entity.Region;
-        entity.Street = dto.Street??entity.Street;
-        entity.ZipCode = dto.ZipCode??entity.ZipCode;
+        entity.City = dto.City;
+        entity.Region = dto.Region;
+        entity.Street = dto.Street;
+        entity.ZipCode = dto.ZipCode;
 
-        
     }
    
 }
